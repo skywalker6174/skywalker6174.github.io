@@ -10,7 +10,7 @@ You can also find my articles on [my Google Scholar profile]({site.author.google
 ## Publications & Preprints
 
 * **Yue Zhao**, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. [Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4781416).
- * Major revision in *Management Science*. First submitted in Apr 2024.
+  - Major revision in *Management Science*. First submitted in Apr 2024.
 * Long He, Xiaobo Li, **Yue Zhao**. [Proactive Policing: A Resource Allocation Model for Crime Prevention with Deterrence Effect](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4526158).
   ** Major revision in *Operations Research*. First submitted in Jul 2023. 
 * Cheng Chun, Melvyn Sim, **Yue Zhao**. [Robust Workforce Management with Crowdsourced Delivery](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4387916).
