@@ -2,8 +2,8 @@
 title: "Service Oriented Considerate Routing: Data, Predictions and Robust Decision"
 collection: publications
 category: manuscripts
-permalink: /publication/Service Oriented Considerate Routing: Data, Predictions and Robust Decision
-excerpt: ''
+permalink: /publication/SOCR.md
+excerpt: '...'
 date: 2009-10-01
 venue: 'Journal 1'
 slidesurl: 'http://academicpages.github.io/files/slides1.pdf'
