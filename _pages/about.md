@@ -21,4 +21,4 @@ I am a Research Fellow at the Institute of Operations Research & Analytics, Nati
 * Data-driven optimization, robust analytics, trustable machine learning
 * Operations management in supply chain, logistics, and sustainable operations.
 
-You can download my CV [here](\file\CV_yz_2024.pdf).
+You can download my CV [here](/file/CV_yz_2024.pdf).
