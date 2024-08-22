@@ -8,9 +8,9 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : ""
-title_separator          : ""
-name                     : &name "Your Name"
+title                    : "Yue Zhao"
+title_separator          : "-"
+name                     : &name "Yue Zhao"
 description              : &description "personal description"
 url                      : https://skywalker6174.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
@@ -21,7 +21,7 @@ repository               : "skywalker6174/skywalker6174.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "self1.jpg"
+  avatar           : "self3.jpg"
   name             : "ZHAO, YUE"
   pronouns         : # example: "she/her"  
   bio              : " "
