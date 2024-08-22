@@ -25,8 +25,8 @@ author:
   name             : "ZHAO, YUE"
   pronouns         : # example: "she/her"  
   bio              : " "
-  location         : "Singapore"
-  employer         : "National University of Singapore"
+  location         : "National University of Singapore"
+  employer         : #"National University of Singapore"
   uri              : # URL
   email            : "zhaoyue6174@gmail.com" 
 
