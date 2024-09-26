@@ -7,7 +7,7 @@ author_profile: true
 
 You can download my teaching statement [here](/file/teaching.pdf).
 
-## Teaching experience 
+## Teaching Experience 
 At National University of Singapore
 * IE2150E Human Factors Engineering, Spring 2018 & Spring 2019
 * IE4240 Project Management, Fall 2018 & Spring 2020
