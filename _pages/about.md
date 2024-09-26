@@ -7,7 +7,7 @@ redirect_from:
   - /about.html
 ---
 
-I am a Postdoctoral Fellow at the Rotman School of Management, University of Toronto. Prior to this, I served as a Research Fellow at National University of Singapore, where I also completed my Ph.D. in Operations Research. My research is dedicated to two interconnected fields: (1) smart city operations, focusing on innovative and foundational business models within transportation and logistics, and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
+I am a Postdoctoral Fellow at the Rotman School of Management, University of Toronto. Prior to this, I served as a Research Fellow at the National University of Singapore, where I also completed my Ph.D. in Operations Research. My research is dedicated to two interconnected fields: (1) smart city operations, focusing on innovative and foundational business models within transportation and logistics, and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
 
 
 ## Education
