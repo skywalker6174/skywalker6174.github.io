@@ -18,4 +18,5 @@ I am passionate about leveraging AI tools to enhance the learning experience, an
 * theoretical knowledge,
 * coding guidance
 * research insights
+
 in data analytics and optimization, with a special focus on robust analytics. I regularly update it with my latest research and insights to ensure it remains a valuable and current resource, providing students with a dynamic and interactive learning environment.
