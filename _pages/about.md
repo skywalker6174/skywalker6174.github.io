@@ -22,4 +22,4 @@ I am a Postdoctoral Fellow at the Rotman School of Management, University of Tor
 * Analytics for social good 
 * Supply chain and logistics
 
-You can download my CV [here](/file/CV_2024.pdf).
+You can download my CV [here](/file/CV_YueZhao.pdf).
