@@ -14,7 +14,7 @@ You can download my research statement [here](/file/research.pdf), and also find
   - Download the data and code [here](https://drive.google.com/drive/folders/1ErrGGhbFwE9_aV5z9u7JicpkQ3uXwC7v?usp=sharing).
 * **Yue Zhao**, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. [Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4781416).
   - Major revision in *Management Science*.
-* Long He, Xiaobo Li, **Yue Zhao**. [Proactive Policing: A Resource Allocation Model for Crime Prevention with Deterrence Effect(https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4526158)].
+* Long He, Xiaobo Li, **Yue Zhao**. [Proactive Policing: A Resource Allocation Model for Crime Prevention with Deterrence Effect](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4526158).
   - Major revision in *Operations Research*. 
 * **Yue Zhao**, Zhi Chen, Zhenzhen Zhang. [Distributionally Robust Chance Constrained p-Hub Center Problem](https://pubsonline.informs.org/doi/abs/10.1287/ijoc.2022.0113). *Informs Journal on Computing* 35(6) (2023): 1361-1382.
 * **Yue Zhao**, Zhi Chen, Zhenzhen Zhang, Andrew Lim. [Vessel Deployment with Limited Information: Distributionally Robust Chance Constrained Models](https://www.sciencedirect.com/science/article/pii/S0191261522000777). *Transportation Research Part B: Methodological* 161 (2022): 197-217.
