@@ -9,7 +9,7 @@ You can download my research statement [here](/file/research.pdf), and also find
 
 ## Publications & Preprints
 
-* Cheng Chun, Melvyn Sim, **Yue Zhao**. [Robust Workforce Management with Crowdsourced Delivery](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4387916)]
+* Cheng Chun, Melvyn Sim, **Yue Zhao**. [Robust Workforce Management with Crowdsourced Delivery](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4387916).
   - Forthcoming in *Operations Research*.
   - Download the data and code [here](https://drive.google.com/drive/folders/1ErrGGhbFwE9_aV5z9u7JicpkQ3uXwC7v?usp=sharing).
 * **Yue Zhao**, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. [Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4781416).
