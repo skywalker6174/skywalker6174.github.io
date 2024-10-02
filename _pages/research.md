@@ -5,7 +5,7 @@ permalink: /research/
 author_profile: true
 ---
 
-You can download my research statement [here](/file/research.pdf), and also find my articles on [my Google Scholar profile]({site.author.googlescholar}).
+You can download my research statement [here](/file/research.pdf), and also find my articles on my [Google Scholar]({site.author.googlescholar}) profile.
 
 ## Publications & Preprints
 
