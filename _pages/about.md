@@ -7,8 +7,9 @@ redirect_from:
   - /about.html
 ---
 
-I am a Postdoctoral Fellow at the Rotman School of Management, University of Toronto. Prior to this, I served as a Research Fellow at the National University of Singapore, where I also completed my Ph.D. in Operations Research. My research is dedicated to two fields: (1) data-driven management of supply chain and logistics, encompassing both foundational and emerging business models such as the last-mile problem; and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
+I am currently a Postdoctoral Fellow at the Rotman School of Management, University of Toronto, where I have the honor of working with Prof. [Sheng Liu](https://sites.google.com/site/thushengliu/home). Before this, I served as a Research Fellow at the National University of Singapore, where I had the privilege of working with Prof. [Long He](https://long-he.github.io/) and Prof. [Melvyn Sim](https://discovery.nus.edu.sg/768-melvyn-sim). I completed my Ph.D. in Operations Research under the esteemed advisory of Prof. [Xiaobo Li](https://sites.google.com/site/lixiaobohome/bio) and Prof. [Andrew Lim](https://www.limandrew.org/), also at NUS. Throughout my academic journey, I have been incredibly fortunate to collaborate with many outstanding researchers whose wisdom and guidance have profoundly shaped my professional path and research endeavors.
 
+My research is dedicated to two fields: (1) data-driven management of supply chain and logistics, encompassing both foundational and emerging business models such as the last-mile problem; and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
 
 ## Education
 
