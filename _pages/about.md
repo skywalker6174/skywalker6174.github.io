@@ -14,8 +14,8 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 I am on the job market 2024-2025 and will be presenting at the 2024 INFORMS Annual Meeting in Seattle. Here are the details of my presentation:
 - Session: WA31
 - Title: "Service Oriented Considerate Routing: Data, Prediction and Robust Decisions"
+- Time: Wed, Oct 23, 8:36 - 8:54 PDT
 - Venue: Summit - 422
-- Time: October 23, from 8:00 am - 9:15 am
 
 ## Education
 
