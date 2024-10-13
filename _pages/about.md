@@ -12,7 +12,7 @@ I am currently a Postdoctoral Fellow at the Rotman School of Management, Univers
 My research is dedicated to two fields: (1) data-driven management of supply chain and logistics, encompassing both foundational and emerging business models such as the last-mile problem; and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
 
 I am on the job market 2024-2025 and will be presenting at the 2024 INFORMS Annual Meeting in Seattle. Here are the details of my presentation:
-<br></mark>Session</mark>: WA31<br>
+<br>###Session</mark>: WA31<br>
 <br>Title: "Service Oriented Considerate Routing: Data, Prediction and Robust Decisions"<br>
 <br>Venue: Summit - 422<br>
 <br>Time: October 23, from 8:00 am - 9:15 am<br>
