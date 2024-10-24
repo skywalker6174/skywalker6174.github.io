@@ -16,7 +16,8 @@ You can download my research statement [here](/file/research.pdf), and also find
   - Major revision in *Management Science*.
 * Long He, Xiaobo Li, **Yue Zhao**. [Proactive Policing: A Resource Allocation Model for Crime Prevention with Deterrence Effect](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4526158).
   - Major revision in *Operations Research*.
-* Jianpeng Ding, Liuxin Chen, Lianmin Zhang, **Yue Zhao**. Robust Satisficing Newsvendor Problem. Major revision in **Operations Research Letters**.
+* Jianpeng Ding, Liuxin Chen, Lianmin Zhang, **Yue Zhao**. Robust Satisficing Newsvendor Problem.
+  - Major revision in *Operations Research Letters*.
 * **Yue Zhao**, Zhi Chen, Zhenzhen Zhang. [Distributionally Robust Chance Constrained p-Hub Center Problem](https://pubsonline.informs.org/doi/abs/10.1287/ijoc.2022.0113). *Informs Journal on Computing* 35(6) (2023): 1361-1382.
 * **Yue Zhao**, Zhi Chen, Zhenzhen Zhang, Andrew Lim. [Vessel Deployment with Limited Information: Distributionally Robust Chance Constrained Models](https://www.sciencedirect.com/science/article/pii/S0191261522000777). *Transportation Research Part B: Methodological* 161 (2022): 197-217.
 * Xinke Li, Zhirui Chen, **Yue Zhao**, Zekun Tong, Yabang Zhao, Andrew Lim, Joey Tianyi Zhou. [PointBA: Towards Backdoor Attacks in 3D Point Cloud](https://openaccess.thecvf.com/content/ICCV2021/papers/Li_PointBA_Towards_Backdoor_Attacks_in_3D_Point_Cloud_ICCV_2021_paper.pdf). *ICCV 2021: IEEE/CVF International Conference on Computer Vision*.
