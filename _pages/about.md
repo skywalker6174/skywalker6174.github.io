@@ -11,6 +11,7 @@ I am currently a Postdoctoral Fellow at the Rotman School of Management, Univers
 
 My research is dedicated to two fields: (1) data-driven management of supply chain and logistics, encompassing both foundational and emerging business models such as the last-mile problem; and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
 
+**I will be joining Peking University HSBC Business School as an assistant professor in August 2025.**
 
 ## Education
 
