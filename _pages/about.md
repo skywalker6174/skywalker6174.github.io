@@ -23,7 +23,7 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 * Analytics for social good 
 * Supply chain and logistics
 
-You can download my CV [here](/file/CV_YueZhao.pdf).
+Download my [CV](/file/CV_YueZhao.pdf).
 
 ## News
 **I will be joining Peking University HSBC Business School as an assistant professor in August 2025.**
