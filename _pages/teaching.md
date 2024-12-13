@@ -5,7 +5,7 @@ permalink: /teaching/
 author_profile: true
 ---
 
-You can download my teaching statement [here](/file/teaching.pdf).
+Download my [teaching statement](/file/teaching.pdf).
 
 ## Teaching Experience 
 At National University of Singapore
