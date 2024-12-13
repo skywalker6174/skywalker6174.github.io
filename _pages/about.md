@@ -11,9 +11,6 @@ I am currently a Postdoctoral Fellow at the Rotman School of Management, Univers
 
 My research is dedicated to two fields: (1) data-driven management of supply chain and logistics, encompassing both foundational and emerging business models such as the last-mile problem; and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
 
-## News
-**I will be joining Peking University HSBC Business School as an assistant professor in August 2025.**
-
 ## Education
 
 * Ph.D in Operations Research, National University of Singapore, 2022
@@ -27,3 +24,6 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 * Supply chain and logistics
 
 You can download my CV [here](/file/CV_YueZhao.pdf).
+
+## News
+**I will be joining Peking University HSBC Business School as an assistant professor in August 2025.**
