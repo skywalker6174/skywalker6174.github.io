@@ -26,4 +26,4 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 Download my [CV](/file/CV_YueZhao.pdf).
 
 ## News
-**I will be joining Peking University HSBC Business School as an assistant professor in August 2025.**
+* I will be joining Peking University HSBC Business School as an assistant professor in August 2025.
