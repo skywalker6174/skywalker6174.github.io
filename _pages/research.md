@@ -13,7 +13,7 @@ Download my [research statement](/file/research.pdf).
   - Forthcoming in *Operations Research*.
   - Download the data and code [here](https://drive.google.com/file/d/1qsRWNQxlWSA64Q_FsSyqa0hTY5SEZ_Zl/view?usp=sharing).
 * **Yue Zhao**, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. [Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4781416).
-  - Major revision in *Management Science*.
+  - Minor revision in *Management Science*.
 * Long He, Xiaobo Li, **Yue Zhao**. [Proactive Policing: A Resource Allocation Model for Crime Prevention with Deterrence Effect](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4526158).
   - Major revision in *Operations Research*.
 * Jianpeng Ding, Liuxin Chen, Lianmin Zhang, **Yue Zhao**. Robust Satisficing Newsvendor Problem.
