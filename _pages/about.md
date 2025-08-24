@@ -7,11 +7,11 @@ redirect_from:
   - /about.html
 ---
 
-I am a tenure-track assistant professor at Peking University HSBC Business School (PHBS). 
-
-Before joining PHBS, I served as a Postdoctoral Fellow at the Rotman School of Management, University of Toronto, where I had the honor of working under Prof. [Sheng Liu](https://sites.google.com/site/thushengliu/home). Previously, I served as a Research Fellow at the National University of Singapore (NUS), where I was fortunate to receive guidance from Prof. [Long He](https://long-he.github.io/) and especially from Prof. [Melvyn Sim](https://discovery.nus.edu.sg/768-melvyn-sim) whose mentorship was invaluable. I completed my Ph.D. in Operations Research at NUS under the esteemed advisory of Prof. [Xiaobo Li](https://sites.google.com/site/lixiaobohome/bio) and Prof. [Andrew Lim](https://scholar.google.com/citations?hl=en&user=iDEgcFQAAAAJ&view_op=list_works&sortby=pubdate). Throughout my academic journey, I have been incredibly fortunate to collaborate with many outstanding scholars whose wisdom and guidance have profoundly shaped my professional path and research endeavors.
+I am an assistant professor at [Peking University HSBC Business School (PHBS)](https://english.phbs.pku.edu.cn/). Before joining PHBS, I was a Postdoctoral Fellow at the Rotman School of Management, University of Toronto, working with Prof. [Sheng Liu](https://sites.google.com/site/thushengliu/home). Prior to that, I served as a Research Fellow at the National University of Singapore (NUS), where I benefited greatly from the mentorship of Prof. [Long He](https://long-he.github.io/) and especially Prof. [Melvyn Sim](https://discovery.nus.edu.sg/768-melvyn-sim). I earned my Ph.D. in Operations Research at NUS under the guidance of Prof. [Xiaobo Li](https://sites.google.com/site/lixiaobohome/bio) and Prof. [Andrew Lim](https://scholar.google.com/citations?hl=en&user=iDEgcFQAAAAJ&view_op=list_works&sortby=pubdate).
 
 My research is dedicated to two fields: (1) data-driven management of supply chain and logistics, encompassing both foundational and emerging business models such as the last-mile problem; and (2) analytics for social good, which targets essential issues like system robustness, social well-being, and sustainability.
+
+**Email:** yzhao[at]phbs.pku.edu.cn
 
 ## Education
 
