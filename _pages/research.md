@@ -11,10 +11,8 @@ Download my [research statement](/file/research.pdf).
 
 * Cheng Chun, Melvyn Sim, **Yue Zhao**. [Robust Workforce Management with Crowdsourced Delivery](https://pubsonline.informs.org/doi/10.1287/opre.2023.0125). *Operations Research* 73(2) (2025): 595-612.
   - Download the data and code [here](https://drive.google.com/file/d/1qsRWNQxlWSA64Q_FsSyqa0hTY5SEZ_Zl/view?usp=sharing).
-* **Yue Zhao**, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. [Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4781416).
-  - Minor revision in *Management Science*.
-* Long He, Xiaobo Li, **Yue Zhao**. [Proactive Policing: Resource Allocation for Crime Prevention with Deterrence Effect](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4526158).
-  - Minor revision in *Operations Research*.
+* **Yue Zhao**, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. [Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4781416). Forthcoming in *Operations Research*.
+* Long He, Xiaobo Li, **Yue Zhao**. [Proactive Policing: Resource Allocation for Crime Prevention with Deterrence Effect](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4526158). Forthcoming in *Management Science*.
   - Accepted at the 2025 MSOM SIG-Day Conference. 
 * Jianpeng Ding, Liuxin Chen, Lianmin Zhang, **Yue Zhao**. Robust Satisficing Newsvendor Problem.
   - Minor revision in *Operations Research Letters*.
