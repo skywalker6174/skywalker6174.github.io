@@ -23,12 +23,12 @@ author:
   # Biographic information
   avatar           : "self3.jpg"
   name             : "ZHAO, YUE"
-  pronouns         : # example: "she/her"  
+  pronouns         : # "he/his"  
   bio              : " "
-  location         : "Peking University"
-  employer         : #"National University of Singapore"
+  location         : "Shenzhen, China"
+  employer         : "Peking University"
   uri              : # URL
-  email            : "zhaoyue6174@gmail.com" 
+  email            : "yzhao@phbs.pku.edu.cn" 
 
   # Academic websites
   arxiv            : # URL - Update with the correct link to your profile
