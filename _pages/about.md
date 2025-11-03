@@ -26,7 +26,7 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 * Supply chain and logistics
 
 ## Openings
-I am looking for postdocs who share my research interests. A background in mathematics, computer science, operations research, or related areas would be a great match.
+I am looking for postdocs who share my research interests. A background in mathematics, computer science, operations research, or related areas would be preferred.
 
 Download my [CV](/file/CV_YueZhao.pdf).
 
