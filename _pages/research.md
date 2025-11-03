@@ -9,7 +9,7 @@ Download my [research statement](/file/research.pdf).
 
 ## Publications
 
-* Cheng Chun, Melvyn Sim, Yue Zhao. *Robust Workforce Management with Crowdsourced Delivery*. **Operations Research** 73(2) (2025): 595-612. [Code](https://drive.google.com/file/d/1qsRWNQxlWSA64Q_FsSyqa0hTY5SEZ_Zl/view?usp=sharing)
+* Cheng Chun, Melvyn Sim, Yue Zhao. *Robust Workforce Management with Crowdsourced Delivery*. **Operations Research** 73(2) (2025): 595-612. [(code)](https://drive.google.com/file/d/1qsRWNQxlWSA64Q_FsSyqa0hTY5SEZ_Zl/view?usp=sharing)
 * Yue Zhao, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. *Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions*. Forthcoming in **Management Science**.
 * Long He, Xiaobo Li, Yue Zhao. *Proactive Policing: Resource Allocation for Crime Prevention with Deterrence Effect*. Forthcoming in **Operations Research**.
   - Accepted at the 2025 MSOM SIG-Day Conference. 
@@ -19,7 +19,7 @@ Download my [research statement](/file/research.pdf).
 ## Conferences
 * Wenzhuo Zhu, Zheng Cui, Wenhan Lu, Sheng Liu, Yue Zhao. *DAOpt: Modeling and Evaluation of Data-Driven Optimization under Uncertainty with LLMs*. 39th Conference on Neural Information Processing Systems **NeurIPS 2025 Workshop: MLxOR**.
 * Xinke Li, Zhirui Chen, Yue Zhao, Zekun Tong, Yabang Zhao, Andrew Lim, Joey Tianyi Zhou. *PointBA: Towards Backdoor Attacks in 3D Point Cloud*. **ICCV 2021**: IEEE/CVF International Conference on Computer Vision.
-* Yue Zhao, Yuwei Wu, Caihua Chen, Andrew Lim. *On Isometry Robustness of Deep 3D Models under Adversarial Attacks*. **CVPR 2020**: IEEE/CVF Conference on Computer Vision and Pattern Recognition. [Code](https://github.com/skywalker6174/3d-isometry-robust).
+* Yue Zhao, Yuwei Wu, Caihua Chen, Andrew Lim. *On Isometry Robustness of Deep 3D Models under Adversarial Attacks*. **CVPR 2020**: IEEE/CVF Conference on Computer Vision and Pattern Recognition. [(code)](https://github.com/skywalker6174/3d-isometry-robust).
 
 ## Working Papers
 * Jianpeng Ding, Liuxin Chen, Lianmin Zhang, Yue Zhao. *Robust Satisficing Newsvendor Problem*. Minor revision in **Operations Research Letters**.
