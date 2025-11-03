@@ -18,12 +18,15 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 * Ph.D in Operations Research, National University of Singapore, 2022
 * B.S. in Statistics, Nanjing University, 2017
 
-
 ## Research Interest
 
 * Data-driven optimization and robust analytics
+* LLM for decision science
 * Analytics for social good 
 * Supply chain and logistics
+
+## Openings
+I am looking for postdocs who share my research interests. A background in mathematics, computer science, or related areas would be a great match.
 
 Download my [CV](/file/CV_YueZhao.pdf).
 
