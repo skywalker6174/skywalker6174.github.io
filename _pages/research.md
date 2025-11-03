@@ -7,7 +7,7 @@ author_profile: true
 
 Download my [research statement](/file/research.pdf).
 
-## Publications
+## Journals
 * Cheng Chun, Melvyn Sim, Yue Zhao. *Robust Workforce Management with Crowdsourced Delivery*. **Operations Research** 73(2) (2025): 595-612. [(code)](https://drive.google.com/file/d/1qsRWNQxlWSA64Q_FsSyqa0hTY5SEZ_Zl/view?usp=sharing)
 * Yue Zhao, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. *Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions*. Forthcoming in **Management Science**.
 * Long He, Xiaobo Li, Yue Zhao. *Proactive Policing: Resource Allocation for Crime Prevention with Deterrence Effect*. Forthcoming in **Operations Research**.
