@@ -13,6 +13,8 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 
 **Email:** yzhao[at]phbs.pku.edu.cn
 
+Download my [CV](/file/CV_YueZhao.pdf).
+
 ## Education
 
 * Ph.D in Operations Research, National University of Singapore, 2022
@@ -26,7 +28,5 @@ My research is dedicated to two fields: (1) data-driven management of supply cha
 * Supply chain and logistics
 
 ## Openings
-I am looking for postdocs who share my research interests. A background in mathematics, computer science, operations research, or related areas is preferred.
-
-Download my [CV](/file/CV_YueZhao.pdf).
+I have openings for RA and postdoctoral positions, as well as jointly advised PhD opportunities with Prof. [Rui Chen](https://sds.cuhk.edu.cn/en/teacher/1629) at CUHK Shenzhen. A background in mathematics, computer science, operations research, or related fields is preferred.
 
