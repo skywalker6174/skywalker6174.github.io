@@ -41,6 +41,7 @@
     </div>
     <div class="hidden md:flex gap-7 text-sm text-slate-400">
       <a href="#model"    class="hover:text-white transition">Models</a>
+      <a href="#autofe"   class="hover:text-white transition">Auto-FE</a>
       <a href="#metric"   class="hover:text-white transition">Metric</a>
       <a href="#predict"  class="hover:text-white transition">Predict</a>
       <a href="#evaluate" class="hover:text-white transition">Evaluate</a>
@@ -245,28 +246,30 @@
         <span class="text-xl leading-none">🤖</span>
         <span class="font-bold">LLM Auto-Feature Eng.</span>
         <span class="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full"
-              style="background:rgba(139,92,246,.25);color:#C4B5FD;border:1px solid rgba(139,92,246,.4)">
-          TBD
+              style="background:rgba(16,185,129,.22);color:#6EE7B7;border:1px solid rgba(16,185,129,.4)">
+          Results ↓
         </span>
       </div>
       <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        The next phase uses a <strong class="text-white">FunSearch</strong>-style LLM loop:
-        the model proposes Python <code class="text-violet-300">add_features(df)</code> functions,
-        each is evaluated via CV, and the top programs seed the next generation.
-        Goal: discover feature combinations beyond the current hand-crafted 24.
+        A <strong class="text-white">FunSearch</strong>-style loop run on a 2,000-SKU sample:
+        propose Python <code class="text-violet-300">add_features(df)</code> functions,
+        score each by weekly FA, and let the best seed the next generation. Both a
+        genetic search over a <strong class="text-white">946-feature</strong> library and an
+        <strong class="text-white">LLM-in-the-loop</strong> (Kimi k2) sampler were run.
+        See the <a href="#autofe" class="text-violet-300 hover:underline">results below</a>.
       </p>
       <div class="grid grid-cols-3 gap-2 text-xs">
         <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
           <div class="text-violet-300 font-semibold mb-1">① Propose</div>
-          <p class="text-slate-500 leading-relaxed">LLM generates candidate feature functions</p>
+          <p class="text-slate-500 leading-relaxed">LLM / GA generates candidate feature functions</p>
         </div>
         <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
           <div class="text-blue-300 font-semibold mb-1">② Evaluate</div>
-          <p class="text-slate-500 leading-relaxed">CV WFA score on held-out fold</p>
+          <p class="text-slate-500 leading-relaxed">Weekly FA on held-out validation weeks</p>
         </div>
         <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
           <div class="text-emerald-300 font-semibold mb-1">③ Evolve</div>
-          <p class="text-slate-500 leading-relaxed">Top programs seed next generation</p>
+          <p class="text-slate-500 leading-relaxed">Top programs seed the next generation</p>
         </div>
       </div>
     </div>
@@ -450,6 +453,135 @@
   <div id="cvLoadNote" class="bg-blue-500/8 border border-blue-500/20 rounded-xl p-4 text-sm text-blue-300/90 flex items-start gap-3">
     <span class="flex-shrink-0 text-base mt-0.5">⏳</span>
     <span id="cvLoadMsg">CV results loading from <code>cv_results_v2.json</code>…</span>
+  </div>
+</section>
+
+<!-- ── AUTO FEATURE ENGINEERING (FunSearch) ──────────────────────────────── -->
+<section id="autofe" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-12">
+    <span class="tag mb-5"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>FunSearch · 2,000-SKU study</span>
+    <h2 class="text-3xl font-bold mb-3 mt-4">🤖 LLM Auto Feature Engineering</h2>
+    <p class="text-slate-400 text-sm max-w-2xl mx-auto">
+      Can a machine discover better features than the hand-crafted 24? We ran a
+      FunSearch loop on a 2,000-SKU sample: an initial library of <strong class="text-white">946
+      auto-generated candidate features</strong>, searched by both a genetic algorithm and an
+      LLM-in-the-loop sampler (Kimi k2), scored by the POC weekly-FA metric.
+    </p>
+  </div>
+
+  <!-- pipeline -->
+  <div class="grid md:grid-cols-4 gap-4 mb-10 text-sm">
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-violet-400">946</div>
+      <div class="text-xs text-slate-500 mt-1">candidate features<br>in initial library</div>
+    </div>
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-blue-400">~160</div>
+      <div class="text-xs text-slate-500 mt-1">feature-sets evaluated<br>(GA + LLM)</div>
+    </div>
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-emerald-400">+2.5pp</div>
+      <div class="text-xs text-slate-500 mt-1">best proxy FA lift<br>(LightGBM)</div>
+    </div>
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-amber-400">+0.65pp</div>
+      <div class="text-xs text-slate-500 mt-1">real recursive lift<br>(confirmed)</div>
+    </div>
+  </div>
+
+  <!-- per-model lift table -->
+  <div class="card rounded-2xl overflow-hidden mb-6">
+    <div class="px-6 py-4 border-b border-white/[.06]">
+      <h3 class="font-semibold">Discovered features lift every model — weekly FA proxy (2,000 SKUs)</h3>
+      <p class="text-xs text-slate-500 mt-1">Validation weeks 2025-07 · base-24 features vs base-24 + auto-discovered features</p>
+    </div>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
+          <th class="text-left px-6 py-3">Model</th>
+          <th class="text-right px-4 py-3">Base-24 FA</th>
+          <th class="text-right px-4 py-3">+ Auto features</th>
+          <th class="text-right px-4 py-3">Lift</th>
+          <th class="text-left px-6 py-3">Note</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/[.04]">
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span>LightGBM</td>
+          <td class="px-4 py-3 text-right text-slate-300">65.53%</td>
+          <td class="px-4 py-3 text-right font-bold text-blue-400">67.99%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+2.46 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">strongest baseline, smallest headroom</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#06B6D4"></span>XGBoost</td>
+          <td class="px-4 py-3 text-right text-slate-300">62.91%</td>
+          <td class="px-4 py-3 text-right font-bold text-cyan-400">66.52%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+3.61 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">gains most among trees</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span>Random Forest</td>
+          <td class="px-4 py-3 text-right text-slate-300">63.08%</td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-400">63.96%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.88 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">deep trees already capture interactions</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span>OLS (Ridge)</td>
+          <td class="px-4 py-3 text-right text-slate-400">15.84%</td>
+          <td class="px-4 py-3 text-right font-bold text-violet-300">35.40%</td>
+          <td class="px-4 py-3 text-right text-violet-400">+19.56 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">linear model can't build interactions itself</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <!-- discovered feature set -->
+    <div class="card rounded-2xl p-7">
+      <h3 class="font-semibold mb-4">Best discovered feature set</h3>
+      <p class="text-slate-500 text-xs mb-4">Found by the genetic search over the 946-feature library — a dispersion + recency + trend mix:</p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-violet-200">
+        <div>feat_accel &nbsp;= (lag1−lag7) − (lag7−lag14)</div>
+        <div>feat_lag1_roll7 = lag1 / roll7</div>
+        <div>feat_cv &nbsp;&nbsp;&nbsp;= std(lags) / mean(lags)</div>
+        <div>feat_range = max(lags) − min(lags)</div>
+        <div>feat_std &nbsp;&nbsp;= std(lags)</div>
+        <div>feat_roll14_28 = roll14 / roll28</div>
+      </div>
+      <p class="text-slate-500 text-xs mt-4">
+        The LLM-in-the-loop sampler (Kimi, 30 iterations) independently reached
+        <strong class="text-violet-300">+1.72 pp</strong> with a similar momentum +
+        category-relative + volatility mix — converging to the same ceiling as the
+        genetic search, confirming the limit is the problem, not the method.
+      </p>
+    </div>
+
+    <!-- honest conclusion -->
+    <div class="card rounded-2xl p-7">
+      <h3 class="font-semibold mb-4">What we learned</h3>
+      <ul class="space-y-3 text-sm text-slate-300">
+        <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0">▸</span>
+          Auto-discovered features help <strong class="text-white">every model</strong>, but the
+          gain is <strong class="text-white">modest for trees</strong> (+2.5 pp proxy → +0.65 pp recursive).</li>
+        <li class="flex gap-3"><span class="text-blue-400 flex-shrink-0">▸</span>
+          A bigger library (40 → 205 → 946) did <strong class="text-white">not</strong> raise the tree
+          ceiling — every search converges by generation 3–8.</li>
+        <li class="flex gap-3"><span class="text-violet-400 flex-shrink-0">▸</span>
+          The real win is for <strong class="text-white">weak/linear models</strong>: OLS gains
+          up to +19 pp because it cannot construct interactions itself.</li>
+        <li class="flex gap-3"><span class="text-amber-400 flex-shrink-0">▸</span>
+          The recursive lift concentrates in the <strong class="text-white">hardest categories</strong> —
+          8804 (+1.2 pp) and 8805 (+3.2 pp).</li>
+      </ul>
+      <p class="text-slate-500 text-xs mt-4 pt-4 border-t border-white/[.06]">
+        Ceiling insight: the symmetric weekly FA on intermittent retail demand is dominated by
+        weekly seasonality the base lags already capture — limiting feature-engineering headroom.
+      </p>
+    </div>
   </div>
 </section>
 

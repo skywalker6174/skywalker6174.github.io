@@ -40,6 +40,7 @@
     </div>
     <div class="hidden md:flex gap-7 text-sm text-slate-400">
       <a href="#model"    class="hover:text-white transition">模型介绍</a>
+      <a href="#autofe"   class="hover:text-white transition">自动特征</a>
       <a href="#metric"   class="hover:text-white transition">评估指标</a>
       <a href="#predict"  class="hover:text-white transition">预测查询</a>
       <a href="#evaluate" class="hover:text-white transition">精度评估</a>
@@ -437,6 +438,129 @@
   <div id="cvLoadNote" class="bg-blue-500/8 border border-blue-500/20 rounded-xl p-4 text-sm text-blue-300/90 flex items-start gap-3">
     <span class="flex-shrink-0 text-base mt-0.5">⏳</span>
     <span id="cvLoadMsg">CV 结果正在从 <code>cv_results_v2.json</code> 加载…</span>
+  </div>
+</section>
+
+<!-- ── 自动特征工程 (FunSearch) ──────────────────────────────────────────── -->
+<section id="autofe" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-12">
+    <span class="tag mb-5"><span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>FunSearch · 2000 SKU 研究</span>
+    <h2 class="text-3xl font-bold mb-3 mt-4">🤖 LLM 自动特征工程</h2>
+    <p class="text-slate-400 text-sm max-w-2xl mx-auto">
+      机器能否发现比人工 24 维更好的特征？我们在 2000 个 SKU 样本上运行 FunSearch 循环：
+      初始库含 <strong class="text-white">946 个自动生成的候选特征</strong>，
+      由遗传算法与 LLM 采样器（Kimi k2）共同搜索，以 POC 周度 FA 指标打分。
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-4 gap-4 mb-10 text-sm">
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-violet-400">946</div>
+      <div class="text-xs text-slate-500 mt-1">初始库候选特征数</div>
+    </div>
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-blue-400">~160</div>
+      <div class="text-xs text-slate-500 mt-1">评估的特征组合<br>(GA + LLM)</div>
+    </div>
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-emerald-400">+2.5pp</div>
+      <div class="text-xs text-slate-500 mt-1">最佳代理 FA 提升<br>(LightGBM)</div>
+    </div>
+    <div class="card rounded-xl p-5 text-center">
+      <div class="text-3xl font-bold text-amber-400">+0.65pp</div>
+      <div class="text-xs text-slate-500 mt-1">真实递归提升<br>(已确认)</div>
+    </div>
+  </div>
+
+  <div class="card rounded-2xl overflow-hidden mb-6">
+    <div class="px-6 py-4 border-b border-white/[.06]">
+      <h3 class="font-semibold">自动发现的特征提升了每个模型 — 周度 FA 代理 (2000 SKU)</h3>
+      <p class="text-xs text-slate-500 mt-1">验证周 2025-07 · base-24 特征 vs base-24 + 自动发现特征</p>
+    </div>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
+          <th class="text-left px-6 py-3">模型</th>
+          <th class="text-right px-4 py-3">Base-24 FA</th>
+          <th class="text-right px-4 py-3">+ 自动特征</th>
+          <th class="text-right px-4 py-3">提升</th>
+          <th class="text-left px-6 py-3">说明</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/[.04]">
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span>LightGBM</td>
+          <td class="px-4 py-3 text-right text-slate-300">65.53%</td>
+          <td class="px-4 py-3 text-right font-bold text-blue-400">67.99%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+2.46 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">最强基线，提升空间最小</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#06B6D4"></span>XGBoost</td>
+          <td class="px-4 py-3 text-right text-slate-300">62.91%</td>
+          <td class="px-4 py-3 text-right font-bold text-cyan-400">66.52%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+3.61 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">树模型中提升最大</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span>随机森林</td>
+          <td class="px-4 py-3 text-right text-slate-300">63.08%</td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-400">63.96%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.88 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">深树已内化交互作用</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span>OLS (Ridge)</td>
+          <td class="px-4 py-3 text-right text-slate-400">15.84%</td>
+          <td class="px-4 py-3 text-right font-bold text-violet-300">35.40%</td>
+          <td class="px-4 py-3 text-right text-violet-400">+19.56 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">线性模型无法自构造交互项</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card rounded-2xl p-7">
+      <h3 class="font-semibold mb-4">发现的最佳特征集</h3>
+      <p class="text-slate-500 text-xs mb-4">由遗传搜索在 946 维特征库中找到——离散度 + 近期性 + 趋势的组合：</p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-violet-200">
+        <div>feat_accel &nbsp;= (lag1−lag7) − (lag7−lag14)</div>
+        <div>feat_lag1_roll7 = lag1 / roll7</div>
+        <div>feat_cv &nbsp;&nbsp;&nbsp;= std(lags) / mean(lags)</div>
+        <div>feat_range = max(lags) − min(lags)</div>
+        <div>feat_std &nbsp;&nbsp;= std(lags)</div>
+        <div>feat_roll14_28 = roll14 / roll28</div>
+      </div>
+      <p class="text-slate-500 text-xs mt-4">
+        LLM 采样器（Kimi，30 轮迭代）独立达到
+        <strong class="text-violet-300">+1.72 pp</strong>，采用了相似的动量 +
+        品类相对 + 波动率组合——与遗传搜索收敛到相同上限，印证瓶颈在问题本身而非方法。
+      </p>
+    </div>
+
+    <div class="card rounded-2xl p-7">
+      <h3 class="font-semibold mb-4">我们学到了什么</h3>
+      <ul class="space-y-3 text-sm text-slate-300">
+        <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0">▸</span>
+          自动发现的特征对<strong class="text-white">每个模型</strong>都有帮助，但对树模型
+          <strong class="text-white">提升有限</strong>（代理 +2.5 pp → 递归 +0.65 pp）。</li>
+        <li class="flex gap-3"><span class="text-blue-400 flex-shrink-0">▸</span>
+          更大的库（40 → 205 → 946）<strong class="text-white">并未</strong>抬高树模型上限——
+          每次搜索在第 3–8 代即收敛。</li>
+        <li class="flex gap-3"><span class="text-violet-400 flex-shrink-0">▸</span>
+          真正受益的是<strong class="text-white">弱/线性模型</strong>：OLS 提升达 +19 pp，
+          因为它无法自行构造交互特征。</li>
+        <li class="flex gap-3"><span class="text-amber-400 flex-shrink-0">▸</span>
+          递归提升集中在<strong class="text-white">最难的品类</strong>——
+          8804（+1.2 pp）与 8805（+3.2 pp）。</li>
+      </ul>
+      <p class="text-slate-500 text-xs mt-4 pt-4 border-t border-white/[.06]">
+        上限洞察：间歇性零售需求上的对称周度 FA 主要由基础滞后项已捕捉的周季节性主导，
+        因而限制了特征工程的提升空间。
+      </p>
+    </div>
   </div>
 </section>
 
