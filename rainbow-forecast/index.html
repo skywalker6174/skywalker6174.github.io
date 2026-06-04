@@ -293,6 +293,55 @@
     </div>
   </div>
 
+  <!-- ── LLM auto-feature engineering TBD ─────────────────────────────── -->
+  <div class="rounded-2xl p-7 mb-8"
+       style="background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(59,130,246,.06));
+              border:1px solid rgba(139,92,246,.30)">
+    <div class="flex items-start gap-5">
+      <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+           style="background:rgba(139,92,246,.18)">🤖</div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-2">
+          <h3 class="font-bold text-lg">LLM Auto-Feature Engineering</h3>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                style="background:rgba(139,92,246,.25);color:#C4B5FD;border:1px solid rgba(139,92,246,.4)">
+            TBD
+          </span>
+        </div>
+        <p class="text-slate-400 text-sm leading-relaxed mb-5">
+          The current 22-feature set is hand-crafted from domain knowledge.
+          The next phase integrates a <strong class="text-white">large language model</strong>
+          as an automatic feature engineering agent: given a natural-language description of the
+          forecasting task and the available data schema, the LLM proposes, evaluates, and
+          selects the most predictive feature combinations — without manual specification.
+        </p>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
+            <div class="text-violet-300 text-xs font-semibold uppercase tracking-wider mb-2">① Propose</div>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              LLM reads the data schema and task description, then generates a ranked candidate
+              feature list — lag windows, interaction terms, external signals — in natural language.
+            </p>
+          </div>
+          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
+            <div class="text-blue-300 text-xs font-semibold uppercase tracking-wider mb-2">② Evaluate</div>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              Each candidate feature is automatically constructed and scored via cross-validated
+              SHAP importance or permutation importance on a held-out fold.
+            </p>
+          </div>
+          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
+            <div class="text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2">③ Select</div>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              The LLM synthesises the evaluation results and outputs the final feature set,
+              with a plain-English rationale for each inclusion or exclusion decision.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── CV metrics ─────────────────────────────────────────────────────── -->
   <h3 class="text-center font-semibold mb-5 text-slate-300">
     Walk-Forward CV Results — LightGBM vs Baselines (3 folds · 28-day horizon)

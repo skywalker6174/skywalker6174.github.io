@@ -287,6 +287,54 @@
     </div>
   </div>
 
+  <!-- ── LLM 自动特征工程（待开发） ────────────────────────────────────── -->
+  <div class="rounded-2xl p-7 mb-8"
+       style="background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(59,130,246,.06));
+              border:1px solid rgba(139,92,246,.30)">
+    <div class="flex items-start gap-5">
+      <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+           style="background:rgba(139,92,246,.18)">🤖</div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-2">
+          <h3 class="font-bold text-lg">LLM 自动特征工程</h3>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                style="background:rgba(139,92,246,.25);color:#C4B5FD;border:1px solid rgba(139,92,246,.4)">
+            待开发
+          </span>
+        </div>
+        <p class="text-slate-400 text-sm leading-relaxed mb-5">
+          当前 22 维特征集由领域知识人工设计。下一阶段将引入
+          <strong class="text-white">大语言模型（LLM）</strong>
+          作为自动特征工程智能体：给定预测任务的自然语言描述与数据字段定义，
+          LLM 自动提出、评估并筛选最具预测力的特征组合，无需人工逐一指定。
+        </p>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
+            <div class="text-violet-300 text-xs font-semibold uppercase tracking-wider mb-2">① 提案</div>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              LLM 读取数据字典与任务描述，自动生成候选特征清单——包括滞后窗口、
+              交叉项、外部信号等——并按预期重要性排序输出。
+            </p>
+          </div>
+          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
+            <div class="text-blue-300 text-xs font-semibold uppercase tracking-wider mb-2">② 评估</div>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              对每个候选特征自动构造并计算交叉验证折的 SHAP 重要性或置换重要性，
+              量化其对预测精度的实际贡献。
+            </p>
+          </div>
+          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
+            <div class="text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2">③ 决策</div>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              LLM 综合评估结果，输出最终特征集，并以自然语言给出每个特征
+              入选或剔除的业务解释，实现可解释的自动化特征筛选。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── 交叉验证指标 ────────────────────────────────────────────────── -->
   <h3 class="text-center font-semibold mb-5 text-slate-300">
     LightGBM vs 基准模型交叉验证对比（3 折步进式 · 每折 28 天）
