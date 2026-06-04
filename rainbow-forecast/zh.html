@@ -111,7 +111,7 @@
   <div class="text-center mb-14">
     <h2 class="text-3xl font-bold mb-3">预测模型介绍</h2>
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">
-      五种模型涵盖经典统计方法到深度学习，各有独立的数学基础。
+      四种模型涵盖经典统计方法到集成学习，各有独立的数学基础。
       所有模型共享相同的 22 维特征输入，采用递归多步策略生成 46 天预测。
     </p>
   </div>
@@ -131,7 +131,7 @@
         逐步纠正误差。按叶优先生长与 GOSS 单侧梯度采样显著提升训练效率。
       </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-blue-200 mb-4">
-        <div>ŷ<sub>i</sub> = &Sigma;<sub>k=1</sub><sup>500</sup> &eta; &middot; f<sub>k</sub>(<b>x</b><sub>i</sub>)
+        <div>ŷ<sub>i</sub> = &Sigma;<sub>k=1</sub><sup>100</sup> &eta; &middot; f<sub>k</sub>(<b>x</b><sub>i</sub>)
           &nbsp;&nbsp;<span class="text-slate-500">(&eta; = 0.05)</span></div>
         <div class="text-emerald-300 mt-1">Gain = &frac12;[G<sub>L</sub>&sup2;/(H<sub>L</sub>+&lambda;)
           + G<sub>R</sub>&sup2;/(H<sub>R</sub>+&lambda;)
@@ -139,7 +139,7 @@
         <div class="text-violet-300 mt-1">w* = &minus;G / (H + &lambda;)</div>
       </div>
       <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">500 棵树</span>
+        <span class="bg-slate-800 rounded px-2 py-1">100 棵树</span>
         <span class="bg-slate-800 rounded px-2 py-1">深度 6</span>
         <span class="bg-slate-800 rounded px-2 py-1">31 叶节点</span>
         <span class="bg-slate-800 rounded px-2 py-1">GOSS 采样</span>
@@ -159,46 +159,16 @@
       </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
         <div class="text-emerald-300">ŷ = <sup>1</sup>&frasl;<sub>B</sub> &Sigma;<sub>b=1</sub><sup>B</sup> T<sub>b</sub>(<b>x</b>)
-          &nbsp;&nbsp;<span class="text-slate-500">(B = 200 棵树)</span></div>
+          &nbsp;&nbsp;<span class="text-slate-500">(B = 50 棵树)</span></div>
         <div class="text-blue-300 mt-1">Var(ŷ) = &rho;&sigma;&sup2; + <sup>1&minus;&rho;</sup>&frasl;<sub>B</sub>&sigma;&sup2;</div>
         <div class="text-slate-500 text-xs mt-1">
           &rho; = 树间相关系数；当 &rho; → 0 时方差趋近于 0
         </div>
       </div>
       <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">200 棵树</span>
-        <span class="bg-slate-800 rounded px-2 py-1">深度 10</span>
-        <span class="bg-slate-800 rounded px-2 py-1">50% 行采样</span>
-        <span class="bg-slate-800 rounded px-2 py-1">70% 特征采样</span>
-      </div>
-    </div>
-
-    <!-- LSTM -->
-    <div class="card rounded-2xl p-7">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#EC4899"></span>
-        <span class="font-bold">LSTM</span>
-        <span class="ml-auto text-xs text-slate-600">全局模型 · 500 SKU 样本</span>
-      </div>
-      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        长短期记忆网络。三个可学习门控机制分别控制遗忘、写入与读取，
-        使网络能在 28 天输入窗口内捕捉长程季节性依赖关系。
-      </p>
-      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
-        <div class="text-pink-300">f<sub>t</sub> = &sigma;(W<sub>f</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>f</sub>)
-          &nbsp;<span class="text-slate-500">遗忘门</span></div>
-        <div class="text-blue-300">i<sub>t</sub> = &sigma;(W<sub>i</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>i</sub>)
-          &nbsp;<span class="text-slate-500">输入门</span></div>
-        <div class="text-emerald-300">c<sub>t</sub> = f<sub>t</sub>&odot;c<sub>t-1</sub>
-          + i<sub>t</sub>&odot;tanh(W<sub>c</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>c</sub>)</div>
-        <div class="text-violet-300">h<sub>t</sub> = &sigma;(W<sub>o</sub>&middot;[h<sub>t-1</sub>,x<sub>t</sub>]+b<sub>o</sub>)
-          &odot; tanh(c<sub>t</sub>)</div>
-      </div>
-      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">2 层</span>
-        <span class="bg-slate-800 rounded px-2 py-1">64 隐藏单元</span>
-        <span class="bg-slate-800 rounded px-2 py-1">序列长度 28 天</span>
-        <span class="bg-slate-800 rounded px-2 py-1">Huber 损失</span>
+        <span class="bg-slate-800 rounded px-2 py-1">50 棵树</span>
+        <span class="bg-slate-800 rounded px-2 py-1">深度不限</span>
+        <span class="bg-slate-800 rounded px-2 py-1">自动特征采样</span>
       </div>
     </div>
 
@@ -254,25 +224,49 @@
       </div>
     </div>
 
+    <!-- OLS（岭回归） -->
+    <div class="card rounded-2xl p-7 opacity-60">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0 bg-slate-500"></span>
+        <span class="font-bold text-slate-400">OLS（岭回归）</span>
+        <span class="ml-auto text-xs text-slate-600">未纳入组合</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        使用全部 24 维特征的 L2 正则化线性回归。因无法捕捉促销与销量之间
+        的乘法式非线性交互，CV FA 仅 69.5%，较朴素基准低 18 个百分点，
+        未纳入集成模型。
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-slate-400">ŷ = X&beta; &nbsp;·&nbsp; &beta;* = argmin<sub>&beta;</sub> ‖y − X&beta;‖² + &lambda;‖&beta;‖²</div>
+        <div class="text-slate-500 mt-1">&lambda; = 1.0（岭正则项）</div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">Ridge α = 1.0</span>
+        <span class="bg-slate-800 rounded px-2 py-1">24 个特征</span>
+        <span class="bg-slate-800 rounded px-2 py-1">CV FA：69.5%</span>
+      </div>
+    </div>
+
     <!-- Ensemble -->
     <div class="card rounded-2xl p-7">
       <div class="flex items-center gap-3 mb-4">
         <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#8B5CF6"></span>
         <span class="font-bold">集成模型</span>
-        <span class="ml-auto text-xs text-slate-600">融合所有模型</span>
+        <span class="ml-auto text-xs text-slate-600">LGB + RF + HW</span>
       </div>
       <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        对所选模型输出取简单均值。当各模型误差相互独立时，集成预测的方差
-        随模型数量 K 以 1/K 的比例收缩，预测更稳定。
+        对 LightGBM、随机森林和 Holt-Winters 三个模型的输出取简单均值，
+        OLS 因表现不佳（低于基准 18 pp）被排除。各模型误差相互独立时，
+        集成方差以 1/K 比例收缩，预测更稳定。
       </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
-        <div class="text-violet-300">ŷ<sub>ens</sub> = <sup>1</sup>&frasl;<sub>K</sub> &Sigma;<sub>k=1</sub><sup>K</sup> ŷ<sub>k</sub></div>
+        <div class="text-violet-300">ŷ<sub>ens</sub> = <sup>1</sup>&frasl;<sub>3</sub>(ŷ<sub>LGB</sub> + ŷ<sub>RF</sub> + ŷ<sub>HW</sub>)</div>
         <div class="text-emerald-300 mt-1">Var(ŷ<sub>ens</sub>) &asymp; <sup>1</sup>&frasl;<sub>K</sub> &middot; &sigma;&sup2;</div>
         <div class="text-slate-500 text-xs mt-1">（各模型误差独立时成立）</div>
       </div>
       <div class="flex flex-wrap gap-2 text-xs text-slate-500">
         <span class="bg-slate-800 rounded px-2 py-1">简单均值</span>
-        <span class="bg-slate-800 rounded px-2 py-1">K = 已选模型数</span>
+        <span class="bg-slate-800 rounded px-2 py-1">K = 3</span>
         <span class="bg-slate-800 rounded px-2 py-1">方差 ∝ 1/K</span>
       </div>
     </div>
@@ -292,7 +286,6 @@
             <th class="text-left py-2 pr-6">特征组</th>
             <th class="text-center py-2 px-3" style="color:#3B82F6">LightGBM</th>
             <th class="text-center py-2 px-3" style="color:#10B981">随机森林</th>
-            <th class="text-center py-2 px-3" style="color:#EC4899">LSTM</th>
             <th class="text-center py-2 px-3" style="color:#F59E0B">Holt-Winters</th>
             <th class="text-center py-2 px-3" style="color:#10B981">Prophet</th>
           </tr>
@@ -301,52 +294,44 @@
           <tr>
             <td class="py-2 pr-6">滞后特征（lag_1–28）</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">隐式*</td>
             <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
             <td class="py-2 pr-6">滚动均值（roll7/14/28）</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td>
             <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
             <td class="py-2 pr-6">日历特征（星期/月中日/月份）</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2">✓</td>
             <td class="text-center py-2 text-slate-600">—</td>
             <td class="text-center py-2 text-slate-600">隐式†</td>
           </tr>
           <tr>
             <td class="py-2 pr-6">促销特征（8 个标志位）</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2">✓</td>
             <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
             <td class="py-2 pr-6">相似 SKU 信号（cat_lag1/roll7）</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td>
             <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
             <td class="py-2 pr-6">商品标识（sku_id）</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td>
             <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr class="border-t border-white/[.08] font-medium text-slate-300">
             <td class="py-2 pr-6">使用特征总数</td>
             <td class="text-center py-2" style="color:#3B82F6">24</td>
             <td class="text-center py-2" style="color:#10B981">24</td>
-            <td class="text-center py-2" style="color:#EC4899">10/步</td>
             <td class="text-center py-2" style="color:#F59E0B">1（序列）</td>
             <td class="text-center py-2" style="color:#10B981">1（序列）</td>
           </tr>
         </tbody>
       </table>
       <p class="text-slate-600 text-xs mt-2">
-        * LSTM 将过去 28 天销售值作为序列输入，滞后特征隐含其中 &nbsp;·&nbsp;
         † Prophet 通过日期自动学习周/年季节性
       </p>
     </div>
@@ -789,13 +774,12 @@
 const MODEL_CFG={
   lightgbm:      {label:'LightGBM',    color:'#3B82F6',dash:[]},
   random_forest: {label:'随机森林',     color:'#10B981',dash:[6,2]},
-  lstm:          {label:'LSTM',         color:'#EC4899',dash:[5,3]},
-  prophet:       {label:'Prophet',      color:'#F97316',dash:[8,3]},
   holt_winters:  {label:'Holt-Winters', color:'#F59E0B',dash:[3,3]},
+  prophet:       {label:'Prophet',      color:'#F97316',dash:[8,3]},
   ensemble:      {label:'集成模型',      color:'#8B5CF6',dash:[]},
 };
 const API='http://localhost:8000';
-const S={preds:null,actuals:null,liveData:null,chart:null,server:false,selModels:new Set(['lightgbm','random_forest','lstm','prophet','holt_winters','ensemble'])};
+const S={preds:null,actuals:null,liveData:null,chart:null,server:false,selModels:new Set(['lightgbm','random_forest','holt_winters','prophet','ensemble'])};
 
 function generateDemoData(){
   const SKUS=[
@@ -893,14 +877,12 @@ function toggleModel(key,btn,cfg){
 function multiModelStatic(lgbPreds,dates){
   const n=lgbPreds.length;
   let seed=1234; const rng=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
-  const lstm=[]; let ema=lgbPreds[0]||0;
-  for(let i=0;i<n;i++){ema=0.38*(lgbPreds[i]||0)+0.62*ema;lstm.push(Math.max(+(ema*(0.96+rng()*0.08)).toFixed(2),0));}
   const DOW=[0.84,0.89,0.95,1.00,1.09,1.28,1.19];
   const mean=lgbPreds.filter(v=>v).reduce((s,v)=>s+v,0)/(lgbPreds.filter(v=>v).length||1);
   const prophet=dates.map((ds,i)=>{const d=new Date(ds);return +Math.max(mean*DOW[d.getDay()]*(1+i*0.0005)*(0.97+rng()*0.06),0).toFixed(2);});
   const hw=lgbPreds.map((v,i)=>{if(i<7)return +Math.max((v||0)*0.96,0).toFixed(2);return +Math.max((lgbPreds[i-7]||0)*0.96+(rng()-0.5)*mean*0.06,0).toFixed(2);});
-  const ensemble=lgbPreds.map((_,i)=>+((lgbPreds[i]+lstm[i]+prophet[i]+hw[i])/4).toFixed(2));
-  return{lightgbm:lgbPreds,lstm,prophet,holt_winters:hw,ensemble};
+  const ensemble=lgbPreds.map((_,i)=>+((lgbPreds[i]+hw[i])/2).toFixed(2));
+  return{lightgbm:lgbPreds,prophet,holt_winters:hw,ensemble};
 }
 
 async function runLivePrediction(){
