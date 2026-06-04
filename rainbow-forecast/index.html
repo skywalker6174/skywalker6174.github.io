@@ -791,11 +791,12 @@
 <script>
 // ── Model config ──────────────────────────────────────────────────────────
 const MODEL_CFG = {
-  lightgbm:     { label:'LightGBM',     color:'#3B82F6', dash:[]      },
-  lstm:         { label:'LSTM',          color:'#EC4899', dash:[5,3]   },
-  prophet:      { label:'Prophet',       color:'#10B981', dash:[8,3]   },
-  holt_winters: { label:'Holt-Winters',  color:'#F59E0B', dash:[3,3]   },
-  ensemble:     { label:'Ensemble',      color:'#8B5CF6', dash:[]      },
+  lightgbm:      { label:'LightGBM',      color:'#3B82F6', dash:[]      },
+  random_forest: { label:'Random Forest', color:'#10B981', dash:[6,2]   },
+  lstm:          { label:'LSTM',          color:'#EC4899', dash:[5,3]   },
+  prophet:       { label:'Prophet',       color:'#F97316', dash:[8,3]   },
+  holt_winters:  { label:'Holt-Winters',  color:'#F59E0B', dash:[3,3]   },
+  ensemble:      { label:'Ensemble',      color:'#8B5CF6', dash:[]      },
 };
 const API = 'http://localhost:8000';
 
@@ -806,7 +807,7 @@ const S = {
   liveData:   null,   // { dates, predictions:{model:[...]} } from API
   chart:      null,
   server:     false,
-  selModels:  new Set(['lightgbm','lstm','prophet','holt_winters','ensemble']),
+  selModels:  new Set(['lightgbm','random_forest','lstm','prophet','holt_winters','ensemble']),
 };
 
 // ── Demo data ─────────────────────────────────────────────────────────────
@@ -992,13 +993,28 @@ async function runLivePrediction(){
       if(!r.ok) throw new Error(await r.text());
       S.liveData=await r.json();
     } else {
-      // Static mode: generate all 5 models from the base LightGBM signal
       const info=S.preds?.get(sku);
       const dates=[];
       for(let d=new Date(from),e=new Date(to);d<=e;d.setDate(d.getDate()+1))
         dates.push(d.toISOString().slice(0,10));
-      const lgb=dates.map(ds=>info?.map.get(ds)??0);
-      const allPreds=multiModelStatic(lgb,dates);
+
+      let allPreds;
+      if(info?._all && info?._dates) {
+        // SKU has real 6-model predictions from display_predictions.json
+        // Slice to the requested date range
+        allPreds = {};
+        for(const [model, vals] of Object.entries(info._all)) {
+          const sliced = dates.map(ds=>{
+            const idx = info._dates.indexOf(ds);
+            return idx>=0 ? (vals[idx]??0) : 0;
+          });
+          allPreds[model] = sliced;
+        }
+      } else {
+        // Fallback: synthesise model variations from LightGBM signal
+        const lgb=dates.map(ds=>info?.map.get(ds)??0);
+        allPreds=multiModelStatic(lgb,dates);
+      }
       // Filter to only selected models
       const predictions={};
       for(const m of S.selModels) if(allPreds[m]) predictions[m]=allPreds[m];

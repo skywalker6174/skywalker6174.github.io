@@ -768,14 +768,15 @@
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <script>
 const MODEL_CFG={
-  lightgbm:    {label:'LightGBM',    color:'#3B82F6',dash:[]},
-  lstm:        {label:'LSTM',         color:'#EC4899',dash:[5,3]},
-  prophet:     {label:'Prophet',      color:'#10B981',dash:[8,3]},
-  holt_winters:{label:'Holt-Winters', color:'#F59E0B',dash:[3,3]},
-  ensemble:    {label:'集成模型',      color:'#8B5CF6',dash:[]},
+  lightgbm:      {label:'LightGBM',    color:'#3B82F6',dash:[]},
+  random_forest: {label:'随机森林',     color:'#10B981',dash:[6,2]},
+  lstm:          {label:'LSTM',         color:'#EC4899',dash:[5,3]},
+  prophet:       {label:'Prophet',      color:'#F97316',dash:[8,3]},
+  holt_winters:  {label:'Holt-Winters', color:'#F59E0B',dash:[3,3]},
+  ensemble:      {label:'集成模型',      color:'#8B5CF6',dash:[]},
 };
 const API='http://localhost:8000';
-const S={preds:null,actuals:null,liveData:null,chart:null,server:false,selModels:new Set(['lightgbm','lstm','prophet','holt_winters','ensemble'])};
+const S={preds:null,actuals:null,liveData:null,chart:null,server:false,selModels:new Set(['lightgbm','random_forest','lstm','prophet','holt_winters','ensemble'])};
 
 function generateDemoData(){
   const SKUS=[
@@ -902,8 +903,16 @@ async function runLivePrediction(){
       const info=S.preds?.get(sku);
       const dates=[];
       for(let d=new Date(from),e=new Date(to);d<=e;d.setDate(d.getDate()+1)) dates.push(d.toISOString().slice(0,10));
-      const lgb=dates.map(ds=>info?.map.get(ds)??0);
-      const allPreds=multiModelStatic(lgb,dates);
+      let allPreds;
+      if(info?._all && info?._dates){
+        allPreds={};
+        for(const [model,vals] of Object.entries(info._all)){
+          allPreds[model]=dates.map(ds=>{const idx=info._dates.indexOf(ds);return idx>=0?(vals[idx]??0):0;});
+        }
+      } else {
+        const lgb=dates.map(ds=>info?.map.get(ds)??0);
+        allPreds=multiModelStatic(lgb,dates);
+      }
       const predictions={};
       for(const m of S.selModels) if(allPreds[m]) predictions[m]=allPreds[m];
       S.liveData={sku,dates,predictions};
@@ -1112,8 +1121,37 @@ function showStatus(id,msg,color){
   el.className=`text-sm mt-4 text-${color}-400`;el.classList.remove('hidden');
 }
 
+function loadDisplayPredictions(){
+  fetch('display_predictions.json')
+    .then(r=>{if(!r.ok) throw 0;return r.json();})
+    .then(data=>{
+      const cv=data.cv_results||{}, oos=data.oos_results||{};
+      const naive_fa=cv.naive?.overall;
+      function fillRow(key,cvId,oosId,upId){
+        const cvFa=cv[key]?.overall, oosFa=oos[key]?.overall;
+        if(cvFa!=null&&document.getElementById(cvId)) document.getElementById(cvId).textContent=cvFa.toFixed(2)+'%';
+        if(oosFa!=null&&document.getElementById(oosId)) document.getElementById(oosId).textContent=oosFa.toFixed(2)+'%';
+        if(cvFa!=null&&naive_fa!=null&&document.getElementById(upId))
+          document.getElementById(upId).textContent=(cvFa-naive_fa>=0?'+':'')+(cvFa-naive_fa).toFixed(2)+' pp';
+      }
+      fillRow('lstm','cv-lstm','oos-lstm','up-lstm');
+      fillRow('holt_winters','cv-hw','oos-hw','up-hw');
+      if(oos.naive?.overall&&document.getElementById('oos-naive'))
+        document.getElementById('oos-naive').textContent=oos.naive.overall.toFixed(2)+'%';
+      if(S.server||!data.skus) return;
+      const preds=new Map();
+      for(const [sku,info] of Object.entries(data.skus)){
+        const m=new Map();
+        (info.dates||[]).forEach((d,i)=>{m.set(d,(info.predictions?.lightgbm?.[i])??0);});
+        preds.set(sku,{map:m,label:info.label||sku,cat:info.cat||'',_all:info.predictions,_dates:info.dates});
+      }
+      if(preds.size>0) applyPredictions(preds);
+    }).catch(()=>{});
+}
+
 window.addEventListener('DOMContentLoaded',()=>{
   checkServer();
+  loadDisplayPredictions();
   fetch('poc_submission.csv',{method:'HEAD'})
     .then(r=>{if(!r.ok) throw 0;return fetch('poc_submission.csv');})
     .then(r=>r.text())
