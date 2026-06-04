@@ -103,134 +103,205 @@
 </section>
 
 <!-- ── MODEL ────────────────────────────────────────────────────────────── -->
+
 <section id="model" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">Forecasting Model</h2>
-    <p class="text-slate-400 max-w-xl mx-auto text-sm">
-      One LightGBM trained across all eligible SKUs simultaneously, beating
-      Naïve, Holt-Winters, Prophet, Ridge, and Random Forest in 3-fold
-      walk-forward cross-validation.
+    <h2 class="text-3xl font-bold mb-3">Forecasting Models</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+      Five models ranging from classical statistical methods to deep learning, each with
+      distinct mathematical foundations. All share the same 22-feature input set and use
+      recursive multi-step forecasting over the 46-day horizon.
     </p>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-7 mb-10">
+  <!-- ── 5 model cards ────────────────────────────────────────────────────── -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 
-    <!-- LightGBM card -->
-    <div class="card rounded-2xl p-8">
-      <h3 class="font-semibold text-lg mb-5 flex items-center gap-2">
-        <span>⚡</span> LightGBM — Gradient Boosted Trees
-      </h3>
-      <p class="text-slate-400 text-sm mb-5">
-        Prediction is an additive ensemble of <strong class="text-white">K = 500
-        decision trees</strong>, each fitting the residual of the previous:
-      </p>
-
-      <!-- Formula block -->
-      <div class="bg-slate-800/60 rounded-xl p-4 text-center font-mono text-sm text-blue-300 mb-5">
-        ŷ<sub>i</sub> &nbsp;=&nbsp; &Sigma;<sub>k=1</sub><sup>500</sup>
-        &nbsp;&eta; · f<sub>k</sub>(<b>x</b><sub>i</sub>)
-        &nbsp;&nbsp;&nbsp; (&eta;&thinsp;=&thinsp;0.05)
+    <!-- LightGBM -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#3B82F6"></span>
+        <span class="font-bold">LightGBM</span>
+        <span class="ml-auto text-xs text-slate-600">Global · All SKUs</span>
       </div>
-
-      <p class="text-slate-400 text-sm mb-4">
-        At each round the new tree maximises the <em>split gain</em>
-        derived from the second-order Taylor expansion of the loss:
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        Gradient boosted decision trees. At each round a new tree fits the
+        <em>gradient of the loss</em>, iteratively correcting prior mistakes.
+        Leaf-wise (best-first) growth and GOSS sampling keep training fast.
       </p>
-      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs text-emerald-300 leading-relaxed mb-6">
-        Gain = &frac12;
-        [G<sub>L</sub>&sup2;/(H<sub>L</sub>+&lambda;)
-        + G<sub>R</sub>&sup2;/(H<sub>R</sub>+&lambda;)
-        &minus; (G<sub>L</sub>+G<sub>R</sub>)&sup2;/(H<sub>L</sub>+H<sub>R</sub>+&lambda;)]
-        &minus; &gamma;
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-blue-200 mb-4">
+        <!-- Prediction -->
+        <div>ŷ<sub>i</sub> = &Sigma;<sub>k=1</sub><sup>500</sup> &eta; &middot; f<sub>k</sub>(<b>x</b><sub>i</sub>)
+          &nbsp;&nbsp;<span class="text-slate-500">(&eta; = 0.05)</span></div>
+        <!-- Split gain -->
+        <div class="text-emerald-300 mt-1">Gain = &frac12;[G<sub>L</sub>&sup2;/(H<sub>L</sub>+&lambda;)
+          + G<sub>R</sub>&sup2;/(H<sub>R</sub>+&lambda;)
+          &minus; (G<sub>L</sub>+G<sub>R</sub>)&sup2;/(H<sub>L</sub>+H<sub>R</sub>+&lambda;)] &minus; &gamma;</div>
+        <!-- Leaf value -->
+        <div class="text-violet-300 mt-1">w* = &minus;G / (H + &lambda;)</div>
       </div>
-
-      <div class="grid grid-cols-2 gap-3 text-sm">
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">Growth strategy</div>
-          <div class="text-slate-300">Leaf-wise (best-first)</div>
-        </div>
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">Data sampling</div>
-          <div class="text-slate-300">GOSS (gradient-based)</div>
-        </div>
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">Max depth</div>
-          <div class="text-slate-300">6</div>
-        </div>
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">Max leaves</div>
-          <div class="text-slate-300">31</div>
-        </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">500 trees</span>
+        <span class="bg-slate-800 rounded px-2 py-1">depth 6</span>
+        <span class="bg-slate-800 rounded px-2 py-1">31 leaves</span>
+        <span class="bg-slate-800 rounded px-2 py-1">GOSS sampling</span>
       </div>
     </div>
 
-    <!-- Features card -->
-    <div class="card rounded-2xl p-8">
-      <h3 class="font-semibold text-lg mb-5 flex items-center gap-2">
-        <span>🔧</span> 22 Input Features
-      </h3>
-      <div class="space-y-4 text-sm">
-        <div>
-          <div class="text-blue-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            Lag features · 7
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            lag_1 · lag_2 · lag_3 · lag_7 · lag_14 · lag_21 · lag_28
-          </div>
-          <div class="text-slate-600 text-xs mt-1">
-            Fed recursively during forecast — each day's prediction becomes the next day's lag
-          </div>
+    <!-- LSTM -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#EC4899"></span>
+        <span class="font-bold">LSTM</span>
+        <span class="ml-auto text-xs text-slate-600">Global · 500-SKU sample</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        Long Short-Term Memory network. Three learned gates control what the cell
+        forgets, writes, and reads at each time step, enabling it to capture
+        long-range seasonal dependencies across a 28-day input window.
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-pink-300">f<sub>t</sub> = &sigma;(W<sub>f</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>f</sub>)
+          &nbsp;<span class="text-slate-500">forget</span></div>
+        <div class="text-blue-300">i<sub>t</sub> = &sigma;(W<sub>i</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>i</sub>)
+          &nbsp;<span class="text-slate-500">input</span></div>
+        <div class="text-emerald-300">c<sub>t</sub> = f<sub>t</sub>&odot;c<sub>t-1</sub>
+          + i<sub>t</sub>&odot;tanh(W<sub>c</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>c</sub>)</div>
+        <div class="text-violet-300">h<sub>t</sub> = &sigma;(W<sub>o</sub>&middot;[h<sub>t-1</sub>,x<sub>t</sub>]+b<sub>o</sub>)
+          &odot; tanh(c<sub>t</sub>)</div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">2 layers</span>
+        <span class="bg-slate-800 rounded px-2 py-1">64 hidden</span>
+        <span class="bg-slate-800 rounded px-2 py-1">seq = 28 days</span>
+        <span class="bg-slate-800 rounded px-2 py-1">Huber loss</span>
+      </div>
+    </div>
+
+    <!-- Prophet -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
+        <span class="font-bold">Prophet</span>
+        <span class="ml-auto text-xs text-slate-600">Per-SKU · on demand</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        Additive decomposition model (Meta). Separates the signal into a piecewise
+        linear trend with automatic changepoints, a Fourier-series weekly seasonality,
+        and optional holiday effects.
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-emerald-300">y(t) = g(t) + s(t) + h(t) + &epsilon;<sub>t</sub></div>
+        <div class="text-blue-300 mt-1">g(t): piecewise linear trend + changepoints</div>
+        <div class="text-violet-300">s(t) = &Sigma;<sub>n</sub>[a<sub>n</sub>cos(2&pi;nt/P)
+          + b<sub>n</sub>sin(2&pi;nt/P)]</div>
+        <div class="text-slate-500 text-xs mt-1">P = 7 days (weekly period)</div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">additive mode</span>
+        <span class="bg-slate-800 rounded px-2 py-1">weekly seasonality</span>
+        <span class="bg-slate-800 rounded px-2 py-1">per-SKU cache</span>
+      </div>
+    </div>
+
+    <!-- Holt-Winters -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#F59E0B"></span>
+        <span class="font-bold">Holt-Winters</span>
+        <span class="ml-auto text-xs text-slate-600">Per-SKU · on demand</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        Triple exponential smoothing. Three exponentially weighted equations
+        track level, trend, and seasonality separately. Optimised smoothing
+        parameters &alpha;, &beta;, &gamma; are fit per SKU.
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-amber-300">l<sub>t</sub> = &alpha;(y<sub>t</sub>/s<sub>t-m</sub>) + (1&minus;&alpha;)(l<sub>t-1</sub>+b<sub>t-1</sub>)</div>
+        <div class="text-blue-300">b<sub>t</sub> = &beta;(l<sub>t</sub>&minus;l<sub>t-1</sub>) + (1&minus;&beta;)b<sub>t-1</sub></div>
+        <div class="text-emerald-300">s<sub>t</sub> = &gamma;(y<sub>t</sub>/l<sub>t</sub>) + (1&minus;&gamma;)s<sub>t-m</sub></div>
+        <div class="text-violet-300 mt-1">ŷ<sub>t+h</sub> = (l<sub>t</sub> + h&middot;b<sub>t</sub>) &middot; s<sub>t&minus;m+h</sub></div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">period m = 7</span>
+        <span class="bg-slate-800 rounded px-2 py-1">&alpha;&beta;&gamma; optimised</span>
+        <span class="bg-slate-800 rounded px-2 py-1">3-level fallback</span>
+      </div>
+    </div>
+
+    <!-- Ensemble -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#8B5CF6"></span>
+        <span class="font-bold">Ensemble</span>
+        <span class="ml-auto text-xs text-slate-600">Combines all models</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        Simple averaging of selected model outputs. When individual models make
+        uncorrelated errors, the ensemble variance shrinks as 1/K, producing
+        a more stable and robust forecast.
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-violet-300">ŷ<sub>ens</sub> = <sup>1</sup>&frasl;<sub>K</sub> &Sigma;<sub>k=1</sub><sup>K</sup> ŷ<sub>k</sub></div>
+        <div class="text-emerald-300 mt-1">Var(ŷ<sub>ens</sub>) &asymp; <sup>1</sup>&frasl;<sub>K</sub> &middot; &sigma;&sup2;</div>
+        <div class="text-slate-500 text-xs mt-1">
+          (holds when model errors are uncorrelated)
         </div>
-        <div>
-          <div class="text-cyan-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            Rolling means · 3
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            roll7 · roll14 · roll28 &nbsp; (all shift-1 to prevent leakage)
-          </div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">simple mean</span>
+        <span class="bg-slate-800 rounded px-2 py-1">K = selected models</span>
+        <span class="bg-slate-800 rounded px-2 py-1">variance ∝ 1/K</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 22 features compact ────────────────────────────────────────────── -->
+  <div class="card rounded-2xl p-7 mb-8">
+    <h3 class="font-semibold mb-5">22 Shared Input Features (all models)</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <div>
+        <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">Lag · 7</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          lag_1 lag_2 lag_3<br>lag_7 lag_14 lag_21 lag_28
         </div>
-        <div>
-          <div class="text-violet-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            Calendar · 3
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            day_of_week · day_of_month · month
-          </div>
+      </div>
+      <div>
+        <div class="text-cyan-400 text-xs uppercase tracking-wider mb-2 font-semibold">Rolling · 3</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          roll7 &nbsp; roll14 &nbsp; roll28<br>
+          <span class="text-slate-600">(shift-1, no leakage)</span>
         </div>
-        <div>
-          <div class="text-emerald-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            Promotion · 8
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs leading-relaxed">
-            is_promo · discount_depth · is_bundle · is_threshold<br>
-            is_warehouse · is_online · days_since_promo · rolling_promo_7
-          </div>
-          <div class="text-slate-600 text-xs mt-1">
-            Covers 8.7% of training rows; promo schedule known through Sep 2025
-          </div>
+      </div>
+      <div>
+        <div class="text-violet-400 text-xs uppercase tracking-wider mb-2 font-semibold">Calendar · 3</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          day_of_week<br>day_of_month &nbsp; month
         </div>
-        <div>
-          <div class="text-orange-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            Identity · 1
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            sku_id &nbsp;(integer-encoded — lets model learn per-SKU baselines)
-          </div>
+      </div>
+      <div>
+        <div class="text-emerald-400 text-xs uppercase tracking-wider mb-2 font-semibold">Promotion · 8 + id</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          is_promo &nbsp; discount_depth<br>
+          is_bundle &nbsp; is_threshold<br>
+          is_warehouse &nbsp; is_online<br>
+          days_since_promo &nbsp; roll_promo_7 &nbsp; sku_id
         </div>
       </div>
     </div>
   </div>
 
-  <!-- CV metrics -->
+  <!-- ── CV metrics ─────────────────────────────────────────────────────── -->
   <h3 class="text-center font-semibold mb-5 text-slate-300">
-    5-Model Walk-Forward CV Results (3 folds, 28-day horizon each)
+    Walk-Forward CV Results — LightGBM vs Baselines (3 folds · 28-day horizon)
   </h3>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-5">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-6">
     <div class="metric-card rounded-2xl p-6 text-center">
       <div class="text-slate-400 text-xs mb-2">Test-set MAE</div>
       <div class="text-3xl font-bold text-blue-400">22.28</div>
-      <div class="text-xs text-slate-600 mt-1">sales cost units</div>
+      <div class="text-xs text-slate-600 mt-1">LightGBM · cost units</div>
     </div>
     <div class="metric-card rounded-2xl p-6 text-center">
       <div class="text-slate-400 text-xs mb-2">vs Naïve baseline</div>
@@ -250,86 +321,16 @@
   </div>
 
   <div class="bg-amber-500/8 border border-amber-500/20 rounded-xl p-4 text-sm
-              text-amber-300/90 flex items-start gap-3 mb-14">
+              text-amber-300/90 flex items-start gap-3">
     <span class="flex-shrink-0 text-base mt-0.5">ℹ️</span>
     <span>
-      Above MAE metrics are from the cost-of-sales model (v2 notebook).
-      The POC evaluation uses the <strong class="text-white">FA metric on sales quantity</strong>,
-      computed weekly per SKU. Upload your actual sales in the Evaluate section below.
+      MAE metrics are from the cost-of-sales model (v2 notebook).
+      The POC evaluation uses the <strong class="text-white">FA metric on sales quantity</strong>
+      computed weekly. Upload actual sales in the Evaluate section to compute your FA score.
     </span>
   </div>
-
-  <!-- 5-model comparison cards -->
-  <h3 class="text-center font-semibold mb-6 text-slate-300">All Available Forecasting Models</h3>
-  <div class="grid md:grid-cols-5 gap-4">
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#3B82F6"></span>
-        <span class="font-semibold text-sm">LightGBM</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">Gradient Boosted Trees</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">Global model</strong> — trained on all SKUs jointly</div>
-        <div>🌳 500 trees · lr 0.05 · depth 6</div>
-        <div>✅ Best CV MAE — handles promo interactions</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#EC4899"></span>
-        <span class="font-semibold text-sm">LSTM</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">Recurrent Neural Network</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">Global model</strong> — 500-SKU training sample</div>
-        <div>🧠 2 layers · 64 units · 28-day window</div>
-        <div>✅ Captures temporal dependencies &amp; sequences</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
-        <span class="font-semibold text-sm">Prophet</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">Trend + Seasonality Decomposition</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">Per-SKU model</strong> — fit on demand</div>
-        <div>📈 Weekly seasonality · additive mode</div>
-        <div>✅ Interpretable · robust to missing data</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#F59E0B"></span>
-        <span class="font-semibold text-sm">Holt-Winters</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">Exponential Smoothing</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">Per-SKU model</strong> — 3-level fallback</div>
-        <div>〰️ Trend + seasonal · period = 7 days</div>
-        <div>✅ Fast · works with limited history</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#8B5CF6"></span>
-        <span class="font-semibold text-sm">Ensemble</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">Model Averaging</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">Combines all models</strong> above</div>
-        <div>🎯 Simple mean of selected predictions</div>
-        <div>✅ Reduces individual model error variance</div>
-      </div>
-    </div>
-
-  </div>
 </section>
+
 
 <!-- ── FA METRIC ─────────────────────────────────────────────────────────── -->
 <section id="metric" class="max-w-6xl mx-auto px-6 py-20">

@@ -105,132 +105,197 @@
 </section>
 
 <!-- ── 模型介绍 ────────────────────────────────────────────────────────────── -->
+
 <section id="model" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-14">
     <h2 class="text-3xl font-bold mb-3">预测模型介绍</h2>
-    <p class="text-slate-400 max-w-xl mx-auto text-sm">
-      采用全局 LightGBM 模型，统一训练所有符合条件的 SKU，
-      在 3 折时间序列交叉验证中击败朴素预测、Holt-Winters、Prophet、岭回归和随机森林五种基准模型。
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+      五种模型涵盖经典统计方法到深度学习，各有独立的数学基础。
+      所有模型共享相同的 22 维特征输入，采用递归多步策略生成 46 天预测。
     </p>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-7 mb-10">
+  <!-- ── 五个模型卡片 ─────────────────────────────────────────────────── -->
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 
-    <!-- LightGBM 原理 -->
-    <div class="card rounded-2xl p-8">
-      <h3 class="font-semibold text-lg mb-5 flex items-center gap-2">
-        <span>⚡</span> LightGBM — 梯度提升决策树
-      </h3>
-      <p class="text-slate-400 text-sm mb-5">
-        预测值为 <strong class="text-white">K = 500 棵决策树</strong>的加权叠加，
-        每棵树拟合前一步的残差梯度：
-      </p>
-
-      <div class="bg-slate-800/60 rounded-xl p-4 text-center font-mono text-sm text-blue-300 mb-5">
-        ŷ<sub>i</sub> &nbsp;=&nbsp; &Sigma;<sub>k=1</sub><sup>500</sup>
-        &nbsp;&eta; · f<sub>k</sub>(<b>x</b><sub>i</sub>)
-        &nbsp;&nbsp;&nbsp; (&eta;&thinsp;=&thinsp;0.05)
+    <!-- LightGBM -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#3B82F6"></span>
+        <span class="font-bold">LightGBM</span>
+        <span class="ml-auto text-xs text-slate-600">全局模型 · 全量 SKU</span>
       </div>
-
-      <p class="text-slate-400 text-sm mb-4">
-        每轮在所有候选分裂点中选择使<em>增益</em>最大的节点分裂，
-        增益由损失函数的二阶 Taylor 展开推导：
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        梯度提升决策树。每轮新树拟合前一步预测的<em>损失梯度残差</em>，
+        逐步纠正误差。按叶优先生长与 GOSS 单侧梯度采样显著提升训练效率。
       </p>
-      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs text-emerald-300 leading-relaxed mb-6">
-        Gain = &frac12;
-        [G<sub>L</sub>&sup2;/(H<sub>L</sub>+&lambda;)
-        + G<sub>R</sub>&sup2;/(H<sub>R</sub>+&lambda;)
-        &minus; (G<sub>L</sub>+G<sub>R</sub>)&sup2;/(H<sub>L</sub>+H<sub>R</sub>+&lambda;)]
-        &minus; &gamma;
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-blue-200 mb-4">
+        <div>ŷ<sub>i</sub> = &Sigma;<sub>k=1</sub><sup>500</sup> &eta; &middot; f<sub>k</sub>(<b>x</b><sub>i</sub>)
+          &nbsp;&nbsp;<span class="text-slate-500">(&eta; = 0.05)</span></div>
+        <div class="text-emerald-300 mt-1">Gain = &frac12;[G<sub>L</sub>&sup2;/(H<sub>L</sub>+&lambda;)
+          + G<sub>R</sub>&sup2;/(H<sub>R</sub>+&lambda;)
+          &minus; (G<sub>L</sub>+G<sub>R</sub>)&sup2;/(H<sub>L</sub>+H<sub>R</sub>+&lambda;)] &minus; &gamma;</div>
+        <div class="text-violet-300 mt-1">w* = &minus;G / (H + &lambda;)</div>
       </div>
-
-      <div class="grid grid-cols-2 gap-3 text-sm">
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">生长策略</div>
-          <div class="text-slate-300">按叶优先（最优叶展开）</div>
-        </div>
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">数据采样</div>
-          <div class="text-slate-300">GOSS（梯度单侧采样）</div>
-        </div>
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">最大树深</div>
-          <div class="text-slate-300">6</div>
-        </div>
-        <div class="bg-slate-800/40 rounded-lg p-3">
-          <div class="text-blue-400 text-xs font-medium mb-0.5">最大叶节点</div>
-          <div class="text-slate-300">31</div>
-        </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">500 棵树</span>
+        <span class="bg-slate-800 rounded px-2 py-1">深度 6</span>
+        <span class="bg-slate-800 rounded px-2 py-1">31 叶节点</span>
+        <span class="bg-slate-800 rounded px-2 py-1">GOSS 采样</span>
       </div>
     </div>
 
-    <!-- 特征说明 -->
-    <div class="card rounded-2xl p-8">
-      <h3 class="font-semibold text-lg mb-5 flex items-center gap-2">
-        <span>🔧</span> 22 个输入特征
-      </h3>
-      <div class="space-y-4 text-sm">
-        <div>
-          <div class="text-blue-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            滞后特征 · 7 个
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            lag_1 · lag_2 · lag_3 · lag_7 · lag_14 · lag_21 · lag_28
-          </div>
-          <div class="text-slate-600 text-xs mt-1">
-            预测阶段递归更新：当天预测值作为次日 lag 输入
-          </div>
+    <!-- LSTM -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#EC4899"></span>
+        <span class="font-bold">LSTM</span>
+        <span class="ml-auto text-xs text-slate-600">全局模型 · 500 SKU 样本</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        长短期记忆网络。三个可学习门控机制分别控制遗忘、写入与读取，
+        使网络能在 28 天输入窗口内捕捉长程季节性依赖关系。
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-pink-300">f<sub>t</sub> = &sigma;(W<sub>f</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>f</sub>)
+          &nbsp;<span class="text-slate-500">遗忘门</span></div>
+        <div class="text-blue-300">i<sub>t</sub> = &sigma;(W<sub>i</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>i</sub>)
+          &nbsp;<span class="text-slate-500">输入门</span></div>
+        <div class="text-emerald-300">c<sub>t</sub> = f<sub>t</sub>&odot;c<sub>t-1</sub>
+          + i<sub>t</sub>&odot;tanh(W<sub>c</sub>&middot;[h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>c</sub>)</div>
+        <div class="text-violet-300">h<sub>t</sub> = &sigma;(W<sub>o</sub>&middot;[h<sub>t-1</sub>,x<sub>t</sub>]+b<sub>o</sub>)
+          &odot; tanh(c<sub>t</sub>)</div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">2 层</span>
+        <span class="bg-slate-800 rounded px-2 py-1">64 隐藏单元</span>
+        <span class="bg-slate-800 rounded px-2 py-1">序列长度 28 天</span>
+        <span class="bg-slate-800 rounded px-2 py-1">Huber 损失</span>
+      </div>
+    </div>
+
+    <!-- Prophet -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
+        <span class="font-bold">Prophet</span>
+        <span class="ml-auto text-xs text-slate-600">单品模型 · 按需拟合</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        Meta 开源的加法分解模型，将时序信号拆解为分段线性趋势
+        （含自动变点检测）、Fourier 级数季节性分量与节假日效应三部分。
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-emerald-300">y(t) = g(t) + s(t) + h(t) + &epsilon;<sub>t</sub></div>
+        <div class="text-blue-300 mt-1">g(t)：分段线性趋势 + 自动变点</div>
+        <div class="text-violet-300">s(t) = &Sigma;<sub>n</sub>[a<sub>n</sub>cos(2&pi;nt/P)
+          + b<sub>n</sub>sin(2&pi;nt/P)]</div>
+        <div class="text-slate-500 text-xs mt-1">P = 7（周季节性周期）</div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">加法模式</span>
+        <span class="bg-slate-800 rounded px-2 py-1">周季节性</span>
+        <span class="bg-slate-800 rounded px-2 py-1">结果内存缓存</span>
+      </div>
+    </div>
+
+    <!-- Holt-Winters -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#F59E0B"></span>
+        <span class="font-bold">Holt-Winters</span>
+        <span class="ml-auto text-xs text-slate-600">单品模型 · 按需拟合</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        三重指数平滑法，用三个加权方程分别追踪水平、趋势与季节性分量，
+        平滑参数 &alpha;、&beta;、&gamma; 逐 SKU 最优化拟合。
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-amber-300">l<sub>t</sub> = &alpha;(y<sub>t</sub>/s<sub>t-m</sub>) + (1&minus;&alpha;)(l<sub>t-1</sub>+b<sub>t-1</sub>)
+          &nbsp;<span class="text-slate-500">水平</span></div>
+        <div class="text-blue-300">b<sub>t</sub> = &beta;(l<sub>t</sub>&minus;l<sub>t-1</sub>) + (1&minus;&beta;)b<sub>t-1</sub>
+          &nbsp;<span class="text-slate-500">趋势</span></div>
+        <div class="text-emerald-300">s<sub>t</sub> = &gamma;(y<sub>t</sub>/l<sub>t</sub>) + (1&minus;&gamma;)s<sub>t-m</sub>
+          &nbsp;<span class="text-slate-500">季节</span></div>
+        <div class="text-violet-300 mt-1">ŷ<sub>t+h</sub> = (l<sub>t</sub> + h&middot;b<sub>t</sub>) &middot; s<sub>t&minus;m+h</sub></div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">周期 m = 7</span>
+        <span class="bg-slate-800 rounded px-2 py-1">&alpha;&beta;&gamma; 最优化</span>
+        <span class="bg-slate-800 rounded px-2 py-1">三级容错回退</span>
+      </div>
+    </div>
+
+    <!-- Ensemble -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#8B5CF6"></span>
+        <span class="font-bold">集成模型</span>
+        <span class="ml-auto text-xs text-slate-600">融合所有模型</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        对所选模型输出取简单均值。当各模型误差相互独立时，集成预测的方差
+        随模型数量 K 以 1/K 的比例收缩，预测更稳定。
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-violet-300">ŷ<sub>ens</sub> = <sup>1</sup>&frasl;<sub>K</sub> &Sigma;<sub>k=1</sub><sup>K</sup> ŷ<sub>k</sub></div>
+        <div class="text-emerald-300 mt-1">Var(ŷ<sub>ens</sub>) &asymp; <sup>1</sup>&frasl;<sub>K</sub> &middot; &sigma;&sup2;</div>
+        <div class="text-slate-500 text-xs mt-1">（各模型误差独立时成立）</div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">简单均值</span>
+        <span class="bg-slate-800 rounded px-2 py-1">K = 已选模型数</span>
+        <span class="bg-slate-800 rounded px-2 py-1">方差 ∝ 1/K</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 22 维特征简表 ───────────────────────────────────────────────── -->
+  <div class="card rounded-2xl p-7 mb-8">
+    <h3 class="font-semibold mb-5">22 维共享输入特征（所有模型通用）</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <div>
+        <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">滞后特征 · 7</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          lag_1 lag_2 lag_3<br>lag_7 lag_14 lag_21 lag_28
         </div>
-        <div>
-          <div class="text-cyan-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            滚动均值 · 3 个
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            roll7 · roll14 · roll28 &nbsp;（均做 shift(1) 防止数据泄漏）
-          </div>
+      </div>
+      <div>
+        <div class="text-cyan-400 text-xs uppercase tracking-wider mb-2 font-semibold">滚动均值 · 3</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          roll7 &nbsp; roll14 &nbsp; roll28<br>
+          <span class="text-slate-600">（shift-1 防止数据泄漏）</span>
         </div>
-        <div>
-          <div class="text-violet-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            日历特征 · 3 个
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            星期几 · 月中第几天 · 月份
-          </div>
+      </div>
+      <div>
+        <div class="text-violet-400 text-xs uppercase tracking-wider mb-2 font-semibold">日历特征 · 3</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          星期几<br>月中第几天 &nbsp; 月份
         </div>
-        <div>
-          <div class="text-emerald-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            促销特征 · 8 个
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs leading-relaxed">
-            是否促销 · 折扣力度 · 组合促销 · 满额促销<br>
-            库区折扣 · 线上促销 · 距上次促销天数 · 近7天促销次数
-          </div>
-          <div class="text-slate-600 text-xs mt-1">
-            覆盖训练集 8.7% 的行记录；已知促销排期延伸至 2025 年 9 月
-          </div>
-        </div>
-        <div>
-          <div class="text-orange-400 text-xs uppercase tracking-widest mb-1.5 font-semibold">
-            商品标识 · 1 个
-          </div>
-          <div class="bg-slate-800/50 rounded-lg px-4 py-2.5 font-mono text-slate-300 text-xs">
-            sku_id（整数编码，使模型学习单品基线销量）
-          </div>
+      </div>
+      <div>
+        <div class="text-emerald-400 text-xs uppercase tracking-wider mb-2 font-semibold">促销特征 · 8 + id</div>
+        <div class="font-mono text-xs text-slate-400 leading-6">
+          是否促销 &nbsp; 折扣力度<br>
+          组合/满额/库区/线上促销<br>
+          距上次促销天数 &nbsp; 近7天促销次数<br>
+          商品编号 sku_id
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 交叉验证指标 -->
+  <!-- ── 交叉验证指标 ────────────────────────────────────────────────── -->
   <h3 class="text-center font-semibold mb-5 text-slate-300">
-    五模型交叉验证对比（3 折步进式，每折预测 28 天）
+    LightGBM vs 基准模型交叉验证对比（3 折步进式 · 每折 28 天）
   </h3>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-5">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-6">
     <div class="metric-card rounded-2xl p-6 text-center">
       <div class="text-slate-400 text-xs mb-2">测试集 MAE</div>
       <div class="text-3xl font-bold text-blue-400">22.28</div>
-      <div class="text-xs text-slate-600 mt-1">销售成本单位</div>
+      <div class="text-xs text-slate-600 mt-1">LightGBM · 成本单位</div>
     </div>
     <div class="metric-card rounded-2xl p-6 text-center">
       <div class="text-slate-400 text-xs mb-2">相较朴素基准</div>
@@ -238,100 +303,28 @@
       <div class="text-xs text-slate-600 mt-1">MAE 改善幅度</div>
     </div>
     <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">短历史 SKU CV MAE</div>
+      <div class="text-slate-400 text-xs mb-2">短历史 CV MAE</div>
       <div class="text-3xl font-bold text-cyan-400">16.11</div>
       <div class="text-xs text-slate-600 mt-1">历史跨度 112–179 天</div>
     </div>
     <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">长历史 SKU CV MAE</div>
+      <div class="text-slate-400 text-xs mb-2">长历史 CV MAE</div>
       <div class="text-3xl font-bold text-violet-400">23.47</div>
       <div class="text-xs text-slate-600 mt-1">历史跨度 ≥ 180 天</div>
     </div>
   </div>
 
   <div class="bg-amber-500/8 border border-amber-500/20 rounded-xl p-4 text-sm
-              text-amber-300/90 flex items-start gap-3 mb-14">
+              text-amber-300/90 flex items-start gap-3">
     <span class="flex-shrink-0 text-base mt-0.5">ℹ️</span>
     <span>
       以上 MAE 指标来自销售成本预测模型（v2 notebook）的交叉验证结果。
-      POC 评估采用<strong class="text-white">以销售数量为目标的 FA 指标</strong>，
-      按周聚合计算。请在下方"精度评估"模块上传实际销量数据，实时查看 FA 得分。
+      POC 评估采用<strong class="text-white">以销售数量为目标的 FA 指标</strong>，按周聚合计算。
+      请在下方"精度评估"模块上传实际销量数据，实时查看 FA 得分。
     </span>
-  </div>
-
-  <!-- 五模型对比卡片 -->
-  <h3 class="text-center font-semibold mb-6 text-slate-300">全部可用预测模型</h3>
-  <div class="grid md:grid-cols-5 gap-4">
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#3B82F6"></span>
-        <span class="font-semibold text-sm">LightGBM</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">梯度提升决策树</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">全局模型</strong> — 所有 SKU 联合训练</div>
-        <div>🌳 500 棵树 · 学习率 0.05 · 深度 6</div>
-        <div>✅ CV 最优 MAE · 捕捉促销交互效果</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#EC4899"></span>
-        <span class="font-semibold text-sm">LSTM</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">循环神经网络</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">全局模型</strong> — 500 个 SKU 样本训练</div>
-        <div>🧠 2 层 · 64 隐藏单元 · 28 天输入序列</div>
-        <div>✅ 捕捉时序依赖与销量序列模式</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
-        <span class="font-semibold text-sm">Prophet</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">趋势 + 季节性分解</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">单品模型</strong> — 按需拟合</div>
-        <div>📈 周季节性 · 加法模式</div>
-        <div>✅ 可解释 · 对缺失数据鲁棒</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#F59E0B"></span>
-        <span class="font-semibold text-sm">Holt-Winters</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">指数平滑</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">单品模型</strong> — 三级容错机制</div>
-        <div>〰️ 趋势 + 季节性 · 周期 = 7 天</div>
-        <div>✅ 速度快 · 适用于短历史 SKU</div>
-      </div>
-    </div>
-
-    <div class="card rounded-2xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#8B5CF6"></span>
-        <span class="font-semibold text-sm">集成模型</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">模型平均</div>
-      <div class="space-y-1.5 text-xs text-slate-400">
-        <div>📐 <strong class="text-slate-300">融合以上所有模型</strong></div>
-        <div>🎯 对所选预测值取简单均值</div>
-        <div>✅ 降低单模型误差方差</div>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- ── FA 指标说明 ─────────────────────────────────────────────────────────── -->
 <section id="metric" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="card rounded-2xl p-8 md:p-10">
