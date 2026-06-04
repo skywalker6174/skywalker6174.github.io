@@ -323,24 +323,42 @@
   <div class="text-center mb-12">
     <h2 class="text-3xl font-bold mb-3">Prediction Explorer</h2>
     <p class="text-slate-400 text-sm max-w-lg mx-auto">
-      Load a forecast output file, pick a SKU and date window,
-      and visualise the daily predicted sales quantity.
+      Select a model, SKU and date range — run live predictions via the local
+      Python server, or browse pre-computed results in static mode.
     </p>
   </div>
 
-  <!-- Step 1 -->
-  <div class="card rounded-2xl p-7 mb-5">
+  <!-- Server status banner -->
+  <div id="serverBanner" class="card rounded-2xl p-5 mb-5 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <span id="serverDot" class="w-2.5 h-2.5 rounded-full bg-slate-600 flex-shrink-0"></span>
+      <div>
+        <div id="serverLabel" class="text-sm font-medium text-slate-300">
+          Checking local server…
+        </div>
+        <div id="serverSub" class="text-xs text-slate-500 mt-0.5">
+          Start <code class="text-slate-400">uvicorn api_server:app --port 8000</code> for live multi-model predictions
+        </div>
+      </div>
+    </div>
+    <button onclick="checkServer()"
+      class="px-4 py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded-lg transition flex-shrink-0">
+      Retry
+    </button>
+  </div>
+
+  <!-- Step 1: Static data load (shown in static mode) -->
+  <div id="staticLoadCard" class="card rounded-2xl p-7 mb-5">
     <h3 class="font-medium mb-5 flex items-center gap-3 text-slate-300">
       <span class="step-num">1</span> Load Forecast Data
+      <span class="text-xs text-slate-600 font-normal">(static mode — or connect local server above)</span>
     </h3>
     <div class="flex flex-wrap items-center gap-4">
       <label class="upload-zone rounded-xl px-6 py-4 cursor-pointer flex items-center gap-4 text-sm">
         <span class="text-blue-400 text-2xl leading-none">📂</span>
         <div>
           <div class="font-medium text-white">Upload poc_submission.csv</div>
-          <div class="text-slate-500 text-xs mt-0.5">
-            Columns: 日期 · 条码 · 预测销量 &nbsp;(CSV / XLSX / TXT)
-          </div>
+          <div class="text-slate-500 text-xs mt-0.5">Columns: 日期 · 条码 · 预测销量</div>
         </div>
         <input type="file" accept=".csv,.xlsx,.xls,.txt" class="hidden" id="predFile">
       </label>
@@ -348,13 +366,13 @@
       <button onclick="loadDemoData()"
         class="px-6 py-4 bg-blue-600/15 hover:bg-blue-600/25 border border-blue-600/30
                rounded-xl text-sm font-medium transition">
-        ✨ Use Demo Data (5 sample SKUs)
+        ✨ Demo Data (5 sample SKUs)
       </button>
     </div>
     <p id="predStatus" class="text-sm mt-4 hidden"></p>
   </div>
 
-  <!-- Step 2 -->
+  <!-- Step 2: SKU + date -->
   <div id="predictControls" class="card rounded-2xl p-7 mb-5 hidden">
     <h3 class="font-medium mb-5 flex items-center gap-3 text-slate-300">
       <span class="step-num">2</span> Select SKU &amp; Date Range
@@ -362,36 +380,52 @@
     <div class="flex flex-wrap gap-4 items-end">
       <div class="flex-1 min-w-52">
         <div class="text-xs text-slate-500 mb-1.5">SKU / Barcode</div>
-        <select id="skuSelect" onchange="updateChart()" class="w-full"></select>
+        <select id="skuSelect" class="w-full"></select>
       </div>
       <div>
         <div class="text-xs text-slate-500 mb-1.5">Start</div>
-        <input type="date" id="startDate" onchange="updateChart()">
+        <input type="date" id="startDate" value="2025-07-01">
       </div>
       <div>
         <div class="text-xs text-slate-500 mb-1.5">End</div>
-        <input type="date" id="endDate" onchange="updateChart()">
+        <input type="date" id="endDate" value="2025-08-15">
       </div>
     </div>
   </div>
 
+  <!-- Step 3: Model selector (live mode) -->
+  <div id="modelCard" class="card rounded-2xl p-7 mb-5 hidden">
+    <h3 class="font-medium mb-5 flex items-center gap-3 text-slate-300">
+      <span class="step-num">3</span> Select Models
+    </h3>
+    <div class="flex flex-wrap gap-3 mb-4" id="modelBtns">
+      <!-- populated by JS -->
+    </div>
+    <div class="bg-slate-800/40 rounded-xl p-4 text-xs text-slate-500 leading-5">
+      <span class="text-slate-400 font-medium">Feature set (22):</span>
+      lag_1–28 · roll7/14/28 · day_of_week · day_of_month · month ·
+      is_promo · discount_depth · is_bundle · is_threshold · is_warehouse · is_online ·
+      days_since_promo · rolling_promo_7 · sku_id
+      <span class="ml-2 text-blue-500">[LLM auto-selection coming soon]</span>
+    </div>
+    <button id="runBtn" onclick="runLivePrediction()"
+      class="mt-5 px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-semibold transition
+             flex items-center gap-2">
+      <span id="runBtnIcon">▶</span>
+      <span id="runBtnLabel">Run Prediction</span>
+    </button>
+  </div>
+
   <!-- Chart -->
   <div id="chartArea" class="card rounded-2xl p-7 hidden">
-    <div class="flex items-start justify-between mb-6">
+    <div class="flex items-start justify-between mb-5">
       <div>
         <h3 class="font-semibold" id="chartTitle">Daily Sales Forecast</h3>
         <p class="text-slate-500 text-xs mt-1" id="chartSubtitle"></p>
       </div>
-      <div class="flex gap-5 text-xs text-slate-400">
-        <div class="flex items-center gap-1.5">
-          <span class="w-3 h-0.5 bg-blue-500 rounded inline-block"></span> Forecast
-        </div>
-        <div id="actualLegend" class="flex items-center gap-1.5 hidden">
-          <span class="w-3 h-0.5 bg-orange-400 rounded inline-block" style="border-style:dashed"></span> Actual
-        </div>
-      </div>
+      <div id="chartLegend" class="flex flex-wrap gap-4 text-xs text-slate-400 justify-end"></div>
     </div>
-    <div style="position:relative;height:300px">
+    <div style="position:relative;height:320px">
       <canvas id="forecastChart"></canvas>
     </div>
     <div class="grid grid-cols-3 gap-4 mt-6" id="chartStats"></div>
@@ -480,164 +514,234 @@
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <script>
-// ── Global state ──────────────────────────────────────────────────────────
+// ── Model config ──────────────────────────────────────────────────────────
+const MODEL_CFG = {
+  lightgbm:     { label:'LightGBM',     color:'#3B82F6', dash:[]      },
+  lstm:         { label:'LSTM',          color:'#EC4899', dash:[5,3]   },
+  prophet:      { label:'Prophet',       color:'#10B981', dash:[8,3]   },
+  holt_winters: { label:'Holt-Winters',  color:'#F59E0B', dash:[3,3]   },
+  ensemble:     { label:'Ensemble',      color:'#8B5CF6', dash:[]      },
+};
+const API = 'http://localhost:8000';
+
+// ── State ─────────────────────────────────────────────────────────────────
 const S = {
-  preds:   null,   // Map  sku → { map: Map(dateStr→qty), label, cat }
-  actuals: null,   // Map  sku → { map: Map(dateStr→qty) }
-  chart:   null,
+  preds:      null,   // Map sku → { map: Map(date→qty), label, cat }
+  actuals:    null,
+  liveData:   null,   // { dates, predictions:{model:[...]} } from API
+  chart:      null,
+  server:     false,
+  selModels:  new Set(['lightgbm']),
 };
 
-// ── Demo data (5 representative SKUs, Jul 1–Aug 15 2025) ─────────────────
+// ── Demo data ─────────────────────────────────────────────────────────────
 function generateDemoData() {
-  const SKUS = [
-    { id: 'eRb/Aim8dLqqqHmkPBE2nA==', label: 'Cat 8807 · Barcode A', cat:'8807', base:18 },
-    { id: 'oFtGIF7wpypWH/iKgzugVQ==', label: 'Cat 8802 · Barcode B', cat:'8802', base:32 },
-    { id: 'OLKFu/n+U7v0Xt5JeKzZIA==', label: 'Cat 8803 · Barcode C', cat:'8803', base: 8 },
-    { id: 'KJRWz1YD7eHdEdluNl7sQg==', label: 'Cat 8804 · Barcode D', cat:'8804', base:25 },
-    { id: 'l0Ep+wRkeSQVdLBFpMRmqw==', label: 'Cat 8805 · Barcode E', cat:'8805', base:12 },
+  const SKUS=[
+    {id:'eRb/Aim8dLqqqHmkPBE2nA==',label:'Cat 8807 · Barcode A',cat:'8807',base:18},
+    {id:'oFtGIF7wpypWH/iKgzugVQ==',label:'Cat 8802 · Barcode B',cat:'8802',base:32},
+    {id:'OLKFu/n+U7v0Xt5JeKzZIA==',label:'Cat 8803 · Barcode C',cat:'8803',base: 8},
+    {id:'KJRWz1YD7eHdEdluNl7sQg==',label:'Cat 8804 · Barcode D',cat:'8804',base:25},
+    {id:'l0Ep+wRkeSQVdLBFpMRmqw==',label:'Cat 8805 · Barcode E',cat:'8805',base:12},
   ];
-  const DOW = [0.85,0.90,0.95,1.00,1.10,1.30,1.20]; // Mon–Sun multiplier
-  const PROMOS = new Set(['2025-07-14','2025-07-15','2025-07-16',
-                          '2025-07-25','2025-07-26','2025-08-06','2025-08-07']);
-
-  // Simple deterministic PRNG
-  let seed = 9301;
-  const rng = () => { seed=(seed*49297+233453)%233280; return seed/233280; };
-
-  const result = new Map();
-  const start = new Date('2025-07-01'), end = new Date('2025-08-15');
-
-  for (const sku of SKUS) {
-    const m = new Map();
-    let day = 0;
-    for (let d=new Date(start); d<=end; d.setDate(d.getDate()+1), day++) {
-      const ds = d.toISOString().slice(0,10);
-      const promo = PROMOS.has(ds) ? 1.55 : 1.0;
-      const noise = 0.72 + rng() * 0.58;
-      const zero  = rng() < 0.04;
-      const val   = zero ? 0 : sku.base * DOW[d.getDay()] * promo * noise * (1 + 0.001*day);
-      m.set(ds, Math.round(val*10)/10);
+  const DOW=[0.85,0.90,0.95,1.00,1.10,1.30,1.20];
+  const PROMOS=new Set(['2025-07-14','2025-07-15','2025-07-16','2025-07-25',
+                        '2025-07-26','2025-08-06','2025-08-07']);
+  let seed=9301; const rng=()=>{seed=(seed*49297+233453)%233280;return seed/233280;};
+  const out=new Map();
+  const s0=new Date('2025-07-01'), s1=new Date('2025-08-15');
+  for(const sku of SKUS){
+    const m=new Map(); let day=0;
+    for(let d=new Date(s0);d<=s1;d.setDate(d.getDate()+1),day++){
+      const ds=d.toISOString().slice(0,10);
+      const v=PROMOS.has(ds)?1.55:1.0;
+      const n=0.72+rng()*0.58; const z=rng()<0.04;
+      m.set(ds,z?0:Math.round(sku.base*DOW[d.getDay()]*v*n*(1+.001*day)*10)/10);
     }
-    result.set(sku.id, { map:m, label:sku.label, cat:sku.cat });
+    out.set(sku.id,{map:m,label:sku.label,cat:sku.cat});
   }
-  return result;
+  return out;
 }
 
-function loadDemoData() {
+function loadDemoData(){
   applyPredictions(generateDemoData());
-  showStatus('predStatus', '✓ Demo data loaded — 5 sample SKUs, Jul 1 – Aug 15', 'emerald');
+  showStatus('predStatus','✓ Demo data loaded — 5 sample SKUs','emerald');
 }
 
-// ── File upload — predictions ─────────────────────────────────────────────
-document.getElementById('predFile').addEventListener('change', function(e){
-  const file = e.target.files[0]; if (!file) return;
-  parseFile(file, rows => {
-    const m = buildMap(rows,
-      ['日期','date','Date'],
-      ['条码','条形码','barcode','Barcode','sku','SKU'],
-      ['预测销量','forecast','Forecast','销量','quantity']);
-    if (!m) { alert('Column detection failed.\nExpected: date · barcode · forecast quantity'); return; }
-    applyPredictions(m);
-    showStatus('predStatus', `✓ ${m.size} SKUs loaded from "${file.name}"`, 'emerald');
-  });
-});
-
-function buildMap(rows, dcols, scols, vcols) {
-  if (!rows.length) return null;
-  const hdr = Object.keys(rows[0]);
-  const dc = dcols.find(c=>hdr.includes(c));
-  const sc = scols.find(c=>hdr.includes(c));
-  const vc = vcols.find(c=>hdr.includes(c));
-  if (!dc||!sc||!vc) return null;
-  const out = new Map();
-  for (const r of rows) {
-    const sku=String(r[sc]).trim(), ds=String(r[dc]).slice(0,10), val=parseFloat(r[vc])||0;
-    if (!sku||!ds) continue;
-    if (!out.has(sku)) out.set(sku,{map:new Map(),label:sku,cat:null});
-    out.get(sku).map.set(ds,val);
+// ── Server detection ──────────────────────────────────────────────────────
+async function checkServer(){
+  const dot=document.getElementById('serverDot');
+  const lbl=document.getElementById('serverLabel');
+  const sub=document.getElementById('serverSub');
+  dot.className='w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse flex-shrink-0';
+  lbl.textContent='Connecting to local server…';
+  try {
+    const r=await fetch(`${API}/api/status`,
+      {signal:AbortSignal.timeout(3000)});
+    if(!r.ok) throw new Error();
+    const d=await r.json();
+    S.server=true;
+    dot.className='w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0';
+    lbl.textContent=`Local server connected — ${d.n_skus.toLocaleString()} SKUs · trained to ${d.train_end}`;
+    sub.textContent='Live multi-model predictions enabled';
+    document.getElementById('staticLoadCard').classList.add('hidden');
+    document.getElementById('modelCard').classList.remove('hidden');
+    document.getElementById('predictControls').classList.remove('hidden');
+    document.getElementById('chartArea').classList.remove('hidden');
+    document.getElementById('evalNeedsPred').classList.add('hidden');
+    document.getElementById('evalSection').classList.remove('hidden');
+    await loadServerSKUs();
+    buildModelButtons();
+  } catch {
+    S.server=false;
+    dot.className='w-2.5 h-2.5 rounded-full bg-slate-600 flex-shrink-0';
+    lbl.textContent='Local server not detected — running in static mode';
+    sub.innerHTML='Start <code class="text-slate-400">uvicorn api_server:app --port 8000</code> for live multi-model predictions';
   }
-  return out.size ? out : null;
 }
 
-function applyPredictions(preds) {
-  // Always merge demo SKUs so they remain available alongside real data
-  for (const [id, info] of generateDemoData()) {
-    if (!preds.has(id)) preds.set(id, { ...info, label: `[Demo] ${info.label}` });
+async function loadServerSKUs(){
+  const r=await fetch(`${API}/api/skus?limit=20000`);
+  const d=await r.json();
+  const sel=document.getElementById('skuSelect');
+  sel.innerHTML='';
+  // Server SKUs group
+  if(d.skus.length){
+    const g=document.createElement('optgroup'); g.label=`Server SKUs (${d.total.toLocaleString()})`;
+    for(const s of d.skus){
+      const o=document.createElement('option'); o.value=s.id;
+      o.textContent=(s.label||s.id);
+      g.appendChild(o);
+    }
+    sel.appendChild(g);
   }
-
-  S.preds = preds;
-  const allDates = [...[...preds.values()].flatMap(v=>[...v.map.keys()])].sort();
-  const dmin = allDates[0], dmax = allDates[allDates.length-1];
-
-  // Populate SKU dropdown — real SKUs first, demo SKUs at bottom in a group
-  const sel = document.getElementById('skuSelect');
-  sel.innerHTML = '';
-  const realOpts = [], demoOpts = [];
-  for (const [id, info] of preds) {
-    const o = document.createElement('option'); o.value = id;
-    o.textContent = (info.label||id).slice(0,55) + ((info.label||id).length>55?'…':'');
-    (info.label?.startsWith('[Demo]') ? demoOpts : realOpts).push(o);
+  // Always add demo group
+  const g2=document.createElement('optgroup'); g2.label='── Demo SKUs ──';
+  for(const [id,info] of generateDemoData()){
+    const o=document.createElement('option'); o.value=id;
+    o.textContent=`[Demo] ${info.label}`;
+    g2.appendChild(o);
   }
-  if (realOpts.length) {
-    const g = document.createElement('optgroup'); g.label = 'Forecast SKUs';
-    realOpts.forEach(o => g.appendChild(o)); sel.appendChild(g);
-  }
-  const g2 = document.createElement('optgroup'); g2.label = '── Demo SKUs ──';
-  demoOpts.forEach(o => g2.appendChild(o)); sel.appendChild(g2);
-
-  // Date inputs
-  ['startDate','endDate'].forEach((id,i)=>{
-    const el = document.getElementById(id);
-    el.value = i===0?dmin:dmax;
-    el.min = dmin; el.max = dmax;
-  });
-
-  document.getElementById('predictControls').classList.remove('hidden');
-  document.getElementById('chartArea').classList.remove('hidden');
-  document.getElementById('evalNeedsPred').classList.add('hidden');
-  document.getElementById('evalSection').classList.remove('hidden');
-  updateChart();
+  sel.appendChild(g2);
 }
 
-// ── Chart ─────────────────────────────────────────────────────────────────
-function updateChart() {
-  const sku  = document.getElementById('skuSelect').value;
-  const from = document.getElementById('startDate').value;
-  const to   = document.getElementById('endDate').value;
-  if (!sku||!from||!to||!S.preds) return;
+function buildModelButtons(){
+  const c=document.getElementById('modelBtns'); c.innerHTML='';
+  for(const [key,cfg] of Object.entries(MODEL_CFG)){
+    const active=S.selModels.has(key);
+    const btn=document.createElement('button');
+    btn.dataset.model=key;
+    btn.className=`model-btn px-5 py-2.5 rounded-xl text-sm font-medium border transition
+      ${active
+        ? 'text-white border-transparent'
+        : 'text-slate-400 border-slate-700 bg-transparent hover:border-slate-500'}`;
+    if(active) btn.style.cssText=`background:${cfg.color}22;border-color:${cfg.color};color:${cfg.color}`;
+    btn.innerHTML=`<span class="inline-block w-2 h-2 rounded-full mr-2"
+      style="background:${cfg.color}"></span>${cfg.label}`;
+    btn.onclick=()=>toggleModel(key,btn,cfg);
+    c.appendChild(btn);
+  }
+}
 
-  const info = S.preds.get(sku); if (!info) return;
-  const labels=[], pdata=[], adata=[];
-  for (let d=new Date(from), end=new Date(to); d<=end; d.setDate(d.getDate()+1)) {
-    const ds=d.toISOString().slice(0,10);
-    labels.push(ds);
-    pdata.push(info.map.get(ds)??null);
-    adata.push(S.actuals?.get(sku)?.map.get(ds)??null);
+function toggleModel(key,btn,cfg){
+  if(S.selModels.has(key)){
+    if(S.selModels.size===1) return; // keep at least one
+    S.selModels.delete(key);
+    btn.style.cssText='';
+    btn.className='model-btn px-5 py-2.5 rounded-xl text-sm font-medium border transition text-slate-400 border-slate-700 bg-transparent hover:border-slate-500';
+  } else {
+    S.selModels.add(key);
+    btn.style.cssText=`background:${cfg.color}22;border-color:${cfg.color};color:${cfg.color}`;
+  }
+}
+
+// ── Live prediction from API ──────────────────────────────────────────────
+async function runLivePrediction(){
+  const sku  =document.getElementById('skuSelect').value;
+  const from =document.getElementById('startDate').value;
+  const to   =document.getElementById('endDate').value;
+  if(!sku||!from||!to) return;
+
+  const btn=document.getElementById('runBtn');
+  document.getElementById('runBtnIcon').textContent='⏳';
+  document.getElementById('runBtnLabel').textContent='Running…';
+  btn.disabled=true;
+
+  // Check if it's a demo SKU
+  const isDemoSku=[...generateDemoData().keys()].includes(sku);
+
+  try {
+    if(S.server && !isDemoSku){
+      const r=await fetch(`${API}/api/predict`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({sku,start_date:from,end_date:to,
+                             models:[...S.selModels]}),
+      });
+      if(!r.ok) throw new Error(await r.text());
+      S.liveData=await r.json();
+    } else {
+      // Static fallback: use loaded CSV data as "lightgbm"
+      const info=S.preds?.get(sku);
+      const dates=[];
+      for(let d=new Date(from),e=new Date(to);d<=e;d.setDate(d.getDate()+1))
+        dates.push(d.toISOString().slice(0,10));
+      const preds=dates.map(ds=>info?.map.get(ds)??null);
+      S.liveData={sku,dates,predictions:{lightgbm:preds}};
+    }
+    renderLiveChart();
+  } catch(e){
+    alert('Prediction failed: '+e.message);
+  } finally {
+    document.getElementById('runBtnIcon').textContent='▶';
+    document.getElementById('runBtnLabel').textContent='Run Prediction';
+    btn.disabled=false;
+  }
+}
+
+function renderLiveChart(){
+  if(!S.liveData) return;
+  const {dates,predictions}=S.liveData;
+  const sku=document.getElementById('skuSelect').value;
+
+  // Build datasets
+  const datasets=[];
+  for(const [name,preds] of Object.entries(predictions)){
+    if(!preds||preds.error) continue;
+    const cfg=MODEL_CFG[name]||{color:'#94A3B8',label:name,dash:[]};
+    datasets.push({
+      label:cfg.label, data:preds,
+      borderColor:cfg.color,
+      backgroundColor:name==='lightgbm'?`${cfg.color}0d`:'transparent',
+      fill:name==='lightgbm',
+      tension:.35, borderWidth:2,
+      borderDash:cfg.dash,
+      pointRadius:dates.length<=30?2.5:0,
+    });
+  }
+  // Actuals overlay
+  if(S.actuals?.has(sku)){
+    const am=S.actuals.get(sku).map;
+    datasets.push({
+      label:'Actual', data:dates.map(d=>am.get(d)??null),
+      borderColor:'#F97316', fill:false, tension:.35,
+      borderWidth:2, borderDash:[4,3],
+      pointRadius:dates.length<=30?2.5:0,
+    });
   }
 
-  const hasAct = adata.some(v=>v!==null);
-  document.getElementById('actualLegend').classList.toggle('hidden',!hasAct);
-
-  const ds1 = { label:'Forecast', data:pdata, borderColor:'#3B82F6',
-    backgroundColor:'rgba(59,130,246,.07)', fill:true, tension:.35,
-    pointRadius:labels.length<=30?3:0, borderWidth:2 };
-  const ds2 = { label:'Actual', data:adata, borderColor:'#F97316',
-    fill:false, tension:.35, pointRadius:labels.length<=30?3:0,
-    borderWidth:2, borderDash:[5,3] };
-
-  const ctx = document.getElementById('forecastChart');
-  if (S.chart) S.chart.destroy();
-  S.chart = new Chart(ctx, {
+  const ctx=document.getElementById('forecastChart');
+  if(S.chart) S.chart.destroy();
+  S.chart=new Chart(ctx,{
     type:'line',
-    data:{ labels, datasets: hasAct?[ds1,ds2]:[ds1] },
+    data:{labels:dates,datasets},
     options:{
       responsive:true, maintainAspectRatio:false,
-      interaction:{ mode:'index', intersect:false },
+      interaction:{mode:'index',intersect:false},
       plugins:{
         legend:{display:false},
         tooltip:{
-          backgroundColor:'#1E293B', borderColor:'rgba(255,255,255,.1)', borderWidth:1,
-          titleColor:'#94A3B8', bodyColor:'#F1F5F9',
+          backgroundColor:'#1E293B', borderColor:'rgba(255,255,255,.1)',
+          borderWidth:1, titleColor:'#94A3B8', bodyColor:'#F1F5F9',
           callbacks:{
             title:c=>c[0].label,
             label:c=>` ${c.dataset.label}: ${c.parsed.y!=null?c.parsed.y.toFixed(1):'—'} units`,
@@ -645,154 +749,215 @@ function updateChart() {
         }
       },
       scales:{
-        x:{ ticks:{color:'#475569',maxTicksLimit:10,maxRotation:0},
-            grid:{color:'rgba(255,255,255,.03)'} },
-        y:{ ticks:{color:'#475569'}, grid:{color:'rgba(255,255,255,.03)'},
-            title:{display:true,text:'Daily sales (units)',color:'#475569',font:{size:11}} }
+        x:{ticks:{color:'#475569',maxTicksLimit:10,maxRotation:0},
+           grid:{color:'rgba(255,255,255,.03)'}},
+        y:{ticks:{color:'#475569'},grid:{color:'rgba(255,255,255,.03)'},
+           title:{display:true,text:'Daily sales (units)',color:'#475569',font:{size:11}}}
       }
     }
   });
 
-  document.getElementById('chartTitle').textContent =
-    `Daily Forecast — ${(info.label||sku).slice(0,55)}`;
-  document.getElementById('chartSubtitle').textContent =
-    `${from}  →  ${to}  ·  ${labels.length} days`;
+  // Legend
+  const leg=document.getElementById('chartLegend'); leg.innerHTML='';
+  for(const ds of datasets){
+    const cfg=MODEL_CFG[ds.label.toLowerCase().replace('-','_').replace(' ','_')]
+              ||{color:ds.borderColor||'#94A3B8'};
+    leg.innerHTML+=`<div class="flex items-center gap-1.5">
+      <span class="w-4 h-0.5 inline-block rounded" style="background:${ds.borderColor||cfg.color}"></span>
+      <span>${ds.label}</span></div>`;
+  }
 
-  const vp = pdata.filter(v=>v!=null);
-  const tot = vp.reduce((s,v)=>s+v,0);
-  document.getElementById('chartStats').innerHTML = `
-    <div class="bg-slate-800/40 rounded-xl p-4 text-center">
-      <div class="text-slate-500 text-xs mb-1">Total Forecast</div>
-      <div class="text-xl font-bold text-blue-400">${tot.toFixed(0)}</div>
-      <div class="text-xs text-slate-600">units</div>
-    </div>
-    <div class="bg-slate-800/40 rounded-xl p-4 text-center">
-      <div class="text-slate-500 text-xs mb-1">Daily Average</div>
-      <div class="text-xl font-bold text-cyan-400">${(vp.length?tot/vp.length:0).toFixed(1)}</div>
-      <div class="text-xs text-slate-600">units / day</div>
-    </div>
-    <div class="bg-slate-800/40 rounded-xl p-4 text-center">
-      <div class="text-slate-500 text-xs mb-1">Peak Day</div>
-      <div class="text-xl font-bold text-violet-400">${(vp.length?Math.max(...vp):0).toFixed(1)}</div>
-      <div class="text-xs text-slate-600">units</div>
+  // SKU title
+  const info=S.preds?.get(sku);
+  document.getElementById('chartTitle').textContent=
+    `Forecast — ${(info?.label||sku).slice(0,50)}`;
+  document.getElementById('chartSubtitle').textContent=
+    `${dates[0]} → ${dates[dates.length-1]}  ·  ${dates.length} days  ·  `+
+    `${Object.keys(predictions).length} model(s)`;
+
+  // Stats: per-model total
+  const validModels=Object.entries(predictions).filter(([,v])=>v&&!v.error);
+  document.getElementById('chartStats').innerHTML=validModels.map(([name,preds])=>{
+    const cfg=MODEL_CFG[name]||{label:name,color:'#94A3B8'};
+    const tot=(preds.filter(v=>v!=null).reduce((s,v)=>s+v,0)).toFixed(0);
+    const avg=(preds.filter(v=>v!=null).reduce((s,v)=>s+v,0)/
+               preds.filter(v=>v!=null).length).toFixed(1);
+    return `<div class="bg-slate-800/40 rounded-xl p-4 text-center">
+      <div class="text-xs mb-1" style="color:${cfg.color}">${cfg.label}</div>
+      <div class="text-xl font-bold text-white">${tot}</div>
+      <div class="text-xs text-slate-600">${avg} /day avg</div>
     </div>`;
+  }).join('');
+
+  document.getElementById('chartArea').classList.remove('hidden');
+}
+
+// ── Static mode: file upload + apply predictions ───────────────────────────
+document.getElementById('predFile').addEventListener('change',function(e){
+  const file=e.target.files[0]; if(!file) return;
+  parseFile(file,rows=>{
+    const m=buildMap(rows,
+      ['日期','date','Date'],
+      ['条码','条形码','barcode','Barcode','sku','SKU'],
+      ['预测销量','forecast','Forecast','销量','quantity']);
+    if(!m){alert('Column detection failed.\nExpected: date · barcode · forecast quantity');return;}
+    applyPredictions(m);
+    showStatus('predStatus',`✓ ${m.size} SKUs loaded from "${file.name}"`,'emerald');
+  });
+});
+
+function buildMap(rows,dcols,scols,vcols){
+  if(!rows.length) return null;
+  const hdr=Object.keys(rows[0]);
+  const dc=dcols.find(c=>hdr.includes(c));
+  const sc=scols.find(c=>hdr.includes(c));
+  const vc=vcols.find(c=>hdr.includes(c));
+  if(!dc||!sc||!vc) return null;
+  const out=new Map();
+  for(const r of rows){
+    const sku=String(r[sc]).trim(),ds=String(r[dc]).slice(0,10),val=parseFloat(r[vc])||0;
+    if(!sku||!ds) continue;
+    if(!out.has(sku)) out.set(sku,{map:new Map(),label:sku,cat:null});
+    out.get(sku).map.set(ds,val);
+  }
+  return out.size?out:null;
+}
+
+function applyPredictions(preds){
+  // Merge demo SKUs
+  for(const [id,info] of generateDemoData())
+    if(!preds.has(id)) preds.set(id,{...info,label:`[Demo] ${info.label}`});
+
+  S.preds=preds;
+  const allDates=[...[...preds.values()].flatMap(v=>[...v.map.keys()])].sort();
+  const dmin=allDates[0], dmax=allDates[allDates.length-1];
+
+  const sel=document.getElementById('skuSelect');
+  sel.innerHTML='';
+  const realOpts=[],demoOpts=[];
+  for(const [id,info] of preds){
+    const o=document.createElement('option'); o.value=id;
+    o.textContent=(info.label||id).slice(0,55)+((info.label||id).length>55?'…':'');
+    (info.label?.startsWith('[Demo]')?demoOpts:realOpts).push(o);
+  }
+  if(realOpts.length){
+    const g=document.createElement('optgroup'); g.label='Forecast SKUs';
+    realOpts.forEach(o=>g.appendChild(o)); sel.appendChild(g);
+  }
+  const g2=document.createElement('optgroup'); g2.label='── Demo SKUs ──';
+  demoOpts.forEach(o=>g2.appendChild(o)); sel.appendChild(g2);
+
+  document.getElementById('startDate').value=dmin;
+  document.getElementById('endDate').value=dmax;
+  document.getElementById('predictControls').classList.remove('hidden');
+  document.getElementById('chartArea').classList.remove('hidden');
+  document.getElementById('evalNeedsPred').classList.add('hidden');
+  document.getElementById('evalSection').classList.remove('hidden');
+
+  // Auto-run with lightgbm (static)
+  S.liveData=null;
+  sel.onchange=()=>{ S.liveData=null; runLivePrediction(); };
+  document.getElementById('startDate').onchange=
+  document.getElementById('endDate').onchange=()=>runLivePrediction();
+  runLivePrediction();
 }
 
 // ── Actual sales upload ───────────────────────────────────────────────────
-document.getElementById('actualFile').addEventListener('change', function(e){
-  const file = e.target.files[0]; if (!file) return;
-  parseFile(file, rows => {
-    const m = buildMap(rows,
+document.getElementById('actualFile').addEventListener('change',function(e){
+  const file=e.target.files[0]; if(!file) return;
+  parseFile(file,rows=>{
+    const m=buildMap(rows,
       ['日期','date','Date','日期(年月日)'],
       ['条码','条形码','barcode','Barcode','sku','SKU'],
       ['当天全部销售数量','实际销量','actual','Actual','销量','quantity','Quantity']);
-    if (!m) { alert('Column detection failed.\nExpected: date · barcode · actual sales quantity'); return; }
-    S.actuals = m;
-    showStatus('actualStatus', `✓ ${m.size} SKUs loaded`, 'emerald');
-    updateChart();
+    if(!m){alert('Column detection failed.');return;}
+    S.actuals=m;
+    showStatus('actualStatus',`✓ ${m.size} SKUs loaded`,'emerald');
+    renderLiveChart();
     computeFA();
   });
 });
 
 // ── FA computation ────────────────────────────────────────────────────────
-function faScore(F, A) {
-  F=Math.max(F,0); A=Math.max(A,0);
+function faScore(F,A){
+  F=Math.max(F,0);A=Math.max(A,0);
   const d=(F+A)*2; if(d===0) return 1;
-  return Math.max(1-Math.abs(F-A)/d, 0);
+  return Math.max(1-Math.abs(F-A)/d,0);
 }
 
-function computeFA() {
-  if (!S.preds || !S.actuals) return;
-
-  // Weekly buckets aligned from 2025-07-01 in 7-day steps
-  const EPOCH = new Date('2025-07-01');
-  function weekOf(ds) {
-    const diff = (new Date(ds)-EPOCH)/86400000;
-    const w = Math.max(Math.floor(diff/7), 0);
-    const ws = new Date(EPOCH); ws.setDate(ws.getDate()+w*7);
+function computeFA(){
+  if(!S.actuals) return;
+  // Use lightgbm predictions from liveData if available, else from S.preds
+  const EPOCH=new Date('2025-07-01');
+  function weekOf(ds){
+    const diff=(new Date(ds)-EPOCH)/86400000;
+    const w=Math.max(Math.floor(diff/7),0);
+    const ws=new Date(EPOCH); ws.setDate(ws.getDate()+w*7);
     return ws.toISOString().slice(0,10);
   }
-  function weekLabel(ws) {
-    const we = new Date(ws); we.setDate(we.getDate()+6);
+  function weekLabel(ws){
+    const we=new Date(ws); we.setDate(we.getDate()+6);
     return `${ws} → ${we.toISOString().slice(0,10)}`;
   }
 
-  // Accumulate per (sku, week)
-  // weekAcc[ws] = { wFA_num, wFA_den, F, A, matched }
-  const weekAcc = new Map();
+  // Build a unified predictions map (sku→date→qty) from whichever source
+  const predSource=new Map(); // sku → Map(date → qty)
+  if(S.preds){
+    for(const [sku,info] of S.preds)
+      predSource.set(sku,info.map);
+  }
 
-  for (const [sku, info] of S.preds) {
-    if (!S.actuals.has(sku)) continue;
-    const actMap = S.actuals.get(sku).map;
-
-    // Aggregate weekly F and A for this SKU
-    const wkF = new Map(), wkA = new Map();
-    for (const [ds,v] of info.map) {
-      const ws=weekOf(ds);
-      wkF.set(ws,(wkF.get(ws)||0)+v);
-    }
-    for (const [ds,v] of actMap) {
-      const ws=weekOf(ds);
-      wkA.set(ws,(wkA.get(ws)||0)+v);
-    }
-
-    for (const [ws,F] of wkF) {
-      const A = wkA.get(ws)||0;
-      // Weight: actual sales in 28 days before ws
-      const wsDate = new Date(ws);
-      let weight = 0;
-      for (let d=1; d<=28; d++) {
+  const weekAcc=new Map();
+  for(const [sku,actMap] of S.actuals){
+    const pm=predSource.get(sku); if(!pm) continue;
+    const wkF=new Map(), wkA=new Map();
+    for(const [ds,v] of pm){const ws=weekOf(ds);wkF.set(ws,(wkF.get(ws)||0)+v);}
+    for(const [ds,v] of actMap.map){const ws=weekOf(ds);wkA.set(ws,(wkA.get(ws)||0)+v);}
+    for(const [ws,F] of wkF){
+      const A=wkA.get(ws)||0;
+      const wsDate=new Date(ws);
+      let weight=0;
+      for(let d=1;d<=28;d++){
         const dd=new Date(wsDate); dd.setDate(dd.getDate()-d);
-        weight += actMap.get(dd.toISOString().slice(0,10))||0;
+        weight+=actMap.map.get(dd.toISOString().slice(0,10))||0;
       }
-      weight = Math.max(weight, 0);
-      const fa = faScore(F, A);
-      if (!weekAcc.has(ws)) weekAcc.set(ws,{wFA_num:0,wFA_den:0,F:0,A:0,matched:0});
-      const acc = weekAcc.get(ws);
-      acc.wFA_num += fa*weight;
-      acc.wFA_den += weight;
-      acc.F += F; acc.A += A; acc.matched++;
+      const fa=faScore(F,A);
+      if(!weekAcc.has(ws)) weekAcc.set(ws,{wFA_num:0,wFA_den:0,F:0,A:0,matched:0});
+      const acc=weekAcc.get(ws);
+      acc.wFA_num+=fa*Math.max(weight,0); acc.wFA_den+=Math.max(weight,0);
+      acc.F+=F; acc.A+=A; acc.matched++;
     }
   }
 
-  // Render weekly table
-  const tbody = document.getElementById('faTableBody');
-  tbody.innerHTML = '';
-  let gNum=0, gDen=0;
-
-  const sortedWeeks = [...weekAcc.keys()].sort();
-  for (const ws of sortedWeeks) {
-    const acc = weekAcc.get(ws);
-    const wfa = acc.wFA_den>0 ? acc.wFA_num/acc.wFA_den : faScore(acc.F,acc.A);
-    const bias = acc.A>0 ? (acc.F-acc.A)/acc.A*100 : null;
-    gNum += acc.wFA_num; gDen += acc.wFA_den;
-
-    const faCol = wfa>=0.8?'text-emerald-400':wfa>=0.65?'text-yellow-400':'text-red-400';
-    const biasCol = bias==null?'text-slate-500':Math.abs(bias)<10?'text-slate-300':bias>0?'text-blue-400':'text-orange-400';
-
-    tbody.innerHTML += `
-      <tr class="hover:bg-white/[.03] transition">
-        <td class="py-3 pr-8 font-mono text-xs text-slate-400">${weekLabel(ws)}</td>
-        <td class="py-3 px-4 text-right font-bold ${faCol}">${(wfa*100).toFixed(1)}%</td>
-        <td class="py-3 px-4 text-right text-slate-500">${acc.matched}</td>
-        <td class="py-3 px-4 text-right text-blue-400">${acc.F.toFixed(0)}</td>
-        <td class="py-3 px-4 text-right text-orange-400">${acc.A.toFixed(0)}</td>
-        <td class="py-3 px-4 text-right ${biasCol}">${bias!=null?(bias>0?'+':'')+bias.toFixed(1)+'%':'—'}</td>
-      </tr>`;
+  const tbody=document.getElementById('faTableBody'); tbody.innerHTML='';
+  let gNum=0,gDen=0;
+  for(const ws of [...weekAcc.keys()].sort()){
+    const acc=weekAcc.get(ws);
+    const wfa=acc.wFA_den>0?acc.wFA_num/acc.wFA_den:faScore(acc.F,acc.A);
+    const bias=acc.A>0?(acc.F-acc.A)/acc.A*100:null;
+    gNum+=acc.wFA_num; gDen+=acc.wFA_den;
+    const fc=wfa>=0.8?'text-emerald-400':wfa>=0.65?'text-yellow-400':'text-red-400';
+    const bc=bias==null?'text-slate-500':Math.abs(bias)<10?'text-slate-300':bias>0?'text-blue-400':'text-orange-400';
+    tbody.innerHTML+=`<tr class="hover:bg-white/[.03] transition">
+      <td class="py-3 pr-8 font-mono text-xs text-slate-400">${weekLabel(ws)}</td>
+      <td class="py-3 px-4 text-right font-bold ${fc}">${(wfa*100).toFixed(1)}%</td>
+      <td class="py-3 px-4 text-right text-slate-500">${acc.matched}</td>
+      <td class="py-3 px-4 text-right text-blue-400">${acc.F.toFixed(0)}</td>
+      <td class="py-3 px-4 text-right text-orange-400">${acc.A.toFixed(0)}</td>
+      <td class="py-3 px-4 text-right ${bc}">${bias!=null?(bias>0?'+':'')+bias.toFixed(1)+'%':'—'}</td>
+    </tr>`;
   }
-
-  const overall = gDen>0 ? gNum/gDen : null;
-  const matched = [...S.actuals.keys()].filter(s=>S.preds.has(s)).length;
-  document.getElementById('overallFA').textContent = overall!=null?(overall*100).toFixed(1)+'%':'N/A';
-  document.getElementById('faDetails').textContent =
-    `${matched} SKUs matched · ${sortedWeeks.length} week${sortedWeeks.length!==1?'s':''}`;
+  const overall=gDen>0?gNum/gDen:null;
+  const matched=[...S.actuals.keys()].filter(s=>predSource.has(s)).length;
+  document.getElementById('overallFA').textContent=overall!=null?(overall*100).toFixed(1)+'%':'N/A';
+  document.getElementById('faDetails').textContent=`${matched} SKUs matched · ${weekAcc.size} weeks`;
   document.getElementById('faResults').classList.remove('hidden');
 }
 
-// ── File parser (CSV / XLSX / TXT) ───────────────────────────────────────
-function parseFile(file, cb) {
-  const ext = file.name.split('.').pop().toLowerCase();
-  if (ext==='xlsx'||ext==='xls') {
+// ── File parser ───────────────────────────────────────────────────────────
+function parseFile(file,cb){
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='xlsx'||ext==='xls'){
     const r=new FileReader();
     r.onload=e=>{
       const wb=XLSX.read(e.target.result,{type:'array'});
@@ -800,45 +965,35 @@ function parseFile(file, cb) {
     };
     r.readAsArrayBuffer(file);
   } else {
-    Papa.parse(file,{
-      header:true, skipEmptyLines:true,
-      complete:r=>cb(r.data),
-      error:e=>alert('Parse error: '+e.message),
-    });
+    Papa.parse(file,{header:true,skipEmptyLines:true,
+      complete:r=>cb(r.data),error:e=>alert('Parse error: '+e.message)});
   }
 }
 
-// ── UI helper ─────────────────────────────────────────────────────────────
-function showStatus(id, msg, color) {
+function showStatus(id,msg,color){
   const el=document.getElementById(id);
-  el.textContent=msg;
-  el.className=`text-sm mt-4 text-${color}-400`;
+  el.textContent=msg; el.className=`text-sm mt-4 text-${color}-400`;
   el.classList.remove('hidden');
 }
 
-// ── Auto-load poc_submission.csv if present in the same folder ────────────
-window.addEventListener('DOMContentLoaded', () => {
-  fetch('poc_submission.csv', { method: 'HEAD' })
-    .then(r => {
-      if (!r.ok) throw new Error('not found');
-      showStatus('predStatus', '⏳ Loading poc_submission.csv…', 'slate');
-      return fetch('poc_submission.csv');
-    })
-    .then(r => r.text())
-    .then(text => {
-      const rows = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
-      const m = buildMap(rows,
-        ['日期','date','Date'],
+// ── Boot ──────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  checkServer();
+  // Also try auto-loading poc_submission.csv (static fallback)
+  fetch('poc_submission.csv',{method:'HEAD'})
+    .then(r=>{if(!r.ok) throw 0; return fetch('poc_submission.csv');})
+    .then(r=>r.text())
+    .then(text=>{
+      if(S.server) return; // server mode takes priority
+      const rows=Papa.parse(text,{header:true,skipEmptyLines:true}).data;
+      const m=buildMap(rows,['日期','date','Date'],
         ['条码','条形码','barcode','Barcode','sku','SKU'],
         ['预测销量','forecast','Forecast','销量','quantity']);
-      if (!m) throw new Error('column detection failed');
+      if(!m) return;
       applyPredictions(m);
-      showStatus('predStatus',
-        `✓ Loaded ${m.size} SKUs from poc_submission.csv`, 'emerald');
+      showStatus('predStatus',`✓ Loaded ${m.size} SKUs from poc_submission.csv`,'emerald');
     })
-    .catch(() => {
-      // File not yet uploaded — leave the manual upload / demo buttons visible
-    });
+    .catch(()=>{});
 });
 </script>
 </body>
