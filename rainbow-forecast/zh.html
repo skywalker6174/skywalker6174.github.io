@@ -523,20 +523,27 @@
 
   <div class="grid md:grid-cols-2 gap-6">
     <div class="card rounded-2xl p-7">
-      <h3 class="font-semibold mb-4">发现的最佳特征集</h3>
-      <p class="text-slate-500 text-xs mb-4">由遗传搜索在 946 维特征库中找到——离散度 + 近期性 + 趋势的组合：</p>
+      <div class="flex items-center gap-2 mb-4">
+        <h3 class="font-semibold">LLM 编写的最佳特征集</h3>
+        <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(139,92,246,.2);color:#C4B5FD">Kimi · +1.72 pp</span>
+      </div>
+      <p class="text-slate-500 text-xs mb-4">
+        LLM 采样器（Kimi，30 轮迭代）在最佳轮次自动生成的
+        <code class="text-violet-300">add_features()</code>——它自行发现的
+        动量 + 品类相对 + 波动率组合：
+      </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-violet-200">
-        <div>feat_accel &nbsp;= (lag1−lag7) − (lag7−lag14)</div>
-        <div>feat_lag1_roll7 = lag1 / roll7</div>
-        <div>feat_cv &nbsp;&nbsp;&nbsp;= std(lags) / mean(lags)</div>
-        <div>feat_range = max(lags) − min(lags)</div>
-        <div>feat_std &nbsp;&nbsp;= std(lags)</div>
-        <div>feat_roll14_28 = roll14 / roll28</div>
+        <div>feat_weekly_speed &nbsp;= roll7 − roll28</div>
+        <div>feat_cat_momentum &nbsp;= lag7 − cat_lag1</div>
+        <div>feat_cat_roll_momentum = roll7 − cat_roll7</div>
+        <div>feat_lag1_over_vol &nbsp;= lag1 / std(lags)</div>
+        <div>feat_lag7_over_lag28 &nbsp;= lag7 / lag28</div>
+        <div>feat_rollmean_over_lag1 = roll7 / lag1</div>
       </div>
       <p class="text-slate-500 text-xs mt-4">
-        LLM 采样器（Kimi，30 轮迭代）独立达到
-        <strong class="text-violet-300">+1.72 pp</strong>，采用了相似的动量 +
-        品类相对 + 波动率组合——与遗传搜索收敛到相同上限，印证瓶颈在问题本身而非方法。
+        独立的遗传搜索（946 维特征库）以相同的特征族（离散度 · 近期性 · 趋势）
+        达到相当的 <strong class="text-violet-300">+2.46 pp</strong>——两种方法收敛到
+        相同上限，印证瓶颈在问题本身而非搜索方法。
       </p>
     </div>
 

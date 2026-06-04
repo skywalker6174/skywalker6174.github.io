@@ -540,23 +540,30 @@
   </div>
 
   <div class="grid md:grid-cols-2 gap-6">
-    <!-- discovered feature set -->
+    <!-- LLM-discovered feature set -->
     <div class="card rounded-2xl p-7">
-      <h3 class="font-semibold mb-4">Best discovered feature set</h3>
-      <p class="text-slate-500 text-xs mb-4">Found by the genetic search over the 946-feature library — a dispersion + recency + trend mix:</p>
+      <div class="flex items-center gap-2 mb-4">
+        <h3 class="font-semibold">Best feature set written by the LLM</h3>
+        <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(139,92,246,.2);color:#C4B5FD">Kimi · +1.72 pp</span>
+      </div>
+      <p class="text-slate-500 text-xs mb-4">
+        The exact <code class="text-violet-300">add_features()</code> the LLM-in-the-loop sampler
+        (Kimi, 30 iterations) produced at its best iteration — a momentum + category-relative +
+        volatility mix it discovered on its own:
+      </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-violet-200">
-        <div>feat_accel &nbsp;= (lag1−lag7) − (lag7−lag14)</div>
-        <div>feat_lag1_roll7 = lag1 / roll7</div>
-        <div>feat_cv &nbsp;&nbsp;&nbsp;= std(lags) / mean(lags)</div>
-        <div>feat_range = max(lags) − min(lags)</div>
-        <div>feat_std &nbsp;&nbsp;= std(lags)</div>
-        <div>feat_roll14_28 = roll14 / roll28</div>
+        <div>feat_weekly_speed &nbsp;= roll7 − roll28</div>
+        <div>feat_cat_momentum &nbsp;= lag7 − cat_lag1</div>
+        <div>feat_cat_roll_momentum = roll7 − cat_roll7</div>
+        <div>feat_lag1_over_vol &nbsp;= lag1 / std(lags)</div>
+        <div>feat_lag7_over_lag28 &nbsp;= lag7 / lag28</div>
+        <div>feat_rollmean_over_lag1 = roll7 / lag1</div>
       </div>
       <p class="text-slate-500 text-xs mt-4">
-        The LLM-in-the-loop sampler (Kimi, 30 iterations) independently reached
-        <strong class="text-violet-300">+1.72 pp</strong> with a similar momentum +
-        category-relative + volatility mix — converging to the same ceiling as the
-        genetic search, confirming the limit is the problem, not the method.
+        The independent genetic search over the 946-feature library reached a comparable
+        <strong class="text-violet-300">+2.46 pp</strong> with the same feature families
+        (dispersion · recency · trend) — two different methods converging to the same
+        ceiling confirms the limit is the problem, not the search.
       </p>
     </div>
 
