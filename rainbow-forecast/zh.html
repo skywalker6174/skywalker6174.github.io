@@ -743,6 +743,31 @@ function showStatus(id,msg,color){
   el.textContent=msg; el.className=`text-sm mt-4 text-${color}-400`;
   el.classList.remove('hidden');
 }
+
+// ── 页面加载时自动读取 poc_submission.csv（若已上传至同目录）────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  fetch('poc_submission.csv', { method: 'HEAD' })
+    .then(r => {
+      if (!r.ok) throw new Error('not found');
+      showStatus('predStatus', '⏳ 正在加载 poc_submission.csv…', 'slate');
+      return fetch('poc_submission.csv');
+    })
+    .then(r => r.text())
+    .then(text => {
+      const rows = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
+      const m = buildMap(rows,
+        ['日期','date','Date'],
+        ['条码','条形码','barcode','Barcode','sku','SKU'],
+        ['预测销量','forecast','Forecast','销量','quantity']);
+      if (!m) throw new Error('列名识别失败');
+      applyPredictions(m);
+      showStatus('predStatus',
+        `✓ 已从 poc_submission.csv 加载 ${m.size} 个 SKU`, 'emerald');
+    })
+    .catch(() => {
+      // 文件尚未上传，保留手动上传和演示数据按钮
+    });
+});
 </script>
 </body>
 </html>

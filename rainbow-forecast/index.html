@@ -803,6 +803,31 @@ function showStatus(id, msg, color) {
   el.className=`text-sm mt-4 text-${color}-400`;
   el.classList.remove('hidden');
 }
+
+// ── Auto-load poc_submission.csv if present in the same folder ────────────
+window.addEventListener('DOMContentLoaded', () => {
+  fetch('poc_submission.csv', { method: 'HEAD' })
+    .then(r => {
+      if (!r.ok) throw new Error('not found');
+      showStatus('predStatus', '⏳ Loading poc_submission.csv…', 'slate');
+      return fetch('poc_submission.csv');
+    })
+    .then(r => r.text())
+    .then(text => {
+      const rows = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
+      const m = buildMap(rows,
+        ['日期','date','Date'],
+        ['条码','条形码','barcode','Barcode','sku','SKU'],
+        ['预测销量','forecast','Forecast','销量','quantity']);
+      if (!m) throw new Error('column detection failed');
+      applyPredictions(m);
+      showStatus('predStatus',
+        `✓ Loaded ${m.size} SKUs from poc_submission.csv`, 'emerald');
+    })
+    .catch(() => {
+      // File not yet uploaded — leave the manual upload / demo buttons visible
+    });
+});
 </script>
 </body>
 </html>
