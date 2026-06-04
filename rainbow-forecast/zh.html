@@ -66,7 +66,7 @@
   </h1>
   <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
     基于 XGBoost、LightGBM 与随机森林的集成模型，预测 5 个经营中类、
-    20,000+ 个 SKU 的每日销量；以 2 年以上交易历史训练，包含促销在内共 24 个特征。
+    20,000+ 个 SKU 的每日销量；以 2 年以上交易历史训练，包含促销在内共 24 个基础特征（+6 个自动发现特征）。
   </p>
   <div class="flex flex-wrap justify-center gap-3 mb-20">
     <a href="#predict"
@@ -92,8 +92,8 @@
       <div class="text-xs text-slate-500 mt-1.5">预测天数</div>
     </div>
     <div class="card rounded-2xl p-5">
-      <div class="text-3xl font-bold text-emerald-400">24</div>
-      <div class="text-xs text-slate-500 mt-1.5">特征数量</div>
+      <div class="text-3xl font-bold text-emerald-400">30</div>
+      <div class="text-xs text-slate-500 mt-1.5">特征 (24+6 自动)</div>
     </div>
   </div>
 </section>
@@ -105,7 +105,7 @@
     <h2 class="text-3xl font-bold mb-3">预测模型</h2>
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">
       三个机器学习模型——两个梯度提升、一个 Bagging 集成——加上一个季节性朴素基准。
-      树模型共享同一组 24 维特征，采用递归多步预测覆盖 46 天预测窗口；
+      树模型共享 24 个基础特征 + 6 个自动发现特征，采用递归多步预测覆盖 46 天预测窗口；
       最终提交取三个树模型的均值。
     </p>
   </div>
@@ -231,47 +231,15 @@
       </div>
     </div>
 
-    <!-- LLM 自动特征工程 -->
-    <div class="rounded-2xl p-7"
-         style="background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(59,130,246,.06));
-                border:1px solid rgba(139,92,246,.30)">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-xl leading-none">🤖</span>
-        <span class="font-bold">LLM 自动特征工程</span>
-        <span class="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full"
-              style="background:rgba(139,92,246,.25);color:#C4B5FD;border:1px solid rgba(139,92,246,.4)">
-          规划中
-        </span>
-      </div>
-      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        下一阶段采用 <strong class="text-white">FunSearch</strong> 式 LLM 进化循环：
-        由模型生成 Python <code class="text-violet-300">add_features(df)</code> 函数，
-        每个候选经交叉验证打分，最优程序作为下一代种子。
-        目标是发现超越现有人工 24 维特征的组合。
-      </p>
-      <div class="grid grid-cols-3 gap-2 text-xs">
-        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
-          <div class="text-violet-300 font-semibold mb-1">① 生成</div>
-          <p class="text-slate-500 leading-relaxed">LLM 生成候选特征函数</p>
-        </div>
-        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
-          <div class="text-blue-300 font-semibold mb-1">② 评估</div>
-          <p class="text-slate-500 leading-relaxed">在留出折上计算 CV WFA 得分</p>
-        </div>
-        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
-          <div class="text-emerald-300 font-semibold mb-1">③ 进化</div>
-          <p class="text-slate-500 leading-relaxed">最优程序作为下一代种子</p>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <!-- 特征表 -->
   <div class="card rounded-2xl p-7 mb-8">
     <h3 class="font-semibold mb-2">各模型特征输入</h3>
     <p class="text-slate-500 text-xs mb-5">
-      树模型使用全部 24 个特征；季节性朴素基准仅使用原始时间序列。
+      树模型使用 24 个人工基础特征 + 6 个自动发现特征
+      （来自 <a href="#autofe" class="text-violet-300 hover:underline">946 维 FunSearch 候选库</a>）= 30 个。
+      季节性朴素基准仅使用原始时间序列。
     </p>
     <div class="overflow-x-auto mb-5">
       <table class="w-full text-xs">
@@ -315,17 +283,22 @@
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
+          <tr class="text-violet-300">
+            <td class="py-2 pr-6">自动发现特征 (FunSearch) · 6 &nbsp;<span class="text-xs text-slate-600">来自 946 候选</span></td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
+          </tr>
           <tr class="border-t border-white/[.08] font-medium text-slate-300">
             <td class="py-2 pr-6">特征总数</td>
-            <td class="text-center py-2" style="color:#3B82F6">24</td>
-            <td class="text-center py-2" style="color:#06B6D4">24</td>
-            <td class="text-center py-2" style="color:#10B981">24</td>
+            <td class="text-center py-2" style="color:#3B82F6">30</td>
+            <td class="text-center py-2" style="color:#06B6D4">30</td>
+            <td class="text-center py-2" style="color:#10B981">30</td>
             <td class="text-center py-2" style="color:#F59E0B">1（序列）</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <h4 class="font-medium text-sm mb-4 text-slate-400">树模型使用的完整 24 维特征集</h4>
+    <h4 class="font-medium text-sm mb-4 text-slate-400">24 个人工基础特征</h4>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
       <div>
         <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">滞后 · 7</div>
@@ -356,6 +329,12 @@
           cat_lag1 · cat_roll7
         </div>
       </div>
+    </div>
+    <h4 class="font-medium text-sm mb-3 mt-6" style="color:#C4B5FD">+ 6 个自动发现特征 (FunSearch / LLM)</h4>
+    <div class="bg-violet-500/[.06] border border-violet-500/20 rounded-xl p-4 font-mono text-xs text-violet-200 leading-7">
+      roll7−roll28 &nbsp;·&nbsp; lag7−cat_lag1 &nbsp;·&nbsp; roll7−cat_roll7 &nbsp;·&nbsp;
+      lag1/std(lags) &nbsp;·&nbsp; lag7/lag28 &nbsp;·&nbsp; roll7/lag1
+      <span class="text-slate-500 block mt-1">由遗传搜索 + Kimi LLM 从 946 维候选库中选出</span>
     </div>
   </div>
 
@@ -475,15 +454,15 @@
 
   <div class="card rounded-2xl overflow-hidden mb-6">
     <div class="px-6 py-4 border-b border-white/[.06]">
-      <h3 class="font-semibold">自动发现的特征提升了每个模型 — 周度 FA 代理 (2000 SKU)</h3>
-      <p class="text-xs text-slate-500 mt-1">验证周 2025-07 · base-24 特征 vs base-24 + 自动发现特征</p>
+      <h3 class="font-semibold">LLM 自动特征工程对各 ML 模型的提升 — 周度 FA (2000 SKU)</h3>
+      <p class="text-xs text-slate-500 mt-1">将 Kimi 发现的同一组 6 维特征加到 base-24，在每个模型上评估 · 验证周 2025-07</p>
     </div>
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
           <th class="text-left px-6 py-3">模型</th>
           <th class="text-right px-4 py-3">Base-24 FA</th>
-          <th class="text-right px-4 py-3">+ 自动特征</th>
+          <th class="text-right px-4 py-3">+ LLM 特征</th>
           <th class="text-right px-4 py-3">提升</th>
           <th class="text-left px-6 py-3">说明</th>
         </tr>
@@ -492,29 +471,29 @@
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span>LightGBM</td>
           <td class="px-4 py-3 text-right text-slate-300">65.53%</td>
-          <td class="px-4 py-3 text-right font-bold text-blue-400">67.99%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+2.46 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-blue-400">67.25%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+1.72 pp</td>
           <td class="px-6 py-3 text-slate-500 text-xs">最强基线，提升空间最小</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#06B6D4"></span>XGBoost</td>
           <td class="px-4 py-3 text-right text-slate-300">62.91%</td>
-          <td class="px-4 py-3 text-right font-bold text-cyan-400">66.52%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+3.61 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">树模型中提升最大</td>
+          <td class="px-4 py-3 text-right font-bold text-cyan-400">63.62%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.71 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">针对性调优可达 +3.6 pp</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span>随机森林</td>
           <td class="px-4 py-3 text-right text-slate-300">63.08%</td>
-          <td class="px-4 py-3 text-right font-bold text-emerald-400">63.96%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+0.88 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-400">63.25%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.16 pp</td>
           <td class="px-6 py-3 text-slate-500 text-xs">深树已内化交互作用</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span>OLS (Ridge)</td>
           <td class="px-4 py-3 text-right text-slate-400">15.84%</td>
-          <td class="px-4 py-3 text-right font-bold text-violet-300">35.40%</td>
-          <td class="px-4 py-3 text-right text-violet-400">+19.56 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-violet-300">42.54%</td>
+          <td class="px-4 py-3 text-right text-violet-400">+26.70 pp</td>
           <td class="px-6 py-3 text-slate-500 text-xs">线性模型无法自构造交互项</td>
         </tr>
       </tbody>
@@ -557,8 +536,8 @@
           更大的库（40 → 205 → 946）<strong class="text-white">并未</strong>抬高树模型上限——
           每次搜索在第 3–8 代即收敛。</li>
         <li class="flex gap-3"><span class="text-violet-400 flex-shrink-0">▸</span>
-          真正受益的是<strong class="text-white">弱/线性模型</strong>：OLS 提升达 +19 pp，
-          因为它无法自行构造交互特征。</li>
+          真正受益的是<strong class="text-white">弱/线性模型</strong>：OLS 用同一组特征提升达
+          <strong class="text-white">+26.7 pp</strong>，因为它无法自行构造交互特征。</li>
         <li class="flex gap-3"><span class="text-amber-400 flex-shrink-0">▸</span>
           递归提升集中在<strong class="text-white">最难的品类</strong>——
           8804（+1.2 pp）与 8805（+3.2 pp）。</li>
@@ -842,7 +821,7 @@
   <p>北京大学汇丰商学院 &nbsp;·&nbsp; 天虹超市 POC 2025 &nbsp;·&nbsp; 门店 常兴天虹00110</p>
   <p class="mt-1.5">
     XGBoost · LightGBM · 随机森林 · 季节性朴素 · 集成模型 ·
-    24 个特征 · 经营中类 8802 · 8803 · 8804 · 8805 · 8807
+    24 基础 + 6 自动发现特征 · 经营中类 8802 · 8803 · 8804 · 8805 · 8807
   </p>
   <p class="mt-1.5">FA = 1 − 2|F−A|/(F+A) · 按周 · 前 4 周加权</p>
 </footer>

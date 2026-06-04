@@ -68,7 +68,7 @@
   <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
     An ensemble of XGBoost, LightGBM, and Random Forest forecasting
     daily sales quantity for 20,000+ SKUs across five product categories,
-    trained on 2+ years of transaction history with 24 features including promotions.
+    trained on 2+ years of transaction history with 24 base features (+6 auto-discovered) including promotions.
   </p>
   <div class="flex flex-wrap justify-center gap-3 mb-20">
     <a href="#predict"
@@ -94,8 +94,8 @@
       <div class="text-xs text-slate-500 mt-1.5">Day Horizon</div>
     </div>
     <div class="card rounded-2xl p-5">
-      <div class="text-3xl font-bold text-emerald-400">24</div>
-      <div class="text-xs text-slate-500 mt-1.5">Features</div>
+      <div class="text-3xl font-bold text-emerald-400">30</div>
+      <div class="text-xs text-slate-500 mt-1.5">Features (24+6 auto)</div>
     </div>
   </div>
 </section>
@@ -107,7 +107,7 @@
     <h2 class="text-3xl font-bold mb-3">Forecasting Models</h2>
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">
       Three machine-learning models — two gradient boosting, one bagging ensemble —
-      plus a seasonal-naïve baseline. The tree models share the same 24-feature input and use
+      plus a seasonal-naïve baseline. The tree models share the same 24 base + 6 auto-discovered features and use
       recursive multi-step forecasting over the 46-day horizon. Final submission uses the mean of the three.
     </p>
   </div>
@@ -238,49 +238,15 @@
       </div>
     </div>
 
-    <!-- FunSearch / LLM AE -->
-    <div class="rounded-2xl p-7"
-         style="background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(59,130,246,.06));
-                border:1px solid rgba(139,92,246,.30)">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-xl leading-none">🤖</span>
-        <span class="font-bold">LLM Auto-Feature Eng.</span>
-        <span class="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full"
-              style="background:rgba(16,185,129,.22);color:#6EE7B7;border:1px solid rgba(16,185,129,.4)">
-          Results ↓
-        </span>
-      </div>
-      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        A <strong class="text-white">FunSearch</strong>-style loop run on a 2,000-SKU sample:
-        propose Python <code class="text-violet-300">add_features(df)</code> functions,
-        score each by weekly FA, and let the best seed the next generation. Both a
-        genetic search over a <strong class="text-white">946-feature</strong> library and an
-        <strong class="text-white">LLM-in-the-loop</strong> (Kimi k2) sampler were run.
-        See the <a href="#autofe" class="text-violet-300 hover:underline">results below</a>.
-      </p>
-      <div class="grid grid-cols-3 gap-2 text-xs">
-        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
-          <div class="text-violet-300 font-semibold mb-1">① Propose</div>
-          <p class="text-slate-500 leading-relaxed">LLM / GA generates candidate feature functions</p>
-        </div>
-        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
-          <div class="text-blue-300 font-semibold mb-1">② Evaluate</div>
-          <p class="text-slate-500 leading-relaxed">Weekly FA on held-out validation weeks</p>
-        </div>
-        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
-          <div class="text-emerald-300 font-semibold mb-1">③ Evolve</div>
-          <p class="text-slate-500 leading-relaxed">Top programs seed the next generation</p>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <!-- Feature table -->
   <div class="card rounded-2xl p-7 mb-8">
     <h3 class="font-semibold mb-2">Feature Inputs by Model</h3>
     <p class="text-slate-500 text-xs mb-5">
-      Tree models use all 24 features. The seasonal-naïve baseline uses only the raw time series.
+      Tree models use 24 hand-crafted base features plus 6 auto-discovered features
+      (from a <a href="#autofe" class="text-violet-300 hover:underline">946-feature FunSearch pool</a>) = 30.
+      The seasonal-naïve baseline uses only the raw time series.
     </p>
     <div class="overflow-x-auto mb-5">
       <table class="w-full text-xs">
@@ -330,17 +296,23 @@
             <td class="text-center py-2">✓</td>
             <td class="text-center py-2 text-slate-600">—</td>
           </tr>
+          <tr class="text-violet-300">
+            <td class="py-2 pr-6">Auto-discovered (FunSearch) · 6 &nbsp;<span class="text-xs text-slate-600">from 946 candidates</span></td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+          </tr>
           <tr class="border-t border-white/[.08] font-medium text-slate-300">
             <td class="py-2 pr-6">Total features</td>
-            <td class="text-center py-2" style="color:#3B82F6">24</td>
-            <td class="text-center py-2" style="color:#06B6D4">24</td>
-            <td class="text-center py-2" style="color:#10B981">24</td>
+            <td class="text-center py-2" style="color:#3B82F6">30</td>
+            <td class="text-center py-2" style="color:#06B6D4">30</td>
+            <td class="text-center py-2" style="color:#10B981">30</td>
             <td class="text-center py-2" style="color:#F59E0B">1 (series)</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <h4 class="font-medium text-sm mb-4 text-slate-400">Full 24-feature set used by tree models</h4>
+    <h4 class="font-medium text-sm mb-4 text-slate-400">24 hand-crafted base features</h4>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
       <div>
         <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">Lag · 7</div>
@@ -371,6 +343,12 @@
           cat_lag1 · cat_roll7
         </div>
       </div>
+    </div>
+    <h4 class="font-medium text-sm mb-3 mt-6" style="color:#C4B5FD">+ 6 auto-discovered features (FunSearch / LLM)</h4>
+    <div class="bg-violet-500/[.06] border border-violet-500/20 rounded-xl p-4 font-mono text-xs text-violet-200 leading-7">
+      roll7−roll28 &nbsp;·&nbsp; lag7−cat_lag1 &nbsp;·&nbsp; roll7−cat_roll7 &nbsp;·&nbsp;
+      lag1/std(lags) &nbsp;·&nbsp; lag7/lag28 &nbsp;·&nbsp; roll7/lag1
+      <span class="text-slate-500 block mt-1">selected from a 946-feature candidate pool by genetic search + Kimi LLM</span>
     </div>
   </div>
 
@@ -493,15 +471,15 @@
   <!-- per-model lift table -->
   <div class="card rounded-2xl overflow-hidden mb-6">
     <div class="px-6 py-4 border-b border-white/[.06]">
-      <h3 class="font-semibold">Discovered features lift every model — weekly FA proxy (2,000 SKUs)</h3>
-      <p class="text-xs text-slate-500 mt-1">Validation weeks 2025-07 · base-24 features vs base-24 + auto-discovered features</p>
+      <h3 class="font-semibold">LLM auto-FE improvement over each ML model — weekly FA (2,000 SKUs)</h3>
+      <p class="text-xs text-slate-500 mt-1">The single Kimi-discovered 6-feature set added to base-24, evaluated on every model · validation weeks 2025-07</p>
     </div>
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
           <th class="text-left px-6 py-3">Model</th>
           <th class="text-right px-4 py-3">Base-24 FA</th>
-          <th class="text-right px-4 py-3">+ Auto features</th>
+          <th class="text-right px-4 py-3">+ LLM features</th>
           <th class="text-right px-4 py-3">Lift</th>
           <th class="text-left px-6 py-3">Note</th>
         </tr>
@@ -510,29 +488,29 @@
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span>LightGBM</td>
           <td class="px-4 py-3 text-right text-slate-300">65.53%</td>
-          <td class="px-4 py-3 text-right font-bold text-blue-400">67.99%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+2.46 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-blue-400">67.25%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+1.72 pp</td>
           <td class="px-6 py-3 text-slate-500 text-xs">strongest baseline, smallest headroom</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#06B6D4"></span>XGBoost</td>
           <td class="px-4 py-3 text-right text-slate-300">62.91%</td>
-          <td class="px-4 py-3 text-right font-bold text-cyan-400">66.52%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+3.61 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">gains most among trees</td>
+          <td class="px-4 py-3 text-right font-bold text-cyan-400">63.62%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.71 pp</td>
+          <td class="px-6 py-3 text-slate-500 text-xs">model-specific tuning reaches +3.6 pp</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span>Random Forest</td>
           <td class="px-4 py-3 text-right text-slate-300">63.08%</td>
-          <td class="px-4 py-3 text-right font-bold text-emerald-400">63.96%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+0.88 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-400">63.25%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.16 pp</td>
           <td class="px-6 py-3 text-slate-500 text-xs">deep trees already capture interactions</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span>OLS (Ridge)</td>
           <td class="px-4 py-3 text-right text-slate-400">15.84%</td>
-          <td class="px-4 py-3 text-right font-bold text-violet-300">35.40%</td>
-          <td class="px-4 py-3 text-right text-violet-400">+19.56 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-violet-300">42.54%</td>
+          <td class="px-4 py-3 text-right text-violet-400">+26.70 pp</td>
           <td class="px-6 py-3 text-slate-500 text-xs">linear model can't build interactions itself</td>
         </tr>
       </tbody>
@@ -579,7 +557,8 @@
           ceiling — every search converges by generation 3–8.</li>
         <li class="flex gap-3"><span class="text-violet-400 flex-shrink-0">▸</span>
           The real win is for <strong class="text-white">weak/linear models</strong>: OLS gains
-          up to +19 pp because it cannot construct interactions itself.</li>
+          <strong class="text-white">+26.7 pp</strong> from the same features because it cannot
+          construct interactions itself.</li>
         <li class="flex gap-3"><span class="text-amber-400 flex-shrink-0">▸</span>
           The recursive lift concentrates in the <strong class="text-white">hardest categories</strong> —
           8804 (+1.2 pp) and 8805 (+3.2 pp).</li>
@@ -876,7 +855,7 @@
   <p>PHBS, Peking University &nbsp;·&nbsp; Rainbow Supermarket POC 2025 &nbsp;·&nbsp; Store 常兴天虹00110</p>
   <p class="mt-1.5">
     XGBoost · LightGBM · Random Forest · Seasonal Naïve · Ensemble ·
-    24 features · Categories 8802 · 8803 · 8804 · 8805 · 8807
+    24 base + 6 auto-discovered features · Categories 8802 · 8803 · 8804 · 8805 · 8807
   </p>
   <p class="mt-1.5">FA = 1 − 2|F−A|/(F+A) · weekly · prior-4-week weighted</p>
 </footer>
