@@ -560,18 +560,30 @@ function buildMap(rows, dcols, scols, vcols) {
 }
 
 function applyPredictions(preds) {
+  // Always merge demo SKUs so they remain available alongside real data
+  for (const [id, info] of generateDemoData()) {
+    if (!preds.has(id)) preds.set(id, { ...info, label: `[Demo] ${info.label}` });
+  }
+
   S.preds = preds;
   const allDates = [...[...preds.values()].flatMap(v=>[...v.map.keys()])].sort();
   const dmin = allDates[0], dmax = allDates[allDates.length-1];
 
-  // Populate SKU dropdown
+  // Populate SKU dropdown — real SKUs first, demo SKUs at bottom in a group
   const sel = document.getElementById('skuSelect');
   sel.innerHTML = '';
+  const realOpts = [], demoOpts = [];
   for (const [id, info] of preds) {
-    const o=document.createElement('option'); o.value=id;
-    o.textContent = (info.label||id).slice(0,55) + (info.label?.length>55||(!info.label&&id.length>55)?'…':'');
-    sel.appendChild(o);
+    const o = document.createElement('option'); o.value = id;
+    o.textContent = (info.label||id).slice(0,55) + ((info.label||id).length>55?'…':'');
+    (info.label?.startsWith('[Demo]') ? demoOpts : realOpts).push(o);
   }
+  if (realOpts.length) {
+    const g = document.createElement('optgroup'); g.label = 'Forecast SKUs';
+    realOpts.forEach(o => g.appendChild(o)); sel.appendChild(g);
+  }
+  const g2 = document.createElement('optgroup'); g2.label = '── Demo SKUs ──';
+  demoOpts.forEach(o => g2.appendChild(o)); sel.appendChild(g2);
 
   // Date inputs
   ['startDate','endDate'].forEach((id,i)=>{

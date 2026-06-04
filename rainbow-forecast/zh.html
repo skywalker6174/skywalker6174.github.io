@@ -546,16 +546,28 @@ function buildMap(rows,dcols,scols,vcols){
 }
 
 function applyPredictions(preds){
+  // 始终将演示数据合并到下拉列表，确保5个示例SKU始终可访问
+  for(const [id,info] of generateDemoData()){
+    if(!preds.has(id)) preds.set(id,{...info,label:`[演示] ${info.label}`});
+  }
+
   S.preds=preds;
   const allDates=[...[...preds.values()].flatMap(v=>[...v.map.keys()])].sort();
   const dmin=allDates[0],dmax=allDates[allDates.length-1];
   const sel=document.getElementById('skuSelect');
   sel.innerHTML='';
+  const realOpts=[],demoOpts=[];
   for(const [id,info] of preds){
     const o=document.createElement('option'); o.value=id;
-    o.textContent=(info.label||id).slice(0,55)+((info.label?.length>55||(!info.label&&id.length>55))?'…':'');
-    sel.appendChild(o);
+    o.textContent=(info.label||id).slice(0,55)+((info.label||id).length>55?'…':'');
+    (info.label?.startsWith('[演示]')?demoOpts:realOpts).push(o);
   }
+  if(realOpts.length){
+    const g=document.createElement('optgroup'); g.label='预测 SKU';
+    realOpts.forEach(o=>g.appendChild(o)); sel.appendChild(g);
+  }
+  const g2=document.createElement('optgroup'); g2.label='── 演示 SKU ──';
+  demoOpts.forEach(o=>g2.appendChild(o)); sel.appendChild(g2);
   ['startDate','endDate'].forEach((id,i)=>{
     const el=document.getElementById(id);
     el.value=i===0?dmin:dmax; el.min=dmin; el.max=dmax;
