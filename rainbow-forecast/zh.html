@@ -238,7 +238,7 @@
     <h3 class="font-semibold mb-2">各模型特征输入</h3>
     <p class="text-slate-500 text-xs mb-5">
       树模型使用 24 个人工基础特征 + 6 个自动发现特征
-      （来自 <a href="#autofe" class="text-violet-300 hover:underline">946 维 FunSearch 候选库</a>）= 30 个。
+      （来自 <a href="#autofe" class="text-violet-300 hover:underline">10,000 维 FunSearch 候选库</a>）= 30 个。
       季节性朴素基准仅使用原始时间序列。
     </p>
     <div class="overflow-x-auto mb-5">
@@ -284,7 +284,7 @@
             <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr class="text-violet-300">
-            <td class="py-2 pr-6">自动发现特征 (FunSearch) · 6 &nbsp;<span class="text-xs text-slate-600">来自 946 候选</span></td>
+            <td class="py-2 pr-6">自动发现特征 (FunSearch) · 6 &nbsp;<span class="text-xs text-slate-600">来自 10,000 候选</span></td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
@@ -334,7 +334,7 @@
     <div class="bg-violet-500/[.06] border border-violet-500/20 rounded-xl p-4 font-mono text-xs text-violet-200 leading-7">
       roll7−roll28 &nbsp;·&nbsp; lag7−cat_lag1 &nbsp;·&nbsp; roll7−cat_roll7 &nbsp;·&nbsp;
       lag1/std(lags) &nbsp;·&nbsp; lag7/lag28 &nbsp;·&nbsp; roll7/lag1
-      <span class="text-slate-500 block mt-1">由遗传搜索 + Kimi LLM 从 946 维候选库中选出</span>
+      <span class="text-slate-500 block mt-1">由遗传搜索、Kimi LLM 与特征级遗传程序从 10,000 维候选库中选出</span>
     </div>
   </div>
 
@@ -428,19 +428,18 @@
     <h2 class="text-3xl font-bold mb-3 mt-4">🤖 LLM 自动特征工程</h2>
     <p class="text-slate-400 text-sm max-w-2xl mx-auto">
       机器能否发现比人工 24 维更好的特征？我们在 2000 个 SKU 样本上运行 FunSearch 循环：
-      初始库含 <strong class="text-white">946 个自动生成的候选特征</strong>，
-      由遗传算法与 LLM 采样器（Kimi k2）共同搜索，以 POC 周度 FA 指标打分。
+      候选库最多含 <strong class="text-white">10,000 个自动生成的特征</strong>，以三种方式搜索：基于特征组合的遗传算法、LLM 采样器（Kimi），以及<strong class="text-white">特征级遗传程序</strong>（淘汰弱特征，对幸存者做交叉与变异）。
     </p>
   </div>
 
   <div class="grid md:grid-cols-4 gap-4 mb-10 text-sm">
     <div class="card rounded-xl p-5 text-center">
-      <div class="text-3xl font-bold text-violet-400">946</div>
-      <div class="text-xs text-slate-500 mt-1">初始库候选特征数</div>
+      <div class="text-3xl font-bold text-violet-400">10,000</div>
+      <div class="text-xs text-slate-500 mt-1">生成的候选特征</div>
     </div>
     <div class="card rounded-xl p-5 text-center">
-      <div class="text-3xl font-bold text-blue-400">~160</div>
-      <div class="text-xs text-slate-500 mt-1">评估的特征组合<br>(GA + LLM)</div>
+      <div class="text-3xl font-bold text-blue-400">3</div>
+      <div class="text-xs text-slate-500 mt-1">搜索方法<br>(GA · LLM · 特征GP)</div>
     </div>
     <div class="card rounded-xl p-5 text-center">
       <div class="text-3xl font-bold text-emerald-400">+2.5pp</div>
@@ -520,7 +519,7 @@
         <div>feat_rollmean_over_lag1 = roll7 / lag1</div>
       </div>
       <p class="text-slate-500 text-xs mt-4">
-        独立的遗传搜索（946 维特征库）以相同的特征族（离散度 · 近期性 · 趋势）
+        独立的遗传搜索以相同的特征族（离散度 · 近期性 · 趋势）
         达到相当的 <strong class="text-violet-300">+2.46 pp</strong>——两种方法收敛到
         相同上限，印证瓶颈在问题本身而非搜索方法。
       </p>
@@ -533,8 +532,12 @@
           自动发现的特征对<strong class="text-white">每个模型</strong>都有帮助，但对树模型
           <strong class="text-white">提升有限</strong>（代理 +2.5 pp → 递归 +0.65 pp）。</li>
         <li class="flex gap-3"><span class="text-blue-400 flex-shrink-0">▸</span>
-          更大的库（40 → 205 → 946）<strong class="text-white">并未</strong>抬高树模型上限——
-          每次搜索在第 3–8 代即收敛。</li>
+          更大的库（40 → 946 → 10,000）<strong class="text-white">并未</strong>抬高树模型上限——
+          三种搜索均在第 3–8 代即收敛。</li>
+        <li class="flex gap-3"><span class="text-cyan-400 flex-shrink-0">▸</span>
+          <strong class="text-white">特征级遗传程序</strong>（淘汰弱特征→对幸存者交叉/变异）
+          培育出越来越复杂的组合特征——到第 15 代精英 150 个中有 120 个是培育后代——
+          但仍停在相同上限（+1.4 pp）。</li>
         <li class="flex gap-3"><span class="text-violet-400 flex-shrink-0">▸</span>
           真正受益的是<strong class="text-white">弱/线性模型</strong>：OLS 用同一组特征提升达
           <strong class="text-white">+26.7 pp</strong>，因为它无法自行构造交互特征。</li>

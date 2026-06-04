@@ -245,7 +245,7 @@
     <h3 class="font-semibold mb-2">Feature Inputs by Model</h3>
     <p class="text-slate-500 text-xs mb-5">
       Tree models use 24 hand-crafted base features plus 6 auto-discovered features
-      (from a <a href="#autofe" class="text-violet-300 hover:underline">946-feature FunSearch pool</a>) = 30.
+      (from a <a href="#autofe" class="text-violet-300 hover:underline">10,000-feature FunSearch pool</a>) = 30.
       The seasonal-naïve baseline uses only the raw time series.
     </p>
     <div class="overflow-x-auto mb-5">
@@ -297,7 +297,7 @@
             <td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr class="text-violet-300">
-            <td class="py-2 pr-6">Auto-discovered (FunSearch) · 6 &nbsp;<span class="text-xs text-slate-600">from 946 candidates</span></td>
+            <td class="py-2 pr-6">Auto-discovered (FunSearch) · 6 &nbsp;<span class="text-xs text-slate-600">from 10,000 candidates</span></td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
             <td class="text-center py-2">✓</td>
             <td class="text-center py-2 text-slate-600">—</td>
@@ -348,7 +348,7 @@
     <div class="bg-violet-500/[.06] border border-violet-500/20 rounded-xl p-4 font-mono text-xs text-violet-200 leading-7">
       roll7−roll28 &nbsp;·&nbsp; lag7−cat_lag1 &nbsp;·&nbsp; roll7−cat_roll7 &nbsp;·&nbsp;
       lag1/std(lags) &nbsp;·&nbsp; lag7/lag28 &nbsp;·&nbsp; roll7/lag1
-      <span class="text-slate-500 block mt-1">selected from a 946-feature candidate pool by genetic search + Kimi LLM</span>
+      <span class="text-slate-500 block mt-1">selected from a 10,000-feature candidate pool by genetic search, Kimi LLM, and feature-level GP</span>
     </div>
   </div>
 
@@ -442,21 +442,23 @@
     <h2 class="text-3xl font-bold mb-3 mt-4">🤖 LLM Auto Feature Engineering</h2>
     <p class="text-slate-400 text-sm max-w-2xl mx-auto">
       Can a machine discover better features than the hand-crafted 24? We ran a
-      FunSearch loop on a 2,000-SKU sample: an initial library of <strong class="text-white">946
-      auto-generated candidate features</strong>, searched by both a genetic algorithm and an
-      LLM-in-the-loop sampler (Kimi k2), scored by the POC weekly-FA metric.
+      FunSearch study on a 2,000-SKU sample with a library of up to
+      <strong class="text-white">10,000 auto-generated candidate features</strong>,
+      searched three ways: a genetic algorithm over feature-sets, an LLM-in-the-loop
+      sampler (Kimi), and a <strong class="text-white">feature-level genetic program</strong>
+      that kills weak features and breeds survivors via crossover &amp; mutation.
     </p>
   </div>
 
   <!-- pipeline -->
   <div class="grid md:grid-cols-4 gap-4 mb-10 text-sm">
     <div class="card rounded-xl p-5 text-center">
-      <div class="text-3xl font-bold text-violet-400">946</div>
-      <div class="text-xs text-slate-500 mt-1">candidate features<br>in initial library</div>
+      <div class="text-3xl font-bold text-violet-400">10,000</div>
+      <div class="text-xs text-slate-500 mt-1">candidate features<br>generated</div>
     </div>
     <div class="card rounded-xl p-5 text-center">
-      <div class="text-3xl font-bold text-blue-400">~160</div>
-      <div class="text-xs text-slate-500 mt-1">feature-sets evaluated<br>(GA + LLM)</div>
+      <div class="text-3xl font-bold text-blue-400">3</div>
+      <div class="text-xs text-slate-500 mt-1">search methods<br>(GA · LLM · feature-GP)</div>
     </div>
     <div class="card rounded-xl p-5 text-center">
       <div class="text-3xl font-bold text-emerald-400">+2.5pp</div>
@@ -538,7 +540,7 @@
         <div>feat_rollmean_over_lag1 = roll7 / lag1</div>
       </div>
       <p class="text-slate-500 text-xs mt-4">
-        The independent genetic search over the 946-feature library reached a comparable
+        The independent genetic search over the feature library reached a comparable
         <strong class="text-violet-300">+2.46 pp</strong> with the same feature families
         (dispersion · recency · trend) — two different methods converging to the same
         ceiling confirms the limit is the problem, not the search.
@@ -553,8 +555,12 @@
           Auto-discovered features help <strong class="text-white">every model</strong>, but the
           gain is <strong class="text-white">modest for trees</strong> (+2.5 pp proxy → +0.65 pp recursive).</li>
         <li class="flex gap-3"><span class="text-blue-400 flex-shrink-0">▸</span>
-          A bigger library (40 → 205 → 946) did <strong class="text-white">not</strong> raise the tree
-          ceiling — every search converges by generation 3–8.</li>
+          A bigger library (40 → 946 → 10,000) did <strong class="text-white">not</strong> raise the tree
+          ceiling — all three searches converge by generation 3–8.</li>
+        <li class="flex gap-3"><span class="text-cyan-400 flex-shrink-0">▸</span>
+          The <strong class="text-white">feature-level GP</strong> (kill weak → crossover/mutate survivors)
+          bred increasingly complex composites — by gen&nbsp;15, 120/150 elite slots were bred
+          offspring — yet still plateaued at the same ceiling (+1.4 pp).</li>
         <li class="flex gap-3"><span class="text-violet-400 flex-shrink-0">▸</span>
           The real win is for <strong class="text-white">weak/linear models</strong>: OLS gains
           <strong class="text-white">+26.7 pp</strong> from the same features because it cannot
