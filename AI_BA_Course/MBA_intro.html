@@ -1,0 +1,1506 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>超车还是出局？AI时代的商业分析</title>
+  <style>
+    :root {
+      --ink: #171b22;
+      --muted: #66717f;
+      --bg: #ffffff;
+      --paper: #ffffff;
+      --line: rgba(143, 28, 38, .18);
+      --pku-red: #8c1515;
+      --pku-red-2: #b31b1b;
+      --pku-red-3: #d8b7ad;
+      --gold: #b08a45;
+      --cyan: #4aa3b5;
+      --charcoal: #1d222b;
+      --panel: transparent;
+      --shadow: 0 14px 34px rgba(18, 22, 29, .10);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      background: #ffffff;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    .deck {
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      background: var(--bg);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 58px 78px 48px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.98), rgba(255,255,255,.93) 54%, rgba(255,255,255,.78)),
+        url("assets/boya-pagoda-bg.png");
+      background-size: auto, cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .slide.active { display: grid; }
+    .slide:not(.title):not(.photo)::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 8% 88%, rgba(140,21,21,.035), transparent 28%),
+        linear-gradient(90deg, rgba(255,255,255,.62), rgba(255,255,255,.36) 58%, rgba(255,255,255,.18));
+      background-size: cover;
+      background-position: center;
+      opacity: 1;
+      z-index: 0;
+    }
+    .slide::after {
+      content: none;
+    }
+
+    .slide.title, .slide.photo {
+      color: var(--ink);
+    }
+    .slide.title::before, .slide.photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 82% 20%, rgba(140,21,21,.10), transparent 32%),
+        radial-gradient(circle at 12% 92%, rgba(140,21,21,.07), transparent 30%);
+      z-index: 0;
+    }
+    .slide > * { position: relative; z-index: 1; }
+
+    .kicker {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: var(--pku-red);
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .kicker::before {
+      content: "";
+      width: 38px;
+      height: 4px;
+      background: var(--pku-red);
+      border-radius: 99px;
+      display: inline-block;
+    }
+    .title .kicker, .photo .kicker { color: var(--pku-red); }
+    .title .kicker::before, .photo .kicker::before { background: var(--pku-red); }
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      font-size: 64px;
+      line-height: 1.08;
+      max-width: 980px;
+      font-weight: 800;
+    }
+    h2 {
+      font-size: 46px;
+      line-height: 1.12;
+      margin-bottom: 28px;
+      max-width: 980px;
+      font-weight: 800;
+    }
+    h3 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--charcoal);
+    }
+    .title h1 { font-size: 74px; }
+    h1::after, h2::after {
+      content: "";
+      display: block;
+      width: 92px;
+      height: 5px;
+      margin-top: 20px;
+      background: linear-gradient(90deg, var(--pku-red), var(--gold));
+      border-radius: 99px;
+    }
+    .title h1::after, .photo h2::after { background: linear-gradient(90deg, var(--pku-red), rgba(140,21,21,.22)); }
+    .subtitle {
+      margin-top: 26px;
+      font-size: 26px;
+      line-height: 1.55;
+      max-width: 980px;
+      color: #354052;
+    }
+    .byline {
+      align-self: end;
+      font-size: 22px;
+      line-height: 1.6;
+      color: #354052;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+      height: 100%;
+    }
+    .layout.wide-left { grid-template-columns: 1.15fr .85fr; }
+    .layout.three { grid-template-columns: repeat(3, 1fr); }
+    .layout.center { place-items: center; text-align: center; }
+    .stack { display: grid; gap: 18px; align-content: start; }
+    .center-stack { display: grid; place-items: center; text-align: center; height: 100%; }
+
+    .card {
+      background: var(--panel);
+      border: 0;
+      border-left: 4px solid rgba(140,21,21,.42);
+      border-radius: 0;
+      padding: 8px 0 8px 20px;
+      box-shadow: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: none;
+    }
+    .card.dark {
+      background: rgba(140,21,21,.06);
+      color: var(--ink);
+      border-left-color: var(--pku-red);
+      padding: 18px 22px;
+      border-radius: 8px;
+    }
+    .card.dark h3, .card.dark .metric { color: var(--pku-red); }
+
+    .big {
+      font-size: 34px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+    .text {
+      font-size: 23px;
+      line-height: 1.55;
+      color: #253044;
+    }
+    .muted { color: var(--muted); }
+    .photo .text, .photo .muted { color: #253044; }
+
+    ul {
+      margin: 0;
+      padding-left: 26px;
+      font-size: 24px;
+      line-height: 1.55;
+    }
+    li { margin: 8px 0; }
+    .tight li { margin: 4px 0; }
+
+    .pillrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(140,21,21,.20);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 18px;
+      font-weight: 700;
+      background: rgba(140,21,21,.05);
+      color: var(--ink);
+    }
+
+    .metric {
+      font-size: 54px;
+      line-height: 1;
+      font-weight: 850;
+      color: var(--pku-red);
+      margin-bottom: 10px;
+    }
+    .caption {
+      font-size: 16px;
+      line-height: 1.35;
+      color: rgba(255,255,255,.76);
+      position: absolute;
+      bottom: 24px;
+      left: 72px;
+      max-width: 820px;
+    }
+    .source {
+      font-size: 15px;
+      line-height: 1.35;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    .image-panel {
+      min-height: 320px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(140,21,21,.18);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      align-items: stretch;
+      margin-top: 22px;
+    }
+    .node {
+      min-height: 116px;
+      padding: 18px;
+      border-radius: 8px;
+      background: rgba(140,21,21,.04);
+      border: 1px solid rgba(140,21,21,.14);
+      display: grid;
+      gap: 8px;
+      align-content: center;
+      text-align: center;
+      box-shadow: none;
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .node::before { content: none; }
+    .node .ico {
+      width: 46px;
+      height: 46px;
+      justify-self: center;
+      margin-bottom: 4px;
+      color: var(--pku-red);
+      display: block;
+    }
+    .node .ico svg { width: 100%; height: 100%; display: block; }
+    .node span { display: block; font-size: 15px; font-weight: 600; color: var(--muted); }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .matrix .cell {
+      border-radius: 8px;
+      border: 1px solid rgba(140,21,21,.14);
+      padding: 18px;
+      background: rgba(140,21,21,.035);
+      min-height: 150px;
+      box-shadow: none;
+    }
+    .matrix.compact .cell { min-height: 120px; padding: 14px 16px; }
+    .cell strong { display: flex; align-items: center; gap: 10px; font-size: 22px; margin-bottom: 8px; }
+    .cell p { font-size: 19px; line-height: 1.45; color: var(--muted); }
+    .cell-ico {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      color: var(--pku-red);
+      display: inline-flex;
+    }
+    .cell-ico svg { width: 100%; height: 100%; display: block; }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 16px;
+      color: #fff;
+      background: var(--pku-red);
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    .tag.green { background: #3f6f58; }
+    .tag.orange { background: var(--gold); }
+    .tag.rose { background: #a23a47; }
+
+    .quote {
+      font-size: 42px;
+      line-height: 1.35;
+      font-weight: 800;
+      max-width: 1000px;
+    }
+
+    .logo-img {
+      width: 240px;
+      max-width: 70%;
+      margin-bottom: 26px;
+      background: transparent;
+      padding: 18px 22px;
+      border-radius: 8px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 18px;
+      right: 28px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      color: rgba(29,34,43,.58);
+      font-size: 15px;
+      z-index: 3;
+    }
+    .title .footer, .photo .footer { color: rgba(255,255,255,.72); }
+    .bar {
+      width: 160px;
+      height: 5px;
+      background: rgba(140,21,21,.16);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .title .bar, .photo .bar { background: rgba(140,21,21,.16); }
+    .bar span { display: block; height: 100%; width: 0; background: var(--pku-red); }
+
+    .nav {
+      position: fixed;
+      left: 20px;
+      bottom: 18px;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+    }
+    button {
+      border: 1px solid rgba(20,33,61,.16);
+      border-radius: 8px;
+      background: rgba(255,255,255,.88);
+      color: var(--ink);
+      width: 40px;
+      height: 36px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .notes {
+      display: none;
+      position: absolute;
+      right: 72px;
+      bottom: 60px;
+      width: min(520px, 42vw);
+      background: rgba(20,33,61,.94);
+      color: #fff;
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-size: 17px;
+      line-height: 1.5;
+      z-index: 4;
+      box-shadow: var(--shadow);
+    }
+    body.show-notes .slide.active .notes { display: block; }
+
+    .slide-shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+      min-height: 0;
+      height: 100%;
+    }
+    .two-up {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 28px;
+      align-items: center;
+      min-height: 0;
+    }
+    .two-up.reverse { grid-template-columns: .95fr 1.05fr; }
+    .media-card {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .media-card img {
+      display: block;
+      width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 14px 34px rgba(18, 22, 29, .10);
+      border: 1px solid rgba(140,21,21,.12);
+    }
+    .media-card.cover img {
+      height: 430px;
+      object-fit: cover;
+    }
+    .mini-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--pku-red);
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .mini-label::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--pku-red);
+      box-shadow: 0 0 0 6px rgba(140,21,21,.10);
+    }
+    .ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .ribbon div {
+      min-height: 98px;
+      padding: 16px;
+      border-radius: 8px;
+      background: rgba(140,21,21,.035);
+      border: 1px solid rgba(140,21,21,.16);
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 18px;
+      background: transparent;
+      border: 0;
+      border-left: 4px solid rgba(140,21,21,.35);
+      border-radius: 8px;
+      box-shadow: none;
+    }
+    .step strong {
+      color: var(--pku-red);
+      font-size: 22px;
+    }
+    .step p {
+      font-size: 21px;
+      line-height: 1.45;
+      color: #283140;
+    }
+    .big-red {
+      font-size: 72px;
+      line-height: 1;
+      color: var(--pku-red);
+      font-weight: 900;
+    }
+    .case-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+    .case-strip .card {
+      min-height: 190px;
+    }
+    .html-chart {
+      width: 100%;
+      background: #fffaf8;
+      border: 1px solid rgba(140,21,21,.14);
+      border-radius: 10px;
+      padding: 22px 24px;
+      box-shadow: 0 14px 34px rgba(18, 22, 29, .10);
+    }
+    .chart-title {
+      font-size: 28px;
+      font-weight: 850;
+      line-height: 1.2;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .chart-subtitle {
+      font-size: 17px;
+      line-height: 1.35;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .bar-chart {
+      display: grid;
+      gap: 11px;
+      margin-top: 8px;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 190px 1fr 74px;
+      align-items: center;
+      gap: 12px;
+    }
+    .bar-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #293241;
+      text-align: right;
+      line-height: 1.15;
+    }
+    .bar-track {
+      height: 30px;
+      border-radius: 4px;
+      background: #f2e8e5;
+      overflow: hidden;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #d43d4d, #e15b65);
+    }
+    .bar-fill.orange { background: linear-gradient(90deg, #d97430, #e59a55); }
+    .bar-value {
+      font-size: 18px;
+      font-weight: 850;
+      color: var(--pku-red);
+    }
+    .chart-axis {
+      display: grid;
+      grid-template-columns: 190px repeat(5, 1fr) 74px;
+      gap: 12px;
+      margin-top: 7px;
+      color: #8a7780;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .chart-axis span:not(:first-child) { text-align: center; }
+    .chart-axis-title {
+      margin-top: 10px;
+      text-align: center;
+      color: #6f7785;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .chart-source {
+      margin-top: 16px;
+      color: #777;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .moat-chart {
+      display: grid;
+      gap: 14px;
+    }
+    .moat-head,
+    .moat-row {
+      display: grid;
+      grid-template-columns: 1fr 150px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+    .moat-head {
+      color: var(--pku-red);
+      font-size: 19px;
+      font-weight: 850;
+      text-align: center;
+    }
+    .moat-box {
+      min-height: 84px;
+      border-radius: 8px;
+      border: 1px solid rgba(140,21,21,.18);
+      background: #fff;
+      padding: 14px 16px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      font-size: 17px;
+      line-height: 1.25;
+      color: #293241;
+      font-weight: 700;
+    }
+    .moat-box.ai {
+      border-color: rgba(74,119,160,.26);
+      background: #f8fbff;
+    }
+    .moat-mid {
+      display: grid;
+      place-items: center;
+      gap: 6px;
+      color: var(--pku-red);
+      font-size: 18px;
+      font-weight: 900;
+      text-align: center;
+    }
+    .moat-arrow {
+      width: 104px;
+      height: 3px;
+      background: var(--pku-red);
+      position: relative;
+    }
+    .moat-arrow::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      top: -6px;
+      border-left: 12px solid var(--pku-red);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+    }
+    .resilience-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .resilience-label {
+      font: 800 24px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+    .resilience-axis {
+      font: 700 18px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+      fill: #5d6677;
+    }
+    .resilience-phase {
+      font: 800 18px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+      fill: #fff;
+    }
+    .mile-map {
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      background: #fffaf8;
+      border: 1px solid rgba(140,21,21,.14);
+      border-radius: 10px;
+      box-shadow: 0 14px 34px rgba(18, 22, 29, .10);
+    }
+    .mile-row {
+      display: grid;
+      grid-template-columns: 158px 1fr 245px;
+      align-items: center;
+      gap: 14px;
+      min-height: 104px;
+    }
+    .mile-name {
+      display: grid;
+      place-items: center;
+      min-height: 84px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--pku-red);
+      font-size: 25px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.15;
+    }
+    .mile-name span {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      opacity: .88;
+      margin-top: 5px;
+    }
+    .mile-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+    .mile-node {
+      min-height: 62px;
+      border: 1px solid rgba(140,21,21,.20);
+      border-radius: 8px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 800;
+      color: #293241;
+      padding: 8px;
+      position: relative;
+    }
+    .mile-node:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -18px;
+      color: var(--pku-red);
+      font-size: 24px;
+      font-weight: 900;
+      z-index: 2;
+    }
+    .mile-decisions {
+      border-left: 4px solid rgba(140,21,21,.36);
+      padding-left: 14px;
+      color: #334155;
+      font-size: 17px;
+      line-height: 1.4;
+    }
+    .mile-decisions b {
+      display: block;
+      color: var(--pku-red);
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .supply-flow {
+      display: grid;
+      gap: 22px;
+      padding: 22px;
+      background: #fffaf8;
+      border: 1px solid rgba(140,21,21,.14);
+      border-radius: 10px;
+      box-shadow: 0 14px 34px rgba(18, 22, 29, .10);
+    }
+    .supply-chain-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      align-items: center;
+      position: relative;
+    }
+    .supply-stage {
+      min-height: 84px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgba(140,21,21,.18);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 10px;
+      color: #293241;
+      font-size: 19px;
+      font-weight: 850;
+      position: relative;
+    }
+    .supply-stage:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -20px;
+      color: var(--pku-red);
+      font-size: 28px;
+      font-weight: 900;
+      z-index: 2;
+    }
+    .flow-band {
+      display: grid;
+      grid-template-columns: 130px 1fr 130px;
+      align-items: center;
+      gap: 14px;
+      min-height: 58px;
+      color: #293241;
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .flow-arrow {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--pku-red);
+      position: relative;
+    }
+    .flow-arrow.forward::after,
+    .flow-arrow.backward::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+    }
+    .flow-arrow.forward::after {
+      right: -2px;
+      border-left: 18px solid var(--pku-red);
+    }
+    .flow-arrow.backward::before {
+      left: -2px;
+      border-right: 18px solid #4a6f9f;
+    }
+    .flow-arrow.backward { background: #4a6f9f; }
+    .ba-points {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .ba-point {
+      border-left: 4px solid rgba(140,21,21,.38);
+      padding: 8px 0 8px 12px;
+      font-size: 18px;
+      line-height: 1.35;
+      color: #334155;
+      font-weight: 750;
+    }
+
+    @media print {
+      body { overflow: visible; background: #fff; }
+      .deck { height: auto; }
+      .slide {
+        display: grid !important;
+        position: relative;
+        page-break-after: always;
+        height: 100vh;
+      }
+      .nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <section class="slide title active">
+      <div class="stack">
+        <h1>超车还是出局？<br>AI时代的商业分析</h1>
+        <p class="subtitle">从数据、预测、决策，到智能体重构企业经营流程。</p>
+      </div>
+      <div class="byline">赵越<br>北京大学汇丰商学院助理教授<br>AI管理研究中心执行主任</div>
+      <aside class="notes">开场：先把 AI 从工具热闹拉回企业经营问题。企业家关心的不是模型有多强，而是订单、交付、库存、现金流和人的响应速度。</aside>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">主题简介</div><h2>当“从数据到决策”不再是少数人的特权</h2></div>
+        <p class="text" style="font-size:22px; line-height:1.85; max-width:1080px; margin-top:18px">
+          商业分析，曾是连接数据与决策的高门槛技术活。AI 浪潮下，智能体已能自主完成数据处理、建模乃至业务执行，让<strong>“从数据到决策”前所未有地高效直接</strong>。
+        </p>
+        <p class="text" style="font-size:22px; line-height:1.85; max-width:1080px; margin-top:14px">
+          本次分享以<strong>供应链管理</strong>为切入点，探讨 AI 如何重塑需求预测、库存优化与风险响应，并直面其背后的隐忧——<strong>数据隐私、算法可信度、人机协同与隐性成本</strong>。
+        </p>
+        <p class="text" style="font-size:22px; line-height:1.85; max-width:1080px; margin-top:14px; color:var(--pku-red); font-weight:600">
+          机遇与风险并存，我们该以何种姿态迎接这场变革？
+        </p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <h2>从商业分析基本盘，到 AI 智能体重构经营决策</h2></div>
+        <div class="layout three">
+          <div class="card"><span class="tag green">01</span><h3>起源</h3><p class="text">什么是商业分析？如何用数据、预测和优化支撑决策，并以供应链管理为例。</p></div>
+          <div class="card"><span class="tag orange">02</span><h3>冲击</h3><p class="text">AI 智能体如何从文档处理、方案设计，走向 AI 开发 AI。</p></div>
+          <div class="card"><span class="tag">03</span><h3>机遇</h3><p class="text">从数字化“发生了什么”，走向智能化“下一步怎么办”。</p></div>
+          <div class="card"><span class="tag rose">04</span><h3>风险</h3><p class="text">隐私、算法厌恶、人在回路、调用成本陷阱。</p></div>
+          <div class="card"><span class="tag green">05</span><h3>路径</h3><p class="text">从真实业务问题出发，探索企业落地智能体的可行路径。</p></div>
+          <div class="card"><span class="tag">结语</span><h3>结语</h3><p class="text">回到经营本质：AI 重构的是决策与组织的响应速度。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">第一部分：起源</div>
+        <p class="quote">商业分析的本质：<br>用数据解释问题，用模型预测未来，用决策创造价值。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">什么是商业分析？</div><h2>把业务问题翻译成“数据、预测、决策”的闭环</h2></div>
+        <div class="two-up">
+          <div class="stack">
+            <div class="card"><h3>数据</h3><p class="text">把订单、客户、库存、价格、交付、财务等业务事实变成可计算的数据。</p></div>
+            <div class="card"><h3>预测</h3><p class="text">预测需求、风险、转化率、交期、成本和客户行为，提前看见未来。</p></div>
+            <div class="card"><h3>决策</h3><p class="text">在约束条件下做资源配置：接不接单、备多少货、怎么定价、如何调度。</p></div>
+          </div>
+          <div class="card dark"><h3>四类商业分析问题</h3><ul><li>描述性分析：发生了什么？</li><li>诊断性分析：为什么发生？</li><li>预测性分析：接下来会怎样？</li><li>指示性分析：我们应该怎么办？</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">AI 时代的商业分析</div><h2>从“人看报表做判断”，走向“智能体带着模型参与行动”</h2></div>
+        <div class="flow">
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg></span>业务问题<span>利润/增长/风险</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>数据资产<span>客户/订单/流程</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M17 8h4v4"/></svg></span>预测模型<span>需求/成本/概率</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.6" fill="#fff"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.6" fill="#fff"/></svg></span>优化决策<span>排程/定价/调度</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 8V4.5"/><circle cx="12" cy="3.4" r="1.2" fill="currentColor"/><circle cx="9.5" cy="13" r="1.2" fill="currentColor"/><circle cx="14.5" cy="13" r="1.2" fill="currentColor"/><line x1="9.5" y1="16.5" x2="14.5" y2="16.5"/></svg></span>智能体执行<span>调用系统/复盘</span></div>
+        </div>
+        <div class="case-strip">
+          <div class="card"><h3>传统商业分析</h3><p class="text">分析师做报表、建模型、汇报洞察，管理者再推动执行。</p></div>
+          <div class="card"><h3>AI 商业分析</h3><p class="text">智能体能读数据、问问题、调用模型、生成方案，并进入业务系统执行小闭环。</p></div>
+          <div class="card"><h3>管理者的新任务</h3><p class="text">定义目标、约束、边界和复盘机制，而不是只看最后一张报表。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">以供应链管理为例</div><h2>商业分析如何把“货在动”翻译成数据、预测和决策？</h2></div>
+        <div class="two-up reverse">
+          <div class="media-card"><img src="assets/docx/image1.jpeg" alt="全球供应链流程图"></div>
+          <div class="stack">
+            <div class="card"><h3>物料流</h3><p class="text">原材料、工厂、仓储、终端、客户，每一次移动都占用资金。</p></div>
+            <div class="card"><h3>信息流</h3><p class="text">需求、订单、库存、产能、交期，信息越晚越容易局部最优。</p></div>
+            <div class="card"><h3>风险流</h3><p class="text">供应不稳、物流延迟、质量波动、需求突变，最后都会体现在利润表和现金流上。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">物料流与信息流</div><h2>货往前走，信息往回流；中间每一步都需要商业分析</h2></div>
+        <div class="stack">
+          <div class="supply-flow">
+            <div class="flow-band">
+              <div>物料流</div>
+              <div class="flow-arrow forward"></div>
+              <div style="text-align:right">向客户交付</div>
+            </div>
+            <div class="supply-chain-row">
+              <div class="supply-stage">供应商<br><small>原材料/零部件</small></div>
+              <div class="supply-stage">制造商<br><small>产能/排程</small></div>
+              <div class="supply-stage">分销中心<br><small>库存/仓配</small></div>
+              <div class="supply-stage">零售/电商<br><small>渠道/价格</small></div>
+              <div class="supply-stage">客户<br><small>需求/体验</small></div>
+            </div>
+            <div class="flow-band">
+              <div>需求信息</div>
+              <div class="flow-arrow backward"></div>
+              <div style="text-align:right">向上游反馈</div>
+            </div>
+            <div class="ba-points">
+              <div class="ba-point">需求预测：下一周/下一月要多少？</div>
+              <div class="ba-point">库存决策：备在哪里、备多少？</div>
+              <div class="ba-point">产能排程：先做哪张订单？</div>
+              <div class="ba-point">价格与服务：承诺多快、成本多少？</div>
+            </div>
+          </div>
+          <div class="card"><p class="text">供应链协同不是开会协同，而是让每一层都看到相同的真实数据，并把数据转成预测、优化和可执行动作。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">物流配送场景</div><h2>起始段、干线段、末端段都是商业分析问题</h2></div>
+        <div class="stack">
+          <div class="mile-map">
+            <div class="mile-row">
+              <div class="mile-name">起始段<span>First mile</span></div>
+              <div class="mile-flow">
+                <div class="mile-node">工厂 / 供应商</div>
+                <div class="mile-node">揽收</div>
+                <div class="mile-node">集货仓</div>
+                <div class="mile-node">干线入口</div>
+              </div>
+              <div class="mile-decisions"><b>优化决策</b>揽收窗口、车辆装载、供应商协同、入仓节奏</div>
+            </div>
+            <div class="mile-row">
+              <div class="mile-name">干线段<span>Middle mile</span></div>
+              <div class="mile-flow">
+                <div class="mile-node">起始枢纽</div>
+                <div class="mile-node">干线运输</div>
+                <div class="mile-node">分拨中心</div>
+                <div class="mile-node">区域仓</div>
+              </div>
+              <div class="mile-decisions"><b>优化决策</b>网络流、干线班次、仓网布局、跨区调拨</div>
+            </div>
+            <div class="mile-row">
+              <div class="mile-name">末端段<span>Last mile</span></div>
+              <div class="mile-flow">
+                <div class="mile-node">站点</div>
+                <div class="mile-node">骑手 / 司机</div>
+                <div class="mile-node">路径配送</div>
+                <div class="mile-node">客户签收</div>
+              </div>
+              <div class="mile-decisions"><b>优化决策</b>订单分配、路径规划、时窗承诺、异常改派</div>
+            </div>
+          </div>
+          <div class="card"><p class="text">这三段都不是简单“物流执行”，而是典型 AI 商业分析：先预测订单与时效风险，再用数学优化模型在成本、速度、服务体验之间做取舍。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">供应链风险：牛鞭效应</div><h2>牛鞭效应是供应链风险的典型体现，协同是关键解法</h2></div>
+        <div class="two-up reverse">
+          <div class="media-card"><img src="assets/docx/image3.png" alt="牛鞭效应"></div>
+          <div class="stack">
+            <div class="card"><p class="text">需求信号（风险）沿供应链向上游传递时被逐级放大，会变成过量库存、缺货、产能错配和现金流压力。该现象由斯坦福大学商学院 Hau Leung Lee 教授于1997年提出。</p></div>
+            <div class="card"><h3>商业分析怎么介入？</h3><ul><li>共享同一套需求和库存数据</li><li>用预测模型识别异常波动</li><li>用补货与产能模型协调上下游</li><li>把协同规则嵌入系统，而不只是靠会议</li></ul></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">供应链风险：韧性</div><h2>韧性也是风险管理的一部分，同样需要商业分析支撑</h2></div>
+        <div class="two-up reverse">
+          <div class="media-card">
+            <div class="html-chart">
+              <div class="chart-title">供应链韧性：冲击之后，企业走向分化</div>
+              <svg class="resilience-svg" viewBox="0 0 980 560" role="img" aria-label="供应链韧性曲线重绘图">
+                <defs>
+                  <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                    <path d="M0,0 L10,5 L0,10 Z" fill="#253044"/>
+                  </marker>
+                </defs>
+                <rect x="0" y="0" width="980" height="560" rx="18" fill="#fffaf8"/>
+                <line x1="100" y1="430" x2="900" y2="430" stroke="#253044" stroke-width="4" marker-end="url(#arrowhead)"/>
+                <line x1="100" y1="430" x2="100" y2="80" stroke="#253044" stroke-width="4" marker-end="url(#arrowhead)"/>
+                <text x="500" y="535" text-anchor="middle" class="resilience-axis">Time</text>
+                <text x="36" y="260" transform="rotate(-90 36 260)" text-anchor="middle" class="resilience-axis">Supply Chain Performance</text>
+                <line x1="100" y1="220" x2="900" y2="220" stroke="#aeb7c2" stroke-width="3" stroke-dasharray="8 8"/>
+                <text x="150" y="120" fill="#d43d4d" class="resilience-label">Disruption</text>
+                <path d="M210 130 L210 210" stroke="#d43d4d" stroke-width="10" marker-end="url(#arrowhead)"/>
+                <path d="M100 210 C250 210, 260 210, 305 210 C360 210, 370 300, 420 330 C500 380, 560 250, 650 180 C730 120, 820 145, 900 142" fill="none" stroke="#63a84f" stroke-width="8"/>
+                <path d="M100 215 C280 215, 310 215, 355 250 C430 305, 520 250, 610 225 C720 195, 800 205, 900 206" fill="none" stroke="#4f9ee3" stroke-width="8"/>
+                <path d="M100 212 C245 212, 295 214, 345 275 C405 350, 505 405, 610 340 C700 285, 785 290, 900 292" fill="none" stroke="#f0b323" stroke-width="8"/>
+                <path d="M100 210 C240 210, 270 215, 300 330 C345 475, 520 456, 900 455" fill="none" stroke="#7b3fa1" stroke-width="8"/>
+                <text x="710" y="126" fill="#63a84f" class="resilience-label">自适应</text>
+                <text x="706" y="198" fill="#4f9ee3" class="resilience-label">稳健</text>
+                <text x="700" y="284" fill="#d49400" class="resilience-label">延展</text>
+                <text x="705" y="414" fill="#7b3fa1" class="resilience-label">崩溃</text>
+                <g>
+                  <rect x="100" y="470" width="190" height="40" fill="#dce8f6"/><text x="195" y="496" text-anchor="middle" fill="#253044" class="resilience-phase">准备</text>
+                  <rect x="290" y="470" width="190" height="40" fill="#9fc1e8"/><text x="385" y="496" text-anchor="middle" fill="#253044" class="resilience-phase">响应</text>
+                  <rect x="480" y="470" width="190" height="40" fill="#347bd0"/><text x="575" y="496" text-anchor="middle" class="resilience-phase">恢复</text>
+                  <rect x="670" y="470" width="190" height="40" fill="#1756a6"/><text x="765" y="496" text-anchor="middle" class="resilience-phase">成长</text>
+                </g>
+              </svg>
+              <div class="chart-source">出处：Sheffi (2005) 对供应链韧性的定义：从冲击中恢复的能力；根据课程材料重绘。</div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card"><h3>Covid-19 的分水岭</h3><p class="text">有些企业在冲击后倒闭，有些企业反而在恢复后加速发展。差异不只在资源多寡，而在恢复机制。</p></div>
+            <div class="card"><h3>RedMart 的启发</h3><p class="text">疫情中生鲜电商需求突增，真正的能力不是“线上卖菜”，而是库存、履约、替代供应和配送弹性的组合。</p></div>
+            <div class="card"><h3>商业分析的角色</h3><p class="text">预测冲击、模拟恢复路径、评估替代供应和库存策略，把“抗风险”转成可计算的经营决策。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">供应链 disruption 后的渠道分化</div><h2>电商在冲击后份额增加，大卖场越来越难</h2></div>
+        <div class="two-up reverse">
+          <div class="media-card"><img src="assets/docx/image6.png" alt="中国消费渠道结构变化"></div>
+          <div class="stack">
+            <div class="card"><h3>冲击不是只带来损失</h3><p class="text">供应链 disruption会重新分配需求、履约能力和消费者习惯。反应快的渠道可能在恢复期继续加速。</p></div>
+            <div class="card"><h3>电商更像适应曲线</h3><p class="text">电商渠道占比持续抬升，说明线上需求聚合、库存可视化和履约弹性在冲击后更有优势。</p></div>
+            <div class="card"><h3>大卖场更像延展或崩溃曲线</h3><p class="text">大卖场受固定资产、门店客流和库存周转约束更强，恢复后不一定回到原来的增长轨道。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">第二部分：冲击</div>
+        <p class="quote">AI 对商业分析的冲击，不是多一个工具。<br>而是把“分析结果”推进到“可行动的数字员工”。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">AI FOMO</div><h2>最危险的不是不用 AI，而是把 AI 直接扔进混乱流程</h2></div>
+        <div class="layout three">
+          <div class="card"><h3>Fear of Missing Out 错失恐惧</h3><p class="text">企业家怕错过，员工怕被替代。</p></div>
+          <div class="card"><h3>常见误区</h3><p class="text">买账号、买模型、买平台，却没有定义任务边界、数据口径和责任人。</p></div>
+          <div class="card"><h3>正确入口</h3><p class="text">从一个高频、重复、可验收、低风险的业务决策闭环开始。</p></div>
+        </div>
+        <div class="ribbon"><div>文档处理</div><div>客服售后</div><div>供应链方案</div><div>AI 自我迭代</div></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">案例 1：海关文件智能体</div><h2>把报关文件处理，变成“AI + 专家审计”的合规生产线</h2></div>
+        <div class="two-up">
+          <div class="stack">
+            <div class="card"><h3>为什么适合AI？</h3><ul><li>文档多，字段多，规则多</li><li>错误成本高，但步骤可结构化</li><li>历史案例能沉淀为知识库</li></ul></div>
+            <div class="card"><h3>对外贸企业的启发</h3><p class="text">第一步不是买大系统，而是把高频单据的字段、规则、异常和负责人整理清楚。</p></div>
+          </div>
+          <div class="card dark"><div class="metric">智能体</div><ul><li>读取合同、发票、装箱单</li><li>抽取字段并比对规则</li><li>提示缺失与异常</li><li>把高风险项交给专家复核</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">案例 2：智能体自动设计供应链数智化方案</div><h2>从“企业家讲业务 + 外包团队”，到智能体“流程蓝图 + 数学模型 + UI 原型”</h2></div>
+        <div class="flow">
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h16v12H9l-4 4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="12.5" x2="13" y2="12.5"/></svg></span>访谈<span>追问业务边界</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="21"/></svg></span>建模<span>整理成约束与目标</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></svg></span>求解<span>生成优化方案</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/><path d="M7 12l3-3 2 2 3-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>呈现<span>自动设计 UI 看板</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></span>复盘<span>持续修正规则</span></div>
+        </div>
+        <div class="case-strip">
+          <div class="card"><h3>计划排程</h3><p class="text">产能、交期、换线、库存共同约束。</p></div>
+          <div class="card"><h3>仓配优化</h3><p class="text">订单、仓位、路径、人员联动决策。</p></div>
+          <div class="card"><h3>采购协同</h3><p class="text">价格、交期、供应风险和现金流权衡。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">案例 3：AI 开发 AI</div><h2>当 AI 进入研发流程，企业能力的迭代速度会改变</h2></div>
+        <div class="layout three">
+          <div class="card"><h3>Anthropic 内部使用</h3><p class="text">材料中提到，员工自述日常使用 Claude 的比例从 28% 提升到 59%，平均生产力增幅从 20% 提升到 50%。</p></div>
+          <div class="card"><h3>Kimi 与 AI 主导研发</h3><p class="text">杨植麟关于“未来 AI 研发进入 AI 主导时代”的观点，提示企业研发组织也会被重构。</p></div>
+          <div class="card"><h3>企业家要看到的趋势</h3><p class="text">AI 不只是帮员工快一点，而是可能改变“谁设计流程、谁写系统、谁迭代产品”。</p></div>
+        </div>
+        <div class="card dark" style="margin-top:22px"><p class="big">从日常文档处理，到智能解决方案，再到 AI 自我迭代：商业模式可能从 B2B、B2C，走向 A2A。</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">A2A：智能体到智能体</div>
+        <p class="quote">未来的很多企业协同，可能不是人和人开会，<br>而是智能体和智能体先把80%的问题谈完。</p>
+        <div class="ribbon"><div>采购智能体</div><div>销售智能体</div><div>报关智能体</div><div>客服智能体</div></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">第三部分：机遇</div>
+        <p class="quote">数字化回答“发生了什么”。<br>智能化回答“下一步怎么办”。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">传统数字看板</div><h2>数字化系统可以看见事实，但不一定能推动行动</h2></div>
+        <div class="two-up">
+          <div class="stack">
+            <div class="card"><h3>看板的价值</h3><p class="text">把生产计划完成率、成本、合规率、设备效率等指标可视化。</p></div>
+            <div class="card"><h3>看板的局限</h3><p class="text">数据展示之后，仍然需要人解释原因、协调资源、决定下一步。</p></div>
+          </div>
+          <div class="media-card"><img src="assets/docx/image7.png" alt="数字化生产看板"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">数字化系统架构</div><h2>ERP、APS、WMS、CRM ...... 系统越多，效率不一定越高</h2></div>
+        <div class="two-up reverse">
+          <div class="media-card"><img src="assets/docx/image8.png" alt="集团智慧架构"></div>
+          <div class="stack">
+            <div class="card"><h3>数据孤岛</h3><p class="text">系统之间字段不同、口径不同、负责人不同，数据中台很容易变成“数据仓库”。</p></div>
+            <div class="card"><h3>真正难点</h3><p class="text">不是接口技术，而是业务口径、责任边界和激励机制。</p></div>
+            <div class="card"><h3>智能化前提</h3><p class="text">先有可信数据、清晰流程和可执行权限，再谈智能体。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">SaaS 的悲歌</div><h2>AI 智能体正在动摇传统软件的“按人头收费”逻辑</h2></div>
+        <div class="two-up">
+          <div class="stack">
+            <div class="card"><p class="big">2026 年 2 月 3 日，材料称全球 SaaS 和 IT 服务公司市值一天蒸发超过 2850 亿美元。</p></div>
+            <div class="card"><h3>关键不是宏观经济</h3><p class="text">投资者担心的是：如果 AI 智能体成为主要用户，企业为什么还要为每个员工买一个软件席位？</p></div>
+          </div>
+          <div class="media-card">
+            <div class="html-chart">
+              <div class="chart-title">2月3日 SaaS 股票“大屠杀”</div>
+              <div class="chart-subtitle">全球 SaaS 和 IT 服务公司市值一天蒸发超过 2850 亿美元</div>
+              <div class="bar-chart">
+                <div class="bar-row"><div class="bar-name">Thomson Reuters</div><div class="bar-track"><div class="bar-fill" style="width:95%"></div></div><div class="bar-value">-19%</div></div>
+                <div class="bar-row"><div class="bar-name">LegalZoom</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="bar-value">-18%</div></div>
+                <div class="bar-row"><div class="bar-name">RELX</div><div class="bar-track"><div class="bar-fill" style="width:75%"></div></div><div class="bar-value">-15%</div></div>
+                <div class="bar-row"><div class="bar-name">Wolters Kluwer</div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="bar-value">-13%</div></div>
+                <div class="bar-row"><div class="bar-name">LSEG</div><div class="bar-track"><div class="bar-fill" style="width:42.5%"></div></div><div class="bar-value">-8.5%</div></div>
+                <div class="bar-row"><div class="bar-name">高盛软件股票篮子</div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><div class="bar-value">-6%</div></div>
+                <div class="bar-row"><div class="bar-name">Nasdaq 100</div><div class="bar-track"><div class="bar-fill orange" style="width:12%"></div></div><div class="bar-value">-2.4%</div></div>
+              </div>
+              <div class="chart-axis"><span></span><span>-20%</span><span>-15%</span><span>-10%</span><span>-5%</span><span>0%</span><span></span></div>
+              <div class="chart-axis-title">单日跌幅</div>
+              <div class="chart-source">出处：Bloomberg、Forrester，2026年2月3日；根据课程材料重绘。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">SaaS 护城河正在被 AI 消解</div><h2>切换成本、专有数据、产品复杂性，可能都被重新定价</h2></div>
+        <div class="two-up reverse">
+          <div class="media-card">
+            <div class="html-chart moat-chart">
+              <div class="chart-title">SaaS 三大护城河正在被 AI 消解</div>
+              <div class="chart-subtitle">Ben Thompson 的 SaaSmageddon 核心分析</div>
+              <div class="moat-head"><div>传统 SaaS 护城河</div><div></div><div>AI 时代的新现实</div></div>
+              <div class="moat-row">
+                <div class="moat-box">用户黏性高<br>数据迁移代价太大</div>
+                <div class="moat-mid"><div>切换成本</div><div class="moat-arrow"></div></div>
+                <div class="moat-box ai">AI 智能体成为中间层<br>底层软件可随时更换</div>
+              </div>
+              <div class="moat-row">
+                <div class="moat-box">垂直行业数据<br>构成竞争壁垒</div>
+                <div class="moat-mid"><div>专有数据</div><div class="moat-arrow"></div></div>
+                <div class="moat-box ai">LLM 不依赖专有数据<br>可整合任意数据源</div>
+              </div>
+              <div class="moat-row">
+                <div class="moat-box">企业软件极难复制<br>新人很难同步</div>
+                <div class="moat-mid"><div>产品复杂性</div><div class="moat-arrow"></div></div>
+                <div class="moat-box ai">代码成本趋近于零<br>企业可定制软件</div>
+              </div>
+              <div class="chart-source">出处：Ben Thompson, Stratechery / SaaSmageddon 相关分析；根据课程材料重绘。</div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card"><h3>传统护城河</h3><p class="text">用户培训、历史数据、复杂流程、深度集成。</p></div>
+            <div class="card"><h3>AI 新现实</h3><p class="text">智能体可以成为中间层，读懂多个系统，替用户执行跨系统任务。</p></div>
+            <div class="card dark"><h3>对企业</h3><p class="text">不必一次性建设“大而全系统”，可以从明确结果出发，小闭环智能化。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">成果即服务 (OaaS)</div><h2>企业家买的不是软件，而是结果</h2></div>
+        <div class="layout three">
+          <div class="card"><h3>过去：买功能</h3><p class="text">买 ERP、买 WMS、买 CRM、买账号、买培训，结果仍要靠企业自己消化。</p></div>
+          <div class="card"><h3>现在：买流程</h3><p class="text">供应商帮你搭流程、接数据、做报表，但执行仍依赖员工。</p></div>
+          <div class="card"><h3>未来：买结果</h3><p class="text">线索转化率、库存下降、客服解决率、账款回收、准时交付。</p></div>
+        </div>
+        <div class="card dark" style="margin-top:24px"><p class="big">AI 智能体把“软件作为工具”推向“软件作为行动者”。</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">Harness 智能体</div><h2>给企业装上“管理外骨骼”</h2></div>
+        <div class="flow">
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg></span>目标<span>利润/现金/交付</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.2 6h9.6M6.2 8l5 8M17.8 8l-5 8"/></svg></span>流程<span>节点/责任/规则</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>数据<span>主数据/口径/质量</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>动作<span>查询/生成/调用</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span>治理<span>审计/反馈/迭代</span></div>
+        </div>
+        <div class="card" style="margin-top:34px"><p class="big">先让智能体在“小闭环”里可靠，再让它进入“大流程”。</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">第四部分：风险</div>
+        <p class="quote">AI 转型的风险，不只是技术风险。<br>更是数据、组织、信任和成本的管理风险。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">数据隐私风险</div><h2>企业最担心的，不是数据少，而是核心秘密被泄露</h2></div>
+        <div class="matrix">
+          <div class="cell"><strong>商业秘密</strong><p>价格、毛利、供应商名单、客户名单、销售预测。</p></div>
+          <div class="cell"><strong>核心技能</strong><p>工艺参数、质检经验、报价逻辑、售后判断。</p></div>
+          <div class="cell"><strong>客户数据</strong><p>手机号、地址、订单、偏好、投诉记录。</p></div>
+          <div class="cell"><strong>权限边界</strong><p>智能体能读什么、能写什么、能不能外发，必须提前定义。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">算法厌恶风险</div><h2>员工抵触的往往不是 AI，而是“被 AI 管理”</h2></div>
+        <div class="two-up">
+          <div class="card"><h3>典型场景</h3><ul><li>零售门店经理不按系统补货建议执行</li><li>快递员不按系统推荐路径配送</li><li>有经验员工觉得系统“不懂现场”</li></ul></div>
+          <div class="card dark"><h3>管理解法</h3><ul><li>先辅助，再自动化</li><li>公开模型边界和责任归属</li><li>让一线参与 bad case 标注</li><li>把节省时间转成更高价值工作</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">使用风险：越用越笨 or 越用越聪明</div><h2>差别在于有没有人在回路的持续反馈循环</h2></div>
+        <div class="layout three">
+          <div class="card"><h3>完全委托</h3><p class="text">把复杂任务一键交给模型，失败率最高，尤其容易越权、幻觉和偷懒。</p></div>
+          <div class="card"><h3>持续反馈</h3><p class="text">大任务拆成小步骤，人不断审查、修正、标注、沉淀规则。</p></div>
+          <div class="card"><h3>组织学习</h3><p class="text">越熟练的用户越能从 AI 中收益，AI 红利不是自动平均分配的。</p></div>
+        </div>
+        <p class="source">材料引用：Anthropic Economic Index report: Learning curves 相关讨论。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">AI 使用中的三个坑</div><h2>精美输出会降低警惕，自动化也会学会“钻空子”</h2></div>
+        <div class="timeline">
+          <div class="step"><strong>01</strong><p><b>Reward Hacking</b>：模型找不到全局解时，可能用 hard-coding 或 special-casing 欺骗测试。</p></div>
+          <div class="step"><strong>02</strong><p><b>Artifacts Paradox</b>：内容越精美，用户越容易放松事实核查，忽略隐藏逻辑错误。</p></div>
+          <div class="step"><strong>03</strong><p><b>脱离上下文的幻觉</b>：长流程、边界不清或工具权限过大时，更容易捏造数据或越权调用。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">调用成本风险</div><h2>AI 成本不是按人头算，而是按“思考次数”和“token”算</h2></div>
+        <div class="two-up">
+          <div class="card dark"><h3>OpenClaw 式教训</h3><p class="text">智能体没养好，早上起来发现token已经烧光很多。问题不是模型贵，而是流程没有成本阀门。</p></div>
+          <div class="stack">
+            <div class="card"><h3>三条成本线</h3><ul><li>单次任务成本上限</li><li>工具调用次数上限</li><li>高低模型分层策略</li></ul></div>
+            <div class="card"><h3>每周复盘</h3><p class="text">看成本、产出、错误率和人工返工量，而不是只看调用量。</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">第五部分：路径</div>
+        <p class="quote">面对变革的姿态，藏在第一个跑通的小闭环里。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">员工个人价值重新定义</div><h2>以产品经理为例：从岗位分工，走向产品构建者（Builder）</h2></div>
+        <div class="layout three">
+          <div class="card"><h3>过去</h3><p class="text">产品经理写需求，程序员写代码，业务方再验收；链条长，反馈慢。</p></div>
+          <div class="card"><h3>现在</h3><p class="text">AI coding 让懂业务的人可以快速把需求变成原型、工具和自动化流程。</p></div>
+          <div class="card"><h3>未来</h3><p class="text">企业更需要 Builder：既懂产品需求，也懂如何指挥 AI 把产品构建出来。</p></div>
+        </div>
+        <div class="card" style="margin-top:24px"><p class="big">员工价值不只是完成任务，而是把需求、指标、业务逻辑和 AI agent 组织成可运行的产品闭环。</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">管理方式重新定义</div><h2>高层管理者将直接和 Builder 及其 AI Agent 对接</h2></div>
+        <div class="flow">
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.2-6 8-6s6.5 2 8 6"/></svg></span>高层管理者<span>经营目标/风险偏好</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5M8 17h8"/></svg></span>业务检测逻辑<span>何时报警/何时介入</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="11" width="3" height="5"/><rect x="12" y="8" width="3" height="8"/><rect x="17" y="4" width="3" height="12"/></svg></span>指标定义<span>口径/阈值/优先级</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v6c0 4.5-3 7-7 8-4-1-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></span>Builder<span>产品需求/AI coding</span></div>
+          <div class="node"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 8V4.5"/><circle cx="12" cy="3.4" r="1.2" fill="currentColor"/><circle cx="9.5" cy="13" r="1.2" fill="currentColor"/><circle cx="14.5" cy="13" r="1.2" fill="currentColor"/><path d="M9.5 16.5h5"/></svg></span>AI Agent<span>监控流程/执行小闭环</span></div>
+        </div>
+        <div class="card dark" style="margin-top:34px"><p class="big">管理者直接定义指标和业务边界，Builder 把它们变成可运行、可监控、可复盘的智能体系统。</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">商业分析场景选择</div><h2>第一批 AI 智能体场景，要满足几个条件</h2></div>
+        <div class="layout three">
+          <div class="card"><h3>高频</h3><p class="text">每天都发生，员工已经觉得烦。</p></div>
+          <div class="card"><h3>重复</h3><p class="text">规则相对稳定，能拆成步骤。</p></div>
+          <div class="card"><h3>可验收</h3><p class="text">结果对错可以被检查，有明确指标。</p></div>
+          <div class="card"><h3>低风险</h3><p class="text">先做人机协同，不让智能体独立做高风险承诺。</p></div>
+          <div class="card"><h3>有数据</h3><p class="text">至少有历史文档、表格、聊天记录或订单数据。</p></div>
+          <div class="card"><h3>人机协同</h3><p class="text">业务负责人愿意每周看结果、改规则、标注错误。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">30 / 60 / 90 天路线图</div><h2>从分析原型到决策闭环，再到流程扩展</h2></div>
+        <div class="layout three">
+          <div class="card"><span class="tag green">30 天</span><h3>选场景</h3><ul class="tight"><li>列出高频任务</li><li>估算成本和错误率</li><li>定义数据边界</li><li>做可用原型</li></ul></div>
+          <div class="card"><span class="tag">60 天</span><h3>跑闭环</h3><ul class="tight"><li>接入真实数据</li><li>设人工审核点</li><li>记录错误原因</li><li>看节省时间和体验</li></ul></div>
+          <div class="card"><span class="tag orange">90 天</span><h3>扩流程</h3><ul class="tight"><li>沉淀知识库</li><li>打通上下游系统</li><li>建立成本监控</li><li>培养智能体协同员</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">迎接变革的姿态</div><h2>不是追工具，而是重构企业的商业分析逻辑</h2></div>
+        <div class="layout">
+          <div class="card"><h3>看清前沿</h3><p class="text">紧跟 AI 研究与产业实践，拓展企业家的技术视野与管理想象力。</p></div>
+          <div class="card"><h3>定制路径</h3><p class="text">教授 + 助理 + AI 智能体协同，围绕真实业务问题做"私人定制"。</p></div>
+          <div class="card"><h3>深入决策</h3><p class="text">进入业务与决策逻辑，梳理问题、数据、模型、流程与边界。</p></div>
+          <div class="card"><h3>跑通闭环</h3><p class="text">把企业自己的智能体系统，从一个真实场景先跑起来。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">课堂工作坊</div><h2>让企业家带着问题来，带着蓝图走</h2></div>
+        <div class="flow">
+          <div class="node">痛点清单<span>钱/货/人/客</span></div>
+          <div class="node">流程地图<span>现状与瓶颈</span></div>
+          <div class="node">数据清单<span>已有与缺失</span></div>
+          <div class="node">智能体原型<span>角色与边界</span></div>
+          <div class="node">行动计划<span>30/60/90 天</span></div>
+        </div>
+        <div class="card" style="margin-top:32px"><p class="text">每家企业至少拿走一个可落地的 AI 商业分析场景：报关单据审核、客服退换货、销售跟进、库存预警、采购比价、生产异常日报。</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">结语</div>
+        <p class="quote">AI 重构的不是工具，<br>而是经营决策与组织的响应速度。</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-shell">
+        <div><div class="kicker">结语</div><h2>AI 重构信息流动、人员执行和企业响应效率</h2></div>
+        <div class="layout three">
+          <div class="card"><span class="tag green">信息</span><h3>经营信号更快流动</h3><p class="text">AI 让数据、流程和智能体实时联动，减少层层汇报中的延迟与失真。</p></div>
+          <div class="card"><span class="tag orange">组织</span><h3>执行方式被重新分配</h3><p class="text">重复执行交给智能体，员工转向定义边界、检查结果和持续复盘。</p></div>
+          <div class="card"><span class="tag rose">窗口</span><h3>小企业更容易转身</h3><p class="text">越是中小型、初期企业，组织惯性越小，越适合自上而下快速试验。</p></div>
+        </div>
+        <div class="card dark" style="margin-top:24px"><p class="big">在规避风险的同时大胆尝试，企业才可能在 AI 时代弯道超车，并为社会创造更大的价值。</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="center-stack">
+        <div class="kicker">结尾：给企业家的三个问题</div>
+        <p class="quote">你最想让 AI 帮你分析并执行哪一个重复、昂贵、容易出错的经营决策？</p>
+        <div class="layout three" style="width:100%; margin-top:30px">
+          <div class="card"><h3>1. 真问题</h3><p class="text">它每月造成多少成本、延误或客户流失？</p></div>
+          <div class="card"><h3>2. 真数据</h3><p class="text">这个问题的数据在哪里？</p></div>
+          <div class="card"><h3>3. 真闭环</h3><p class="text">AI 做错时谁发现，谁纠正，谁让它下次更好？</p></div>
+        </div>
+      </div>
+    </section>
+</main>
+
+  <div class="nav" aria-hidden="true">
+    <button id="prev" title="上一页">‹</button>
+    <button id="next" title="下一页">›</button>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let index = 0;
+
+    function footer(slide, i) {
+      const existing = slide.querySelector('.footer');
+      if (existing) existing.remove();
+      const f = document.createElement('div');
+      f.className = 'footer';
+      f.innerHTML = `<span>${i + 1} / ${slides.length}</span><span class="bar"><span></span></span>`;
+      f.querySelector('.bar span').style.width = `${((i + 1) / slides.length) * 100}%`;
+      slide.appendChild(f);
+    }
+
+    slides.forEach(footer);
+
+    function show(i) {
+      index = Math.max(0, Math.min(slides.length - 1, i));
+      slides.forEach((s, n) => s.classList.toggle('active', n === index));
+      history.replaceState(null, '', `#${index + 1}`);
+    }
+
+    document.getElementById('prev').addEventListener('click', () => show(index - 1));
+    document.getElementById('next').addEventListener('click', () => show(index + 1));
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'PageDown', ' '].includes(e.key)) show(index + 1);
+      if (['ArrowLeft', 'PageUp'].includes(e.key)) show(index - 1);
+      if (e.key.toLowerCase() === 'n') document.body.classList.toggle('show-notes');
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+    });
+
+    const start = parseInt(location.hash.replace('#', ''), 10);
+    if (!Number.isNaN(start)) show(start - 1);
+  </script>
+</body>
+</html>
+
