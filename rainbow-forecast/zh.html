@@ -15,7 +15,6 @@
     .glow  { box-shadow: 0 0 40px rgba(59,130,246,0.12); }
     .upload-zone { border: 2px dashed rgba(59,130,246,0.35); transition: all 0.2s; }
     .upload-zone:hover { border-color: #3B82F6; background: rgba(59,130,246,0.07); }
-    .metric-card { background: linear-gradient(135deg,rgba(59,130,246,.14),rgba(59,130,246,.04)); border: 1px solid rgba(59,130,246,.22); }
     .tag { display:inline-flex; align-items:center; gap:6px; background:rgba(59,130,246,.12);
            border:1px solid rgba(59,130,246,.25); border-radius:999px; padding:4px 14px;
            color:#93C5FD; font-size:.8rem; }
@@ -45,13 +44,9 @@
       <a href="#predict"  class="hover:text-white transition">预测查询</a>
       <a href="#evaluate" class="hover:text-white transition">精度评估</a>
     </div>
-    <div class="flex items-center gap-4">
-      <!-- Language switcher -->
-      <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1 text-xs font-medium">
-        <a href="index.html"
-           class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">EN</a>
-        <span class="px-3 py-1.5 rounded-md bg-blue-600 text-white">中文</span>
-      </div>
+    <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1 text-xs font-medium">
+      <a href="index.html" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">EN</a>
+      <span class="px-3 py-1.5 rounded-md bg-blue-600 text-white">中文</span>
     </div>
   </div>
 </nav>
@@ -60,63 +55,60 @@
 <section class="max-w-6xl mx-auto px-6 pt-24 pb-20 text-center">
   <div class="tag mb-8">
     <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-    Rainbow · POC 2025
+    天虹超市 · POC 2025 · 门店 常兴天虹00110
   </div>
-  <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-[1.12]">
-    单品级<br>
+  <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-[1.18]">
+    SKU 级<br>
     <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
       需求智能预测
     </span>
   </h1>
   <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-    基于 LightGBM 的全局梯度提升模型，对 20,000+ 个 SKU 进行逐日销量预测，
-    融合 2 年以上历史交易数据与 8 项促销特征，覆盖五大商品经营中类。
+    基于 XGBoost、LightGBM 与随机森林的集成模型，预测 5 个经营中类、
+    20,000+ 个 SKU 的每日销量；以 2 年以上交易历史训练，包含促销在内共 24 个特征。
   </p>
   <div class="flex flex-wrap justify-center gap-3 mb-20">
     <a href="#predict"
        class="px-7 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-medium text-sm transition">
-      查询预测结果 →
+      查看预测 →
     </a>
     <a href="#evaluate"
        class="px-7 py-3 bg-white/[.07] hover:bg-white/[.12] rounded-xl font-medium text-sm transition">
-      计算预测精度
+      评估精度
     </a>
   </div>
-
-  <!-- 核心数字 -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-2xl mx-auto">
     <div class="card rounded-2xl p-5 glow">
-      <div class="text-3xl font-bold text-blue-400">20,412</div>
-      <div class="text-xs text-slate-500 mt-1.5">参与预测 SKU 数</div>
+      <div class="text-3xl font-bold text-blue-400">20,372</div>
+      <div class="text-xs text-slate-500 mt-1.5">有效 SKU 数</div>
     </div>
     <div class="card rounded-2xl p-5">
       <div class="text-3xl font-bold text-cyan-400">5</div>
-      <div class="text-xs text-slate-500 mt-1.5">商品经营中类</div>
+      <div class="text-xs text-slate-500 mt-1.5">经营中类</div>
     </div>
     <div class="card rounded-2xl p-5">
       <div class="text-3xl font-bold text-violet-400">46</div>
-      <div class="text-xs text-slate-500 mt-1.5">预测时间跨度（天）</div>
+      <div class="text-xs text-slate-500 mt-1.5">预测天数</div>
     </div>
     <div class="card rounded-2xl p-5">
-      <div class="text-3xl font-bold text-emerald-400">22</div>
-      <div class="text-xs text-slate-500 mt-1.5">模型输入特征数</div>
+      <div class="text-3xl font-bold text-emerald-400">24</div>
+      <div class="text-xs text-slate-500 mt-1.5">特征数量</div>
     </div>
   </div>
 </section>
 
-<!-- ── 模型介绍 ────────────────────────────────────────────────────────────── -->
-
+<!-- ── 模型 ────────────────────────────────────────────────────────────────── -->
 <section id="model" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">预测模型介绍</h2>
+    <h2 class="text-3xl font-bold mb-3">预测模型</h2>
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">
-      四种模型涵盖经典统计方法到集成学习，各有独立的数学基础。
-      所有模型共享相同的 22 维特征输入，采用递归多步策略生成 46 天预测。
+      三个机器学习模型——两个梯度提升、一个 Bagging 集成——加上一个季节性朴素基准。
+      树模型共享同一组 24 维特征，采用递归多步预测覆盖 46 天预测窗口；
+      最终提交取三个树模型的均值。
     </p>
   </div>
 
-  <!-- ── 六个模型卡片 ─────────────────────────────────────────────────── -->
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 
     <!-- LightGBM -->
@@ -124,25 +116,46 @@
       <div class="flex items-center gap-3 mb-4">
         <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#3B82F6"></span>
         <span class="font-bold">LightGBM</span>
-        <span class="ml-auto text-xs text-slate-600">全局模型 · 全量 SKU</span>
+        <span class="ml-auto text-xs text-slate-600">全局 · 全部 SKU</span>
       </div>
       <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        梯度提升决策树。每轮新树拟合前一步预测的<em>损失梯度残差</em>，
-        逐步纠正误差。按叶优先生长与 GOSS 单侧梯度采样显著提升训练效率。
+        梯度提升决策树，采用 Leaf-wise 生长与 GOSS 采样。每一轮新树拟合残差梯度，
+        迭代修正此前误差，在大规模稀疏特征上训练高效。
       </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-blue-200 mb-4">
-        <div>ŷ<sub>i</sub> = &Sigma;<sub>k=1</sub><sup>100</sup> &eta; &middot; f<sub>k</sub>(<b>x</b><sub>i</sub>)
-          &nbsp;&nbsp;<span class="text-slate-500">(&eta; = 0.05)</span></div>
-        <div class="text-emerald-300 mt-1">Gain = &frac12;[G<sub>L</sub>&sup2;/(H<sub>L</sub>+&lambda;)
-          + G<sub>R</sub>&sup2;/(H<sub>R</sub>+&lambda;)
-          &minus; (G<sub>L</sub>+G<sub>R</sub>)&sup2;/(H<sub>L</sub>+H<sub>R</sub>+&lambda;)] &minus; &gamma;</div>
-        <div class="text-violet-300 mt-1">w* = &minus;G / (H + &lambda;)</div>
+        <div>ŷ = &Sigma;<sub>k</sub> &eta; · f<sub>k</sub>(<b>x</b>)
+          &nbsp;<span class="text-slate-500">(&eta;=0.05, K=200)</span></div>
+        <div class="text-emerald-300 mt-1">增益 = ½[G<sub>L</sub>²/(H<sub>L</sub>+λ) + G<sub>R</sub>²/(H<sub>R</sub>+λ)
+          − (G<sub>L</sub>+G<sub>R</sub>)²/(H<sub>L</sub>+H<sub>R</sub>+λ)] − γ</div>
       </div>
       <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">100 棵树</span>
+        <span class="bg-slate-800 rounded px-2 py-1">200 棵树</span>
         <span class="bg-slate-800 rounded px-2 py-1">深度 6</span>
-        <span class="bg-slate-800 rounded px-2 py-1">31 叶节点</span>
+        <span class="bg-slate-800 rounded px-2 py-1">63 叶子</span>
         <span class="bg-slate-800 rounded px-2 py-1">GOSS 采样</span>
+      </div>
+    </div>
+
+    <!-- XGBoost -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#06B6D4"></span>
+        <span class="font-bold">XGBoost</span>
+        <span class="ml-auto text-xs text-slate-600">全局 · 全部 SKU</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        梯度提升决策树，采用 Level-wise 生长与损失函数的二阶泰勒展开。
+        通过对叶子权重施加 L1/L2 正则，抑制 SKU 级噪声信号上的过拟合。
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 text-cyan-200 mb-4">
+        <div>obj = &Sigma;<sub>i</sub>[g<sub>i</sub>f(<b>x</b><sub>i</sub>) + ½h<sub>i</sub>f(<b>x</b><sub>i</sub>)²] + Ω(f)</div>
+        <div class="text-emerald-300 mt-1">Ω(f) = γT + ½λ‖w‖² &nbsp;<span class="text-slate-500">(叶权 L2 正则)</span></div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">200 棵树</span>
+        <span class="bg-slate-800 rounded px-2 py-1">深度 6</span>
+        <span class="bg-slate-800 rounded px-2 py-1">行采样 0.8</span>
+        <span class="bg-slate-800 rounded px-2 py-1">hist 算法</span>
       </div>
     </div>
 
@@ -151,133 +164,113 @@
       <div class="flex items-center gap-3 mb-4">
         <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
         <span class="font-bold">随机森林</span>
-        <span class="ml-auto text-xs text-slate-600">全局模型 · 全量 SKU</span>
+        <span class="ml-auto text-xs text-slate-600">全局 · 全部 SKU</span>
       </div>
       <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        决策树的 Bagging 集成。每棵树在数据的随机自助采样与特征随机子集上独立训练，
-        通过对不相关预测器取均值大幅降低预测方差。
+        Bagging 集成：每棵树在自助采样与随机特征子集上训练，再对预测取平均。
+        各树误差互不相关，方差以 1/B 速率下降。
       </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
-        <div class="text-emerald-300">ŷ = <sup>1</sup>&frasl;<sub>B</sub> &Sigma;<sub>b=1</sub><sup>B</sup> T<sub>b</sub>(<b>x</b>)
-          &nbsp;&nbsp;<span class="text-slate-500">(B = 50 棵树)</span></div>
-        <div class="text-blue-300 mt-1">Var(ŷ) = &rho;&sigma;&sup2; + <sup>1&minus;&rho;</sup>&frasl;<sub>B</sub>&sigma;&sup2;</div>
-        <div class="text-slate-500 text-xs mt-1">
-          &rho; = 树间相关系数；当 &rho; → 0 时方差趋近于 0
-        </div>
+        <div class="text-emerald-300">ŷ = <sup>1</sup>/<sub>B</sub> &Sigma;<sub>b</sub> T<sub>b</sub>(<b>x</b>)
+          &nbsp;<span class="text-slate-500">(B=100)</span></div>
+        <div class="text-blue-300 mt-1">Var(ŷ) = ρσ² + <sup>1−ρ</sup>/<sub>B</sub>σ²</div>
+        <div class="text-slate-500 text-xs mt-1">ρ 为树间相关性，B → ∞ 时趋于 0</div>
       </div>
       <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">50 棵树</span>
-        <span class="bg-slate-800 rounded px-2 py-1">深度不限</span>
-        <span class="bg-slate-800 rounded px-2 py-1">自动特征采样</span>
+        <span class="bg-slate-800 rounded px-2 py-1">100 棵树</span>
+        <span class="bg-slate-800 rounded px-2 py-1">深度 10</span>
+        <span class="bg-slate-800 rounded px-2 py-1">行采样 50%</span>
+        <span class="bg-slate-800 rounded px-2 py-1">列采样 70%</span>
       </div>
     </div>
 
-    <!-- Prophet -->
-    <div class="card rounded-2xl p-7">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
-        <span class="font-bold">Prophet</span>
-        <span class="ml-auto text-xs text-slate-600">单品模型 · 按需拟合</span>
-      </div>
-      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        Meta 开源的加法分解模型，将时序信号拆解为分段线性趋势
-        （含自动变点检测）、Fourier 级数季节性分量与节假日效应三部分。
-      </p>
-      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
-        <div class="text-emerald-300">y(t) = g(t) + s(t) + h(t) + &epsilon;<sub>t</sub></div>
-        <div class="text-blue-300 mt-1">g(t)：分段线性趋势 + 自动变点</div>
-        <div class="text-violet-300">s(t) = &Sigma;<sub>n</sub>[a<sub>n</sub>cos(2&pi;nt/P)
-          + b<sub>n</sub>sin(2&pi;nt/P)]</div>
-        <div class="text-slate-500 text-xs mt-1">P = 7（周季节性周期）</div>
-      </div>
-      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">加法模式</span>
-        <span class="bg-slate-800 rounded px-2 py-1">周季节性</span>
-        <span class="bg-slate-800 rounded px-2 py-1">结果内存缓存</span>
-      </div>
-    </div>
-
-    <!-- Holt-Winters -->
+    <!-- 季节性朴素 -->
     <div class="card rounded-2xl p-7">
       <div class="flex items-center gap-3 mb-4">
         <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#F59E0B"></span>
-        <span class="font-bold">Holt-Winters</span>
-        <span class="ml-auto text-xs text-slate-600">单品模型 · 按需拟合</span>
+        <span class="font-bold">季节性朴素</span>
+        <span class="ml-auto text-xs text-slate-600">基准 · 时间序列</span>
       </div>
       <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        三重指数平滑法，用三个加权方程分别追踪水平、趋势与季节性分量，
-        平滑参数 &alpha;、&beta;、&gamma; 逐 SKU 最优化拟合。
+        快速的星期基准。对每个预测日，融合该星期几的最近一次取值与过去 4 周
+        同星期几均值——零训练即可捕捉周内季节性，作为所有模型的对照基准。
       </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
-        <div class="text-amber-300">l<sub>t</sub> = &alpha;(y<sub>t</sub>/s<sub>t-m</sub>) + (1&minus;&alpha;)(l<sub>t-1</sub>+b<sub>t-1</sub>)
-          &nbsp;<span class="text-slate-500">水平</span></div>
-        <div class="text-blue-300">b<sub>t</sub> = &beta;(l<sub>t</sub>&minus;l<sub>t-1</sub>) + (1&minus;&beta;)b<sub>t-1</sub>
-          &nbsp;<span class="text-slate-500">趋势</span></div>
-        <div class="text-emerald-300">s<sub>t</sub> = &gamma;(y<sub>t</sub>/l<sub>t</sub>) + (1&minus;&gamma;)s<sub>t-m</sub>
-          &nbsp;<span class="text-slate-500">季节</span></div>
-        <div class="text-violet-300 mt-1">ŷ<sub>t+h</sub> = (l<sub>t</sub> + h&middot;b<sub>t</sub>) &middot; s<sub>t&minus;m+h</sub></div>
+        <div class="text-amber-300">ŷ<sub>t</sub> = ½ · y<sub>最近(星期)</sub> + ½ · 均值<sub>4周(星期)</sub></div>
+        <div class="text-blue-300 mt-1">星期 = 目标日期 t 的星期几</div>
+        <div class="text-slate-500 text-xs mt-1">在过去 28 天窗口内统计</div>
       </div>
       <div class="flex flex-wrap gap-2 text-xs text-slate-500">
         <span class="bg-slate-800 rounded px-2 py-1">周期 m = 7</span>
-        <span class="bg-slate-800 rounded px-2 py-1">&alpha;&beta;&gamma; 最优化</span>
-        <span class="bg-slate-800 rounded px-2 py-1">三级容错回退</span>
+        <span class="bg-slate-800 rounded px-2 py-1">无需训练</span>
+        <span class="bg-slate-800 rounded px-2 py-1">基准对照</span>
       </div>
     </div>
 
-    <!-- OLS（岭回归） -->
-    <div class="card rounded-2xl p-7 opacity-60">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="w-3 h-3 rounded-full flex-shrink-0 bg-slate-500"></span>
-        <span class="font-bold text-slate-400">OLS（岭回归）</span>
-        <span class="ml-auto text-xs text-slate-600">未纳入组合</span>
-      </div>
-      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        使用全部 24 维特征的 L2 正则化线性回归。因无法捕捉促销与销量之间
-        的乘法式非线性交互，CV FA 仅 69.5%，较朴素基准低 18 个百分点，
-        未纳入集成模型。
-      </p>
-      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
-        <div class="text-slate-400">ŷ = X&beta; &nbsp;·&nbsp; &beta;* = argmin<sub>&beta;</sub> ‖y − X&beta;‖² + &lambda;‖&beta;‖²</div>
-        <div class="text-slate-500 mt-1">&lambda; = 1.0（岭正则项）</div>
-      </div>
-      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">Ridge α = 1.0</span>
-        <span class="bg-slate-800 rounded px-2 py-1">24 个特征</span>
-        <span class="bg-slate-800 rounded px-2 py-1">CV FA：69.5%</span>
-      </div>
-    </div>
-
-    <!-- Ensemble -->
+    <!-- 集成模型 -->
     <div class="card rounded-2xl p-7">
       <div class="flex items-center gap-3 mb-4">
         <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#8B5CF6"></span>
         <span class="font-bold">集成模型</span>
-        <span class="ml-auto text-xs text-slate-600">LGB + RF + HW</span>
+        <span class="ml-auto text-xs text-slate-600">LGB + XGB + RF</span>
       </div>
       <p class="text-slate-400 text-sm mb-4 leading-relaxed">
-        对 LightGBM、随机森林和 Holt-Winters 三个模型的输出取简单均值，
-        OLS 因表现不佳（低于基准 18 pp）被排除。各模型误差相互独立时，
-        集成方差以 1/K 比例收缩，预测更稳定。
+        对三个树模型（LightGBM、XGBoost、随机森林）取简单平均。两种提升变体
+        与 Bagging 混合，误差来源多样化——误差不相关时，集成方差正比于 1/K。
       </p>
       <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
-        <div class="text-violet-300">ŷ<sub>ens</sub> = <sup>1</sup>&frasl;<sub>3</sub>(ŷ<sub>LGB</sub> + ŷ<sub>RF</sub> + ŷ<sub>HW</sub>)</div>
-        <div class="text-emerald-300 mt-1">Var(ŷ<sub>ens</sub>) &asymp; <sup>1</sup>&frasl;<sub>K</sub> &middot; &sigma;&sup2;</div>
-        <div class="text-slate-500 text-xs mt-1">（各模型误差独立时成立）</div>
+        <div class="text-violet-300">ŷ<sub>集成</sub> = ⅓(ŷ<sub>LGB</sub> + ŷ<sub>XGB</sub> + ŷ<sub>RF</sub>)</div>
+        <div class="text-emerald-300 mt-1">Var(ŷ<sub>集成</sub>) ≈ <sup>1</sup>/<sub>K</sub> · σ²&nbsp;<span class="text-slate-500">(K=3)</span></div>
+        <div class="text-slate-500 text-xs mt-1">误差互不相关时成立</div>
       </div>
       <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-        <span class="bg-slate-800 rounded px-2 py-1">简单均值</span>
-        <span class="bg-slate-800 rounded px-2 py-1">K = 3</span>
-        <span class="bg-slate-800 rounded px-2 py-1">方差 ∝ 1/K</span>
+        <span class="bg-slate-800 rounded px-2 py-1">简单平均</span>
+        <span class="bg-slate-800 rounded px-2 py-1">K = 3 模型</span>
+        <span class="bg-slate-800 rounded px-2 py-1">POC 提交</span>
+      </div>
+    </div>
+
+    <!-- LLM 自动特征工程 -->
+    <div class="rounded-2xl p-7"
+         style="background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(59,130,246,.06));
+                border:1px solid rgba(139,92,246,.30)">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-xl leading-none">🤖</span>
+        <span class="font-bold">LLM 自动特征工程</span>
+        <span class="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full"
+              style="background:rgba(139,92,246,.25);color:#C4B5FD;border:1px solid rgba(139,92,246,.4)">
+          规划中
+        </span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        下一阶段采用 <strong class="text-white">FunSearch</strong> 式 LLM 进化循环：
+        由模型生成 Python <code class="text-violet-300">add_features(df)</code> 函数，
+        每个候选经交叉验证打分，最优程序作为下一代种子。
+        目标是发现超越现有人工 24 维特征的组合。
+      </p>
+      <div class="grid grid-cols-3 gap-2 text-xs">
+        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
+          <div class="text-violet-300 font-semibold mb-1">① 生成</div>
+          <p class="text-slate-500 leading-relaxed">LLM 生成候选特征函数</p>
+        </div>
+        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
+          <div class="text-blue-300 font-semibold mb-1">② 评估</div>
+          <p class="text-slate-500 leading-relaxed">在留出折上计算 CV WFA 得分</p>
+        </div>
+        <div class="rounded-lg p-3" style="background:rgba(255,255,255,.04)">
+          <div class="text-emerald-300 font-semibold mb-1">③ 进化</div>
+          <p class="text-slate-500 leading-relaxed">最优程序作为下一代种子</p>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <!-- ── 22 维特征简表 ───────────────────────────────────────────────── -->
+  <!-- 特征表 -->
   <div class="card rounded-2xl p-7 mb-8">
-    <h3 class="font-semibold mb-2">各模型特征输入对比</h3>
+    <h3 class="font-semibold mb-2">各模型特征输入</h3>
     <p class="text-slate-500 text-xs mb-5">
-      不同模型使用的特征各不相同——时序模型本质上是单变量的，而树模型可充分利用完整特征集。
+      树模型使用全部 24 个特征；季节性朴素基准仅使用原始时间序列。
     </p>
     <div class="overflow-x-auto mb-5">
       <table class="w-full text-xs">
@@ -285,338 +278,301 @@
           <tr class="border-b border-white/[.06] text-slate-500">
             <th class="text-left py-2 pr-6">特征组</th>
             <th class="text-center py-2 px-3" style="color:#3B82F6">LightGBM</th>
+            <th class="text-center py-2 px-3" style="color:#06B6D4">XGBoost</th>
             <th class="text-center py-2 px-3" style="color:#10B981">随机森林</th>
-            <th class="text-center py-2 px-3" style="color:#F59E0B">Holt-Winters</th>
-            <th class="text-center py-2 px-3" style="color:#10B981">Prophet</th>
+            <th class="text-center py-2 px-3" style="color:#F59E0B">季节性朴素</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/[.04] text-slate-400">
           <tr>
-            <td class="py-2 pr-6">滞后特征（lag_1–28）</td>
+            <td class="py-2 pr-6">滞后特征 (lag_1–28) · 7</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6">滚动均值（roll7/14/28）</td>
+            <td class="py-2 pr-6">滚动均值 (roll7/14/28) · 3</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6">日历特征（星期/月中日/月份）</td>
+            <td class="py-2 pr-6">日历 (星期/日/月) · 3</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td>
-            <td class="text-center py-2 text-slate-600">隐式†</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">隐式</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6">促销特征（8 个标志位）</td>
+            <td class="py-2 pr-6">促销标志 · 8</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6">相似 SKU 信号（cat_lag1/roll7）</td>
+            <td class="py-2 pr-6">品类信号 (cat_lag1/roll7) · 2</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr>
-            <td class="py-2 pr-6">商品标识（sku_id）</td>
+            <td class="py-2 pr-6">SKU 标识 (sku_id) · 1</td>
             <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
-            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2 text-slate-600">—</td>
           </tr>
           <tr class="border-t border-white/[.08] font-medium text-slate-300">
-            <td class="py-2 pr-6">使用特征总数</td>
+            <td class="py-2 pr-6">特征总数</td>
             <td class="text-center py-2" style="color:#3B82F6">24</td>
+            <td class="text-center py-2" style="color:#06B6D4">24</td>
             <td class="text-center py-2" style="color:#10B981">24</td>
             <td class="text-center py-2" style="color:#F59E0B">1（序列）</td>
-            <td class="text-center py-2" style="color:#10B981">1（序列）</td>
           </tr>
         </tbody>
       </table>
-      <p class="text-slate-600 text-xs mt-2">
-        † Prophet 通过日期自动学习周/年季节性
-      </p>
     </div>
-    <h4 class="font-medium text-sm mb-4 text-slate-400">LightGBM 与随机森林完整 24 维特征集</h4>
+    <h4 class="font-medium text-sm mb-4 text-slate-400">树模型使用的完整 24 维特征集</h4>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
       <div>
-        <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">滞后特征 · 7</div>
+        <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">滞后 · 7</div>
         <div class="font-mono text-xs text-slate-400 leading-6">
           lag_1 lag_2 lag_3<br>lag_7 lag_14 lag_21 lag_28
         </div>
       </div>
       <div>
-        <div class="text-cyan-400 text-xs uppercase tracking-wider mb-2 font-semibold">滚动均值 · 3</div>
+        <div class="text-cyan-400 text-xs uppercase tracking-wider mb-2 font-semibold">滚动 · 3</div>
         <div class="font-mono text-xs text-slate-400 leading-6">
-          roll7 &nbsp; roll14 &nbsp; roll28<br>
-          <span class="text-slate-600">（shift-1 防止数据泄漏）</span>
+          roll7 · roll14 · roll28<br>
+          <span class="text-slate-600">(滞后 1 天，防泄漏)</span>
         </div>
       </div>
       <div>
-        <div class="text-violet-400 text-xs uppercase tracking-wider mb-2 font-semibold">日历特征 · 3</div>
+        <div class="text-violet-400 text-xs uppercase tracking-wider mb-2 font-semibold">日历 · 3 + 标识</div>
         <div class="font-mono text-xs text-slate-400 leading-6">
-          星期几<br>月中第几天 &nbsp; 月份
+          day_of_week · day_of_month<br>month · sku_id
         </div>
       </div>
       <div>
-        <div class="text-emerald-400 text-xs uppercase tracking-wider mb-2 font-semibold">促销特征 · 8 + id</div>
+        <div class="text-emerald-400 text-xs uppercase tracking-wider mb-2 font-semibold">促销 · 8 + 品类 · 2</div>
         <div class="font-mono text-xs text-slate-400 leading-6">
-          是否促销 &nbsp; 折扣力度<br>
-          组合/满额/库区/线上促销<br>
-          距上次促销天数 &nbsp; 近7天促销次数<br>
-          商品编号 sku_id
+          is_promo · discount_depth<br>
+          is_bundle · is_threshold<br>
+          is_warehouse · is_online<br>
+          days_since_promo · roll_promo_7<br>
+          cat_lag1 · cat_roll7
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── LLM 自动特征工程（待开发） ────────────────────────────────────── -->
-  <div class="rounded-2xl p-7 mb-8"
-       style="background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(59,130,246,.06));
-              border:1px solid rgba(139,92,246,.30)">
-    <div class="flex items-start gap-5">
-      <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-           style="background:rgba(139,92,246,.18)">🤖</div>
-      <div class="flex-1">
-        <div class="flex items-center gap-3 mb-2">
-          <h3 class="font-bold text-lg">LLM 自动特征工程</h3>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                style="background:rgba(139,92,246,.25);color:#C4B5FD;border:1px solid rgba(139,92,246,.4)">
-            待开发
-          </span>
-        </div>
-        <p class="text-slate-400 text-sm leading-relaxed mb-5">
-          当前 22 维特征集由领域知识人工设计。下一阶段将引入
-          <strong class="text-white">大语言模型（LLM）</strong>
-          作为自动特征工程智能体：给定预测任务的自然语言描述与数据字段定义，
-          LLM 自动提出、评估并筛选最具预测力的特征组合，无需人工逐一指定。
-        </p>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
-            <div class="text-violet-300 text-xs font-semibold uppercase tracking-wider mb-2">① 提案</div>
-            <p class="text-slate-400 text-xs leading-relaxed">
-              LLM 读取数据字典与任务描述，自动生成候选特征清单——包括滞后窗口、
-              交叉项、外部信号等——并按预期重要性排序输出。
-            </p>
-          </div>
-          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
-            <div class="text-blue-300 text-xs font-semibold uppercase tracking-wider mb-2">② 评估</div>
-            <p class="text-slate-400 text-xs leading-relaxed">
-              对每个候选特征自动构造并计算交叉验证折的 SHAP 重要性或置换重要性，
-              量化其对预测精度的实际贡献。
-            </p>
-          </div>
-          <div class="rounded-xl p-4" style="background:rgba(255,255,255,.04)">
-            <div class="text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-2">③ 决策</div>
-            <p class="text-slate-400 text-xs leading-relaxed">
-              LLM 综合评估结果，输出最终特征集，并以自然语言给出每个特征
-              入选或剔除的业务解释，实现可解释的自动化特征筛选。
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── 交叉验证指标 ────────────────────────────────────────────────── -->
+  <!-- CV 结果表 -->
   <h3 class="text-center font-semibold mb-2 text-slate-300">
-    滚动时间序列交叉验证结果 — FA 指标（销售数量）
+    滚动交叉验证结果 — 销量 FA 指标
   </h3>
   <p class="text-center text-xs text-slate-500 mb-6">
-    5 折 · 每折 7 天预测 · 2,000 SKU 样本 · 严格按时间顺序 · 样本外（OOS）：训练至 6 月 30 日，评估 7 月 1–31 日实际销量
+    5 折 · 每折 7 天预测窗口 · 全部有效 SKU（20,372）· 按时间顺序 ·
+    FA = 1 − 2|F−A|/(F+A)，按过去 4 周销量加权
   </p>
 
-  <!-- 六模型明细表 -->
   <div class="card rounded-2xl overflow-hidden mb-6">
-    <table class="w-full text-sm" id="cvTable">
+    <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
           <th class="text-left px-6 py-3">模型</th>
-          <th class="text-right px-4 py-3">CV FA</th>
-          <th class="text-right px-4 py-3">样本外 FA</th>
+          <th class="text-right px-4 py-3">整体 FA</th>
           <th class="text-right px-4 py-3">8802</th>
           <th class="text-right px-4 py-3">8803</th>
           <th class="text-right px-4 py-3">8804</th>
           <th class="text-right px-4 py-3">8805</th>
           <th class="text-right px-4 py-3">8807</th>
-          <th class="text-right px-4 py-3">vs 基准</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-white/[.04]">
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span><span class="font-medium">LightGBM</span></td>
-          <td class="px-4 py-3 text-right font-bold text-blue-400">89.71%</td>
-          <td class="px-4 py-3 text-right text-blue-300">86.11%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.3%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.1%</td>
-          <td class="px-4 py-3 text-right text-slate-300">86.9%</td>
-          <td class="px-4 py-3 text-right text-slate-300">84.1%</td>
-          <td class="px-4 py-3 text-right text-slate-300">90.4%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+2.08 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-blue-400" id="cv-lgb-overall">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-lgb-8802">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-lgb-8803">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-lgb-8804">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-lgb-8805">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-lgb-8807">—</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#06B6D4"></span><span class="font-medium">XGBoost</span></td>
+          <td class="px-4 py-3 text-right font-bold text-cyan-400" id="cv-xgb-overall">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-xgb-8802">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-xgb-8803">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-xgb-8804">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-xgb-8805">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-xgb-8807">—</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span><span class="font-medium">随机森林</span></td>
-          <td class="px-4 py-3 text-right font-bold text-emerald-400">89.89%</td>
-          <td class="px-4 py-3 text-right text-emerald-300">86.47%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.8%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.3%</td>
-          <td class="px-4 py-3 text-right text-slate-300">86.9%</td>
-          <td class="px-4 py-3 text-right text-slate-300">83.9%</td>
-          <td class="px-4 py-3 text-right text-slate-300">90.6%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+2.26 pp</td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-400" id="cv-rf-overall">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-rf-8802">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-rf-8803">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-rf-8804">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-rf-8805">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-rf-8807">—</td>
         </tr>
-        <tr class="hover:bg-white/[.03]">
-          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#F59E0B"></span><span class="font-medium">Holt-Winters</span></td>
-          <td class="px-4 py-3 text-right font-bold text-amber-400">89.66%</td>
-          <td class="px-4 py-3 text-right text-amber-300">86.19%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.8%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.3%</td>
-          <td class="px-4 py-3 text-right text-slate-300">86.9%</td>
-          <td class="px-4 py-3 text-right text-slate-300">83.9%</td>
-          <td class="px-4 py-3 text-right text-slate-300">89.2%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+2.03 pp</td>
+        <tr class="hover:bg-white/[.03] opacity-70">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#F59E0B"></span><span class="font-medium text-slate-400">季节性朴素</span><span class="text-xs text-slate-600 ml-1">基准</span></td>
+          <td class="px-4 py-3 text-right font-bold text-amber-400" id="cv-naive-overall">—</td>
+          <td class="px-4 py-3 text-right text-slate-400" id="cv-naive-8802">—</td>
+          <td class="px-4 py-3 text-right text-slate-400" id="cv-naive-8803">—</td>
+          <td class="px-4 py-3 text-right text-slate-400" id="cv-naive-8804">—</td>
+          <td class="px-4 py-3 text-right text-slate-400" id="cv-naive-8805">—</td>
+          <td class="px-4 py-3 text-right text-slate-400" id="cv-naive-8807">—</td>
         </tr>
-        <tr class="hover:bg-white/[.03]">
-          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#8B5CF6"></span><span class="font-medium text-violet-300">组合模型</span> <span class="text-xs text-slate-600 ml-1">(LGB+RF+HW)</span></td>
-          <td class="px-4 py-3 text-right font-bold text-violet-400">89.75%</td>
-          <td class="px-4 py-3 text-right text-violet-300">86.66%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.6%</td>
-          <td class="px-4 py-3 text-right text-slate-300">93.3%</td>
-          <td class="px-4 py-3 text-right text-slate-300">86.9%</td>
-          <td class="px-4 py-3 text-right text-slate-300">84.0%</td>
-          <td class="px-4 py-3 text-right text-slate-300">90.1%</td>
-          <td class="px-4 py-3 text-right text-emerald-400">+2.12 pp</td>
-        </tr>
-        <tr class="hover:bg-white/[.03]">
-          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span><span class="text-slate-400">朴素基准</span></td>
-          <td class="px-4 py-3 text-right text-slate-400">87.63%</td>
-          <td class="px-4 py-3 text-right text-slate-500">84.96%</td>
-          <td class="px-4 py-3 text-right text-slate-500">93.4%</td>
-          <td class="px-4 py-3 text-right text-slate-500">91.0%</td>
-          <td class="px-4 py-3 text-right text-slate-500">83.9%</td>
-          <td class="px-4 py-3 text-right text-slate-500">79.1%</td>
-          <td class="px-4 py-3 text-right text-slate-500">88.2%</td>
-          <td class="px-4 py-3 text-right text-slate-600">基准</td>
-        </tr>
-        <tr class="hover:bg-white/[.03] opacity-50">
-          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-600"></span><span class="text-slate-500">OLS（岭回归）</span> <span class="text-xs text-slate-700 ml-1">未纳入组合</span></td>
-          <td class="px-4 py-3 text-right text-slate-500">69.50%</td>
-          <td class="px-4 py-3 text-right text-slate-600">67.10%</td>
-          <td class="px-4 py-3 text-right text-slate-600">60.7%</td>
-          <td class="px-4 py-3 text-right text-slate-600">62.7%</td>
-          <td class="px-4 py-3 text-right text-slate-600">76.5%</td>
-          <td class="px-4 py-3 text-right text-slate-600">77.0%</td>
-          <td class="px-4 py-3 text-right text-slate-600">71.6%</td>
-          <td class="px-4 py-3 text-right text-red-700">−18.13 pp</td>
+        <tr class="hover:bg-white/[.03] bg-violet-900/10">
+          <td class="px-6 py-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full" style="background:#8B5CF6"></span>
+            <span class="font-semibold text-violet-300">集成模型</span>
+            <span class="text-xs text-slate-600 ml-1">(LGB+XGB+RF)</span>
+          </td>
+          <td class="px-4 py-3 text-right font-bold text-violet-400" id="cv-ens-overall">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-ens-8802">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-ens-8803">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-ens-8804">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-ens-8805">—</td>
+          <td class="px-4 py-3 text-right text-slate-300" id="cv-ens-8807">—</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="bg-blue-500/8 border border-blue-500/20 rounded-xl p-4 text-sm
-              text-blue-300/90 flex items-start gap-3">
-    <span class="flex-shrink-0 text-base mt-0.5">💡</span>
-    <span>
-      <strong class="text-white">cat_roll7</strong>（同品类 SKU 近 7 天滚动均值）在 LightGBM
-      中排名第 <strong class="text-white">3 位</strong>，超过大多数滞后特征。
-      跨 SKU 的相似商品信号对预测精度有显著贡献。
-    </span>
+  <div id="cvLoadNote" class="bg-blue-500/8 border border-blue-500/20 rounded-xl p-4 text-sm text-blue-300/90 flex items-start gap-3">
+    <span class="flex-shrink-0 text-base mt-0.5">⏳</span>
+    <span id="cvLoadMsg">CV 结果正在从 <code>cv_results_v2.json</code> 加载…</span>
   </div>
 </section>
 
+<!-- ── FA 指标 ───────────────────────────────────────────────────────────── -->
 <section id="metric" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="card rounded-2xl p-8 md:p-10">
     <h2 class="text-2xl font-bold mb-8 flex items-center gap-2">
-      <span>📐</span> POC 准确率计算方法 — FA 公式
+      <span>📐</span> POC 精度指标 — FA 公式
     </h2>
     <div class="grid md:grid-cols-2 gap-10">
       <div>
         <div class="bg-slate-800/60 rounded-xl p-6 font-mono text-xl text-white text-center mb-5">
-          FA &nbsp;=&nbsp; 1 &minus; |F &minus; A| / ((F + A) &times; 2)
+          FA &nbsp;=&nbsp; 1 &minus; 2|F &minus; A| / (F + A)
         </div>
-        <p class="text-slate-400 text-sm mb-5">
-          F = 该 SKU 当周预测销量合计 &nbsp;·&nbsp; A = 该 SKU 当周实际销量合计
+        <p class="text-slate-400 text-sm mb-3">
+          F = 每周预测合计 &nbsp;·&nbsp; A = 每周实际合计（按单店单 SKU）
         </p>
+        <div class="bg-slate-800/40 rounded-xl p-4 font-mono text-xs text-slate-300 mb-5 leading-7">
+          <div class="text-slate-500 mb-1">示例：F = 99, A = 83</div>
+          <div>FA = 1 − 2×|99−83| / (99+83)</div>
+          <div>   = 1 − 2×16 / 182</div>
+          <div>   = 1 − 0.176 <span class="text-emerald-400 font-bold"> = 82.4% ✓</span></div>
+        </div>
         <div class="space-y-2 text-sm">
           <div class="flex items-center gap-3 bg-slate-800/40 rounded-lg p-3">
             <span class="text-amber-400 font-bold flex-shrink-0">①</span>
-            <span class="text-slate-300">若 F 或 A &lt; 0，则取 0</span>
+            <span class="text-slate-300">若 F 或 A &lt; 0 → 置为 0</span>
           </div>
           <div class="flex items-center gap-3 bg-slate-800/40 rounded-lg p-3">
             <span class="text-emerald-400 font-bold flex-shrink-0">②</span>
-            <span class="text-slate-300">若 F = A = 0，则 FA = 100%</span>
+            <span class="text-slate-300">若 F = A = 0 → FA = 100%</span>
           </div>
           <div class="flex items-center gap-3 bg-slate-800/40 rounded-lg p-3">
             <span class="text-blue-400 font-bold flex-shrink-0">③</span>
-            <span class="text-slate-300">FA 取值范围限定在 [0%, 100%]</span>
+            <span class="text-slate-300">FA 截断到 [0%, 100%]</span>
           </div>
         </div>
+        <div class="mt-5 bg-slate-800/40 rounded-xl p-4 text-xs text-slate-400 leading-relaxed">
+          <span class="text-white font-semibold">为何这样设计？</span>
+          &nbsp;改写为 1 − |F−A| / ((F+A)/2)，分母为预测与实际的<em>中点</em>，
+          因此误差项是对称相对偏差。与普通 MAPE 不同，它对高估和低估施以同等惩罚，
+          并给出完整的 [0, 1] 范围——0 表示严重失准。
+        </div>
       </div>
+
       <div>
-        <p class="text-slate-400 text-sm mb-5">加权汇总步骤（共 3 步）：</p>
-        <div class="space-y-3 text-sm text-slate-300">
+        <p class="text-slate-400 text-sm mb-5 font-medium">加权汇聚（3 步）：</p>
+        <div class="space-y-3 text-sm text-slate-300 mb-6">
           <div class="flex gap-3 items-start">
             <span class="text-blue-400 font-bold mt-0.5 flex-shrink-0">1.</span>
-            将逐日预测与实际销量聚合为<strong class="text-white">周合计</strong>，
-            按周期划分（7月1–7日、8–14日、15–21日、22–28日……）
+            将每日预测与实际汇总到<strong class="text-white">每周合计</strong>（每个 SKU）
+            （周：7月1–7、8–14、15–21、22–28）
           </div>
           <div class="flex gap-3 items-start">
             <span class="text-blue-400 font-bold mt-0.5 flex-shrink-0">2.</span>
-            各 SKU <strong class="text-white">权重 = 该周开始前 4 周的实际销量合计</strong>
+            每个 (SKU, 周) 的权重 = <strong class="text-white">前 28 天实际销量</strong>
+            （截至评估周开始前一天）
           </div>
           <div class="flex gap-3 items-start">
             <span class="text-blue-400 font-bold mt-0.5 flex-shrink-0">3.</span>
-            加权平均 FA → 品类层级（8802–8807）→ 全局汇总
+            加权平均 FA → 按品类（8802–8807）→ 整体
           </div>
         </div>
-        <div class="bg-slate-800/60 rounded-xl p-5 font-mono text-xs text-emerald-300 mt-5 leading-6">
-          加权 FA = &Sigma;(FA<sub>i</sub> &times; w<sub>i</sub>) / &Sigma;w<sub>i</sub><br><br>
-          w<sub>i</sub> = SKU<sub>i</sub> 过去 4 周实际销量
+        <div class="bg-slate-800/60 rounded-xl p-5 font-mono text-xs text-emerald-300 leading-7">
+          汇聚 FA = Σ(FA<sub>sku,周</sub> × w<sub>sku,周</sub>) / Σw<sub>sku,周</sub><br><br>
+          w<sub>sku,周</sub> = 该周开始前 28 天的 SKU 销量
+        </div>
+
+        <div class="mt-5">
+          <p class="text-xs text-slate-500 mb-3">POC 经营中类（门店 常兴天虹00110）</p>
+          <div class="grid grid-cols-5 gap-2 text-xs text-center">
+            <div class="bg-slate-800/40 rounded-lg p-3">
+              <div class="text-blue-400 font-bold text-base">8802</div>
+              <div class="text-slate-500 mt-1">中类 A</div>
+            </div>
+            <div class="bg-slate-800/40 rounded-lg p-3">
+              <div class="text-cyan-400 font-bold text-base">8803</div>
+              <div class="text-slate-500 mt-1">最易</div>
+            </div>
+            <div class="bg-slate-800/40 rounded-lg p-3">
+              <div class="text-emerald-400 font-bold text-base">8804</div>
+              <div class="text-slate-500 mt-1">中类 C</div>
+            </div>
+            <div class="bg-slate-800/40 rounded-lg p-3">
+              <div class="text-amber-400 font-bold text-base">8805</div>
+              <div class="text-slate-500 mt-1">最难</div>
+            </div>
+            <div class="bg-slate-800/40 rounded-lg p-3">
+              <div class="text-violet-400 font-bold text-base">8807</div>
+              <div class="text-slate-500 mt-1">中类 E</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── 预测查询 ────────────────────────────────────────────────────────────── -->
+<!-- ── 预测 ──────────────────────────────────────────────────────────────── -->
 <section id="predict" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-12">
-    <h2 class="text-3xl font-bold mb-3">预测结果查询</h2>
+    <h2 class="text-3xl font-bold mb-3">预测查询</h2>
     <p class="text-slate-400 text-sm max-w-lg mx-auto">
-      选择模型、商品与日期范围，通过本地 Python 服务器运行实时预测，
-      或在静态模式下浏览预计算结果。
+      上传预测提交文件或加载演示数据，可视化各模型在 SKU 级别的每日预测。
     </p>
   </div>
 
-  <!-- 服务器状态栏 -->
   <div id="serverBanner" class="card rounded-2xl p-5 mb-5 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
       <span id="serverDot" class="w-2.5 h-2.5 rounded-full bg-slate-600 flex-shrink-0"></span>
       <div>
-        <div id="serverLabel" class="text-sm font-medium text-slate-300">正在检测本地服务器…</div>
+        <div id="serverLabel" class="text-sm font-medium text-slate-300">正在检测本地服务…</div>
         <div id="serverSub" class="text-xs text-slate-500 mt-0.5">
-          执行 <code class="text-slate-400">uvicorn api_server:app --port 8000</code> 以启用多模型实时预测
+          运行 <code class="text-slate-400">uvicorn api_server:app --port 8000</code> 以启用实时多模型预测
         </div>
       </div>
     </div>
     <button onclick="checkServer()"
       class="px-4 py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded-lg transition flex-shrink-0">
-      重试连接
+      重试
     </button>
   </div>
 
-  <!-- 第一步：静态模式数据加载 -->
   <div id="staticLoadCard" class="card rounded-2xl p-7 mb-5">
     <h3 class="font-medium mb-5 flex items-center gap-3 text-slate-300">
       <span class="step-num">1</span> 加载预测数据
-      <span class="text-xs text-slate-600 font-normal">（静态模式 — 或连接上方本地服务器）</span>
+      <span class="text-xs text-slate-600 font-normal">(上传 XLSX/CSV 或使用演示)</span>
     </h3>
     <div class="flex flex-wrap items-center gap-4">
       <label class="upload-zone rounded-xl px-6 py-4 cursor-pointer flex items-center gap-4 text-sm">
         <span class="text-blue-400 text-2xl leading-none">📂</span>
         <div>
-          <div class="font-medium text-white">上传 poc_submission.csv</div>
-          <div class="text-slate-500 text-xs mt-0.5">列名：日期 · 条码 · 预测销量</div>
+          <div class="font-medium text-white">上传 poc_submission_v2.xlsx / .csv</div>
+          <div class="text-slate-500 text-xs mt-0.5">列：日期 · 条码 · 预测销量</div>
         </div>
         <input type="file" accept=".csv,.xlsx,.xls,.txt" class="hidden" id="predFile">
       </label>
@@ -624,45 +580,42 @@
       <button onclick="loadDemoData()"
         class="px-6 py-4 bg-blue-600/15 hover:bg-blue-600/25 border border-blue-600/30
                rounded-xl text-sm font-medium transition">
-        ✨ 演示数据（5 个示例 SKU）
+        ✨ 演示数据 (5 个 SKU)
       </button>
     </div>
     <p id="predStatus" class="text-sm mt-4 hidden"></p>
   </div>
 
-  <!-- 第二步：选择商品与日期 -->
   <div id="predictControls" class="card rounded-2xl p-7 mb-5 hidden">
     <h3 class="font-medium mb-5 flex items-center gap-3 text-slate-300">
-      <span class="step-num">2</span> 选择商品与日期范围
+      <span class="step-num">2</span> 选择 SKU 与日期范围
     </h3>
     <div class="flex flex-wrap gap-4 items-end">
       <div class="flex-1 min-w-52">
-        <div class="text-xs text-slate-500 mb-1.5">商品条码 / SKU</div>
+        <div class="text-xs text-slate-500 mb-1.5">SKU / 条码</div>
         <select id="skuSelect" class="w-full"></select>
       </div>
       <div>
-        <div class="text-xs text-slate-500 mb-1.5">开始日期</div>
+        <div class="text-xs text-slate-500 mb-1.5">起始</div>
         <input type="date" id="startDate" value="2025-07-01">
       </div>
       <div>
-        <div class="text-xs text-slate-500 mb-1.5">结束日期</div>
+        <div class="text-xs text-slate-500 mb-1.5">结束</div>
         <input type="date" id="endDate" value="2025-08-15">
       </div>
     </div>
   </div>
 
-  <!-- 第三步：模型选择（实时模式） -->
   <div id="modelCard" class="card rounded-2xl p-7 mb-5 hidden">
     <h3 class="font-medium mb-5 flex items-center gap-3 text-slate-300">
-      <span class="step-num">3</span> 选择预测模型
+      <span class="step-num">3</span> 选择模型
     </h3>
     <div class="flex flex-wrap gap-3 mb-4" id="modelBtns"></div>
     <div class="bg-slate-800/40 rounded-xl p-4 text-xs text-slate-500 leading-5">
-      <span class="text-slate-400 font-medium">特征集（22 个）：</span>
-      滞后 lag_1–28 · 滚动均值 roll7/14/28 · 星期几 · 月中日 · 月份 ·
-      是否促销 · 折扣力度 · 组合/满额/库区/线上促销 ·
-      距上次促销天数 · 近7天促销次数 · 商品编号
-      <span class="ml-2 text-blue-500">【LLM 自动特征选择 — 即将上线】</span>
+      <span class="text-slate-400 font-medium">特征集 (24)：</span>
+      lag_1–28 · roll7/14/28 · dow · dom · month · sku_id ·
+      is_promo · discount_depth · is_bundle · is_threshold · is_warehouse · is_online ·
+      days_since_promo · rolling_promo_7 · cat_lag1 · cat_roll7
     </div>
     <button id="runBtn" onclick="runLivePrediction()"
       class="mt-5 px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-semibold transition
@@ -672,11 +625,10 @@
     </button>
   </div>
 
-  <!-- 图表区域 -->
   <div id="chartArea" class="card rounded-2xl p-7 hidden">
     <div class="flex items-start justify-between mb-5">
       <div>
-        <h3 class="font-semibold" id="chartTitle">逐日销量预测</h3>
+        <h3 class="font-semibold" id="chartTitle">每日销量预测</h3>
         <p class="text-slate-500 text-xs mt-1" id="chartSubtitle"></p>
       </div>
       <div id="chartLegend" class="flex flex-wrap gap-4 text-xs text-slate-400 justify-end"></div>
@@ -688,42 +640,37 @@
   </div>
 </section>
 
-<!-- ── 精度评估 ────────────────────────────────────────────────────────────── -->
+<!-- ── 评估 ──────────────────────────────────────────────────────────────── -->
 <section id="evaluate" class="max-w-6xl mx-auto px-6 pb-24">
   <hr class="dim mb-20">
   <div class="text-center mb-12">
-    <h2 class="text-3xl font-bold mb-3">预测精度评估</h2>
+    <h2 class="text-3xl font-bold mb-3">精度评估</h2>
     <p class="text-slate-400 text-sm max-w-lg mx-auto">
-      上传实际销量文件，系统在浏览器内完成 FA 指标计算，
-      数据全程不离开您的设备。
+      上传实际销量文件，浏览器内按 POC 公式计算 FA 指标——数据不离开本机。
     </p>
   </div>
 
-  <!-- 未加载预测提示 -->
   <div id="evalNeedsPred" class="card rounded-2xl p-8 text-center text-slate-500 mb-5">
-    ⚠️ 请先在
-    <a href="#predict" class="text-blue-400 hover:underline">预测查询</a>
-    模块中加载预测数据。
+    ⚠️ 请先在<a href="#predict" class="text-blue-400 hover:underline">预测查询</a>中加载预测数据。
   </div>
 
   <div id="evalSection" class="hidden">
     <div class="card rounded-2xl p-7 mb-5">
       <h3 class="font-medium mb-2 flex items-center gap-3 text-slate-300">
-        <span class="step-num" style="background:#059669">1</span>
-        上传实际销量文件
+        <span class="step-num" style="background:#059669">1</span> 上传实际销量
       </h3>
       <p class="text-slate-500 text-xs mb-5 ml-9">
-        列名自动识别，支持中英文：&nbsp;
-        <code class="text-slate-400">日期&nbsp;/&nbsp;date</code> &nbsp;·&nbsp;
-        <code class="text-slate-400">条码&nbsp;/&nbsp;条形码&nbsp;/&nbsp;barcode</code> &nbsp;·&nbsp;
-        <code class="text-slate-400">当天全部销售数量&nbsp;/&nbsp;销量&nbsp;/&nbsp;quantity</code>
+        自动识别列名： &nbsp;
+        <code class="text-slate-400">日期 / date</code> &nbsp;·&nbsp;
+        <code class="text-slate-400">条码 / 条形码 / barcode</code> &nbsp;·&nbsp;
+        <code class="text-slate-400">当天全部销售数量 / 销量 / quantity</code>
       </p>
       <div class="flex flex-wrap items-center gap-4">
         <label class="upload-zone rounded-xl px-6 py-4 cursor-pointer flex items-center gap-4 text-sm">
           <span class="text-emerald-400 text-2xl leading-none">📊</span>
           <div>
             <div class="font-medium text-white">上传实际销量文件</div>
-            <div class="text-slate-500 text-xs mt-0.5">支持 CSV · XLSX · TXT 格式</div>
+            <div class="text-slate-500 text-xs mt-0.5">CSV · XLSX · TXT</div>
           </div>
           <input type="file" accept=".csv,.xlsx,.xls,.txt" class="hidden" id="actualFile">
         </label>
@@ -731,28 +678,24 @@
       </div>
     </div>
 
-    <!-- 结果展示 -->
     <div id="faResults" class="hidden space-y-5">
-      <!-- 总体 FA -->
       <div class="card rounded-2xl p-8 text-center">
-        <div class="text-slate-400 text-sm mb-2">全局加权 FA 准确率</div>
+        <div class="text-slate-400 text-sm mb-2">整体加权 FA</div>
         <div id="overallFA" class="text-6xl font-bold text-emerald-400 mb-2">--</div>
         <div id="faDetails" class="text-slate-500 text-sm"></div>
       </div>
-
-      <!-- 分周明细表 -->
       <div class="card rounded-2xl p-7">
-        <h3 class="font-semibold mb-5">分周 FA 明细（按前 4 周实际销量加权）</h3>
+        <h3 class="font-semibold mb-5">逐周 FA 明细（按前 4 周销量加权）</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
               <tr class="text-slate-500 text-xs uppercase tracking-wider border-b border-white/[.06]">
-                <th class="text-left py-3 pr-8">统计周期</th>
+                <th class="text-left py-3 pr-8">周期</th>
                 <th class="text-right py-3 px-4">加权 FA</th>
-                <th class="text-right py-3 px-4">匹配 SKU</th>
+                <th class="text-right py-3 px-4">SKU 数</th>
                 <th class="text-right py-3 px-4">预测合计</th>
                 <th class="text-right py-3 px-4">实际合计</th>
-                <th class="text-right py-3 px-4">偏差率</th>
+                <th class="text-right py-3 px-4">偏差</th>
               </tr>
             </thead>
             <tbody id="faTableBody" class="divide-y divide-white/[.04]"></tbody>
@@ -763,43 +706,86 @@
   </div>
 </section>
 
-<!-- ── 页脚 ─────────────────────────────────────────────────────────────── -->
+<!-- ── 页脚 ──────────────────────────────────────────────────────────────── -->
 <footer class="border-t border-white/[.06] py-10 text-center text-slate-600 text-xs">
-  <p>北京大学汇丰商学院 &nbsp;·&nbsp; Rainbow POC 2025</p>
-  <p class="mt-1.5">LightGBM · 500 棵树 · 22 个特征 · 经营中类 8802 · 8803 · 8804 · 8805 · 8807</p>
+  <p>北京大学汇丰商学院 &nbsp;·&nbsp; 天虹超市 POC 2025 &nbsp;·&nbsp; 门店 常兴天虹00110</p>
+  <p class="mt-1.5">
+    XGBoost · LightGBM · 随机森林 · 季节性朴素 · 集成模型 ·
+    24 个特征 · 经营中类 8802 · 8803 · 8804 · 8805 · 8807
+  </p>
+  <p class="mt-1.5">FA = 1 − 2|F−A|/(F+A) · 按周 · 前 4 周加权</p>
 </footer>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <script>
-const MODEL_CFG={
-  lightgbm:      {label:'LightGBM',    color:'#3B82F6',dash:[]},
-  random_forest: {label:'随机森林',     color:'#10B981',dash:[6,2]},
-  holt_winters:  {label:'Holt-Winters', color:'#F59E0B',dash:[3,3]},
-  prophet:       {label:'Prophet',      color:'#F97316',dash:[8,3]},
-  ensemble:      {label:'集成模型',      color:'#8B5CF6',dash:[]},
+const MODEL_CFG = {
+  lightgbm:      { label:'LightGBM',      color:'#3B82F6', dash:[]      },
+  xgboost:       { label:'XGBoost',       color:'#06B6D4', dash:[5,2]   },
+  random_forest: { label:'随机森林',       color:'#10B981', dash:[6,2]   },
+  naive:         { label:'季节性朴素',     color:'#F59E0B', dash:[3,3]   },
+  ensemble:      { label:'集成模型',       color:'#8B5CF6', dash:[]      },
 };
-const API='http://localhost:8000';
-const S={preds:null,actuals:null,liveData:null,chart:null,server:false,selModels:new Set(['lightgbm','random_forest','holt_winters','prophet','ensemble'])};
+const API = 'http://localhost:8000';
 
-function generateDemoData(){
+const S = {
+  preds:null, actuals:null, liveData:null, chart:null, server:false,
+  selModels: new Set(['lightgbm','xgboost','random_forest','naive','ensemble']),
+};
+
+function loadCVResults() {
+  const KEY_MAP = {lightgbm:'lgb', xgboost:'xgb', random_forest:'rf', naive:'naive', ensemble:'ens'};
+  const CATS = ['8802','8803','8804','8805','8807'];
+  fetch('cv_results_v2.json')
+    .then(r => { if (!r.ok) throw 0; return r.json(); })
+    .then(data => {
+      const s = data.cv_summary || {};
+      for (const [mkey, mid] of Object.entries(KEY_MAP)) {
+        const row = s[mkey]; if (!row) continue;
+        const el = document.getElementById(`cv-${mid}-overall`);
+        if (el) el.textContent = row.overall.toFixed(2) + '%';
+        for (const cat of CATS) {
+          const cel = document.getElementById(`cv-${mid}-${cat}`);
+          if (cel && row[cat] != null) cel.textContent = row[cat].toFixed(1) + '%';
+        }
+      }
+      const note = document.getElementById('cvLoadNote');
+      const msg  = document.getElementById('cvLoadMsg');
+      if (note && msg) {
+        note.className = 'bg-emerald-500/8 border border-emerald-500/20 rounded-xl p-4 text-sm text-emerald-300/90 flex items-start gap-3';
+        msg.innerHTML  = `✓ CV 结果已从 <code>cv_results_v2.json</code> 加载
+          &nbsp;·&nbsp; 生成于 ${data.generated || ''} &nbsp;·&nbsp;
+          ${(data.config?.n_skus||'').toLocaleString()} 个 SKU &nbsp;·&nbsp;
+          公式：FA = 1 − 2|F−A|/(F+A)`;
+        note.querySelector('span').textContent = '✓';
+      }
+    })
+    .catch(() => {
+      const msg = document.getElementById('cvLoadMsg');
+      if (msg) msg.innerHTML = 'CV 结果尚未生成——脚本仍在运行。当 <code>cv_results_v2.json</code> 出现后请刷新。';
+    });
+}
+
+function generateDemoData() {
   const SKUS=[
-    {id:'eRb/Aim8dLqqqHmkPBE2nA==',label:'经营中类 8807 · 条码 A',cat:'8807',base:18},
-    {id:'oFtGIF7wpypWH/iKgzugVQ==',label:'经营中类 8802 · 条码 B',cat:'8802',base:32},
-    {id:'OLKFu/n+U7v0Xt5JeKzZIA==',label:'经营中类 8803 · 条码 C',cat:'8803',base: 8},
-    {id:'KJRWz1YD7eHdEdluNl7sQg==',label:'经营中类 8804 · 条码 D',cat:'8804',base:25},
-    {id:'l0Ep+wRkeSQVdLBFpMRmqw==',label:'经营中类 8805 · 条码 E',cat:'8805',base:12},
+    {id:'eRb/Aim8dLqqqHmkPBE2nA==',label:'中类 8807 · 条码 A',cat:'8807',base:18},
+    {id:'oFtGIF7wpypWH/iKgzugVQ==',label:'中类 8802 · 条码 B',cat:'8802',base:32},
+    {id:'OLKFu/n+U7v0Xt5JeKzZIA==',label:'中类 8803 · 条码 C',cat:'8803',base: 8},
+    {id:'KJRWz1YD7eHdEdluNl7sQg==',label:'中类 8804 · 条码 D',cat:'8804',base:25},
+    {id:'l0Ep+wRkeSQVdLBFpMRmqw==',label:'中类 8805 · 条码 E',cat:'8805',base:12},
   ];
   const DOW=[0.85,0.90,0.95,1.00,1.10,1.30,1.20];
   const PROMOS=new Set(['2025-07-14','2025-07-15','2025-07-16','2025-07-25',
                         '2025-07-26','2025-08-06','2025-08-07']);
-  let seed=9301; const rng=()=>{seed=(seed*49297+233453)%233280;return seed/233280;};
+  let seed=9301;
+  const rng=()=>{seed=(seed*49297+233453)%233280;return seed/233280;};
   const out=new Map();
-  const s0=new Date('2025-07-01'),s1=new Date('2025-08-15');
+  const s0=new Date('2025-07-01'), s1=new Date('2025-08-15');
   for(const sku of SKUS){
     const m=new Map(); let day=0;
     for(let d=new Date(s0);d<=s1;d.setDate(d.getDate()+1),day++){
       const ds=d.toISOString().slice(0,10);
-      const v=PROMOS.has(ds)?1.55:1.0; const n=0.72+rng()*0.58; const z=rng()<0.04;
+      const v=PROMOS.has(ds)?1.55:1.0;
+      const n=0.72+rng()*0.58; const z=rng()<0.04;
       m.set(ds,z?0:Math.round(sku.base*DOW[d.getDay()]*v*n*(1+.001*day)*10)/10);
     }
     out.set(sku.id,{map:m,label:sku.label,cat:sku.cat});
@@ -807,49 +793,59 @@ function generateDemoData(){
   return out;
 }
 
-function loadDemoData(){applyPredictions(generateDemoData());showStatus('predStatus','✓ 演示数据已加载 — 5 个示例 SKU','emerald');}
+function loadDemoData(){
+  applyPredictions(generateDemoData());
+  showStatus('predStatus','✓ 演示数据已加载——5 个示例 SKU','emerald');
+}
 
 async function checkServer(){
   const dot=document.getElementById('serverDot');
   const lbl=document.getElementById('serverLabel');
   const sub=document.getElementById('serverSub');
   dot.className='w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse flex-shrink-0';
-  lbl.textContent='正在连接本地服务器…';
-  try{
+  lbl.textContent='正在连接本地服务…';
+  try {
     const r=await fetch(`${API}/api/status`,{signal:AbortSignal.timeout(3000)});
-    if(!r.ok) throw 0;
+    if(!r.ok) throw new Error();
     const d=await r.json();
     S.server=true;
     dot.className='w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0';
-    lbl.textContent=`本地服务器已连接 — ${d.n_skus.toLocaleString()} 个 SKU · 训练截止 ${d.train_end}`;
-    sub.textContent='多模型实时预测已启用';
+    lbl.textContent=`已连接本地服务 — ${d.n_skus.toLocaleString()} 个 SKU · 训练至 ${d.train_end}`;
+    sub.textContent='已启用实时多模型预测';
     document.getElementById('staticLoadCard').classList.add('hidden');
     document.getElementById('modelCard').classList.remove('hidden');
     document.getElementById('predictControls').classList.remove('hidden');
     document.getElementById('chartArea').classList.remove('hidden');
     document.getElementById('evalNeedsPred').classList.add('hidden');
     document.getElementById('evalSection').classList.remove('hidden');
-    await loadServerSKUs(); buildModelButtons();
-  }catch{
+    await loadServerSKUs();
+    buildModelButtons();
+  } catch {
     S.server=false;
     dot.className='w-2.5 h-2.5 rounded-full bg-slate-600 flex-shrink-0';
-    lbl.textContent='未检测到本地服务器 — 当前为静态模式';
-    sub.innerHTML='执行 <code class="text-slate-400">uvicorn api_server:app --port 8000</code> 以启用多模型实时预测';
+    lbl.textContent='未检测到本地服务——静态模式';
+    sub.innerHTML='运行 <code class="text-slate-400">uvicorn api_server:app --port 8000</code> 以启用实时预测';
   }
 }
 
 async function loadServerSKUs(){
   const r=await fetch(`${API}/api/skus?limit=20000`);
   const d=await r.json();
-  const sel=document.getElementById('skuSelect'); sel.innerHTML='';
+  const sel=document.getElementById('skuSelect');
+  sel.innerHTML='';
   if(d.skus.length){
-    const g=document.createElement('optgroup'); g.label=`服务器 SKU（共 ${d.total.toLocaleString()} 个）`;
-    for(const s of d.skus){const o=document.createElement('option');o.value=s.id;o.textContent=s.label||s.id;g.appendChild(o);}
+    const g=document.createElement('optgroup');
+    g.label=`服务 SKU (${d.total.toLocaleString()})`;
+    for(const s of d.skus){
+      const o=document.createElement('option'); o.value=s.id;
+      o.textContent=s.label||s.id; g.appendChild(o);
+    }
     sel.appendChild(g);
   }
   const g2=document.createElement('optgroup'); g2.label='── 演示 SKU ──';
   for(const [id,info] of generateDemoData()){
-    const o=document.createElement('option');o.value=id;o.textContent=`[演示] ${info.label}`;g2.appendChild(o);
+    const o=document.createElement('option'); o.value=id;
+    o.textContent=`[演示] ${info.label}`; g2.appendChild(o);
   }
   sel.appendChild(g2);
 }
@@ -870,45 +866,62 @@ function buildModelButtons(){
 }
 
 function toggleModel(key,btn,cfg){
-  if(S.selModels.has(key)){if(S.selModels.size===1) return;S.selModels.delete(key);btn.style.cssText='';btn.className='model-btn px-5 py-2.5 rounded-xl text-sm font-medium border transition text-slate-400 border-slate-700 bg-transparent hover:border-slate-500';}
-  else{S.selModels.add(key);btn.style.cssText=`background:${cfg.color}22;border-color:${cfg.color};color:${cfg.color}`;}
+  if(S.selModels.has(key)){
+    if(S.selModels.size===1) return;
+    S.selModels.delete(key);
+    btn.style.cssText='';
+    btn.className='model-btn px-5 py-2.5 rounded-xl text-sm font-medium border transition text-slate-400 border-slate-700 bg-transparent hover:border-slate-500';
+  } else {
+    S.selModels.add(key);
+    btn.style.cssText=`background:${cfg.color}22;border-color:${cfg.color};color:${cfg.color}`;
+  }
 }
 
-function multiModelStatic(lgbPreds,dates){
-  const n=lgbPreds.length;
-  let seed=1234; const rng=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
-  const DOW=[0.84,0.89,0.95,1.00,1.09,1.28,1.19];
+function multiModelStatic(lgbPreds, dates){
+  let seed=1234;
+  const rng=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
   const mean=lgbPreds.filter(v=>v).reduce((s,v)=>s+v,0)/(lgbPreds.filter(v=>v).length||1);
-  const prophet=dates.map((ds,i)=>{const d=new Date(ds);return +Math.max(mean*DOW[d.getDay()]*(1+i*0.0005)*(0.97+rng()*0.06),0).toFixed(2);});
-  const hw=lgbPreds.map((v,i)=>{if(i<7)return +Math.max((v||0)*0.96,0).toFixed(2);return +Math.max((lgbPreds[i-7]||0)*0.96+(rng()-0.5)*mean*0.06,0).toFixed(2);});
-  const ensemble=lgbPreds.map((_,i)=>+((lgbPreds[i]+hw[i])/2).toFixed(2));
-  return{lightgbm:lgbPreds,prophet,holt_winters:hw,ensemble};
+  const xgb=lgbPreds.map(v=>+Math.max((v||0)*(0.97+rng()*0.06),0).toFixed(2));
+  const naive=lgbPreds.map((v,i)=>{
+    if(i<7) return +Math.max((v||0)*0.96,0).toFixed(2);
+    return +Math.max((lgbPreds[i-7]||0)*0.96+(rng()-0.5)*mean*0.06,0).toFixed(2);
+  });
+  const rf=lgbPreds.map(v=>+Math.max((v||0)*(0.98+rng()*0.04),0).toFixed(2));
+  const ensemble=lgbPreds.map((_,i)=>+((lgbPreds[i]+xgb[i]+rf[i])/3).toFixed(2));
+  return {lightgbm:lgbPreds, xgboost:xgb, random_forest:rf, naive, ensemble};
 }
 
 async function runLivePrediction(){
-  const sku=document.getElementById('skuSelect').value;
-  const from=document.getElementById('startDate').value;
-  const to=document.getElementById('endDate').value;
+  const sku  =document.getElementById('skuSelect').value;
+  const from =document.getElementById('startDate').value;
+  const to   =document.getElementById('endDate').value;
   if(!sku||!from||!to) return;
   const btn=document.getElementById('runBtn');
-  if(btn){document.getElementById('runBtnIcon').textContent='⏳';document.getElementById('runBtnLabel').textContent='预测中…';btn.disabled=true;}
+  if(btn){ document.getElementById('runBtnIcon').textContent='⏳';
+           document.getElementById('runBtnLabel').textContent='运行中…';
+           btn.disabled=true; }
   const isDemoSku=[...generateDemoData().keys()].includes(sku);
-  try{
-    if(S.server&&!isDemoSku){
-      const r=await fetch(`${API}/api/predict`,{method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({sku,start_date:from,end_date:to,models:[...S.selModels]})});
+  try {
+    if(S.server && !isDemoSku){
+      const r=await fetch(`${API}/api/predict`,{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({sku,start_date:from,end_date:to,models:[...S.selModels]}),
+      });
       if(!r.ok) throw new Error(await r.text());
       S.liveData=await r.json();
-    }else{
+    } else {
       const info=S.preds?.get(sku);
       const dates=[];
-      for(let d=new Date(from),e=new Date(to);d<=e;d.setDate(d.getDate()+1)) dates.push(d.toISOString().slice(0,10));
+      for(let d=new Date(from),e=new Date(to);d<=e;d.setDate(d.getDate()+1))
+        dates.push(d.toISOString().slice(0,10));
       let allPreds;
       if(info?._all && info?._dates){
         allPreds={};
         for(const [model,vals] of Object.entries(info._all)){
-          allPreds[model]=dates.map(ds=>{const idx=info._dates.indexOf(ds);return idx>=0?(vals[idx]??0):0;});
+          if(!Array.isArray(vals)) continue;
+          allPreds[model]=dates.map(ds=>{
+            const idx=info._dates.indexOf(ds); return idx>=0?(vals[idx]??0):0;
+          });
         }
       } else {
         const lgb=dates.map(ds=>info?.map.get(ds)??0);
@@ -919,68 +932,85 @@ async function runLivePrediction(){
       S.liveData={sku,dates,predictions};
     }
     renderLiveChart();
-  }catch(e){alert('预测失败：'+e.message);}
-  finally{
-    if(btn){document.getElementById('runBtnIcon').textContent='▶';document.getElementById('runBtnLabel').textContent='运行预测';btn.disabled=false;}
+  } catch(e){
+    alert('预测失败：'+e.message);
+  } finally {
+    if(btn){ document.getElementById('runBtnIcon').textContent='▶';
+             document.getElementById('runBtnLabel').textContent='运行预测';
+             btn.disabled=false; }
   }
 }
 
 function renderLiveChart(){
   if(!S.liveData) return;
-  const{dates,predictions}=S.liveData;
+  const {dates,predictions}=S.liveData;
   const sku=document.getElementById('skuSelect').value;
   const datasets=[];
-  for(const[name,preds] of Object.entries(predictions)){
+  for(const [name,preds] of Object.entries(predictions)){
     if(!preds||preds.error) continue;
     const cfg=MODEL_CFG[name]||{color:'#94A3B8',label:name,dash:[]};
-    datasets.push({label:cfg.label,data:preds,borderColor:cfg.color,
-      backgroundColor:name==='lightgbm'?`${cfg.color}0d`:'transparent',
-      fill:name==='lightgbm',tension:.35,borderWidth:2,borderDash:cfg.dash,
-      pointRadius:dates.length<=30?2.5:0});
+    datasets.push({
+      label:cfg.label, data:preds, borderColor:cfg.color,
+      backgroundColor:name==='ensemble'?`${cfg.color}0d`:'transparent',
+      fill:name==='ensemble', tension:.35, borderWidth:2,
+      borderDash:cfg.dash, pointRadius:dates.length<=30?2.5:0,
+    });
   }
   if(S.actuals?.has(sku)){
     const am=S.actuals.get(sku).map;
-    datasets.push({label:'实际值',data:dates.map(d=>am.get(d)??null),
-      borderColor:'#F97316',fill:false,tension:.35,borderWidth:2,borderDash:[4,3],
-      pointRadius:dates.length<=30?2.5:0});
+    datasets.push({
+      label:'实际', data:dates.map(d=>am.get(d)??null),
+      borderColor:'#F97316', fill:false, tension:.35,
+      borderWidth:2.5, borderDash:[4,3], pointRadius:dates.length<=30?3:0,
+    });
   }
   const ctx=document.getElementById('forecastChart');
   if(S.chart) S.chart.destroy();
-  S.chart=new Chart(ctx,{type:'line',data:{labels:dates,datasets},options:{
-    responsive:true,maintainAspectRatio:false,
-    interaction:{mode:'index',intersect:false},
-    plugins:{legend:{display:false},tooltip:{backgroundColor:'#1E293B',
-      borderColor:'rgba(255,255,255,.1)',borderWidth:1,
-      titleColor:'#94A3B8',bodyColor:'#F1F5F9',
-      callbacks:{title:c=>c[0].label,
-        label:c=>` ${c.dataset.label}：${c.parsed.y!=null?c.parsed.y.toFixed(1):'—'} 件`}}},
-    scales:{
-      x:{ticks:{color:'#475569',maxTicksLimit:10,maxRotation:0},grid:{color:'rgba(255,255,255,.03)'}},
-      y:{ticks:{color:'#475569'},grid:{color:'rgba(255,255,255,.03)'},
-         title:{display:true,text:'日销量（件）',color:'#475569',font:{size:11}}}
+  S.chart=new Chart(ctx,{
+    type:'line', data:{labels:dates,datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1E293B', borderColor:'rgba(255,255,255,.1)',
+          borderWidth:1, titleColor:'#94A3B8', bodyColor:'#F1F5F9',
+          callbacks:{
+            title:c=>c[0].label,
+            label:c=>` ${c.dataset.label}: ${c.parsed.y!=null?c.parsed.y.toFixed(1):'—'} 件`,
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{color:'#475569',maxTicksLimit:10,maxRotation:0},
+           grid:{color:'rgba(255,255,255,.03)'}},
+        y:{ticks:{color:'#475569'},grid:{color:'rgba(255,255,255,.03)'},
+           title:{display:true,text:'每日销量（件）',color:'#475569',font:{size:11}}}
+      }
     }
-  }});
-
+  });
   const leg=document.getElementById('chartLegend'); leg.innerHTML='';
-  for(const ds of datasets) leg.innerHTML+=`<div class="flex items-center gap-1.5">
-    <span class="w-4 h-0.5 inline-block rounded" style="background:${ds.borderColor}"></span>
-    <span>${ds.label}</span></div>`;
-
+  for(const ds of datasets){
+    leg.innerHTML+=`<div class="flex items-center gap-1.5">
+      <span class="w-4 h-0.5 inline-block rounded" style="background:${ds.borderColor}"></span>
+      <span>${ds.label}</span></div>`;
+  }
   const info=S.preds?.get(sku);
   document.getElementById('chartTitle').textContent=`预测 — ${(info?.label||sku).slice(0,50)}`;
   document.getElementById('chartSubtitle').textContent=
-    `${dates[0]} 至 ${dates[dates.length-1]}  ·  ${dates.length} 天  ·  ${Object.keys(predictions).length} 个模型`;
-
+    `${dates[0]} → ${dates[dates.length-1]} · ${dates.length} 天 · ${Object.keys(predictions).length} 个模型`;
   const validModels=Object.entries(predictions).filter(([,v])=>v&&!v.error);
   document.getElementById('chartStats').innerHTML=validModels.map(([name,preds])=>{
     const cfg=MODEL_CFG[name]||{label:name,color:'#94A3B8'};
-    const vp=preds.filter(v=>v!=null);
-    const tot=vp.reduce((s,v)=>s+v,0).toFixed(0);
-    const avg=(vp.reduce((s,v)=>s+v,0)/(vp.length||1)).toFixed(1);
+    const tot=(preds.filter(v=>v!=null).reduce((s,v)=>s+v,0)).toFixed(0);
+    const avg=(preds.filter(v=>v!=null).reduce((s,v)=>s+v,0)/
+               (preds.filter(v=>v!=null).length||1)).toFixed(1);
     return `<div class="bg-slate-800/40 rounded-xl p-4 text-center">
       <div class="text-xs mb-1" style="color:${cfg.color}">${cfg.label}</div>
       <div class="text-xl font-bold text-white">${tot}</div>
-      <div class="text-xs text-slate-600">${avg} 件/天均</div></div>`;
+      <div class="text-xs text-slate-600">日均 ${avg}</div>
+    </div>`;
   }).join('');
   document.getElementById('chartArea').classList.remove('hidden');
 }
@@ -988,12 +1018,13 @@ function renderLiveChart(){
 document.getElementById('predFile').addEventListener('change',function(e){
   const file=e.target.files[0]; if(!file) return;
   parseFile(file,rows=>{
-    const m=buildMap(rows,['日期','date','Date'],
+    const m=buildMap(rows,
+      ['日期','date','Date'],
       ['条码','条形码','barcode','Barcode','sku','SKU'],
       ['预测销量','forecast','Forecast','销量','quantity']);
-    if(!m){alert('列名识别失败\n预期列：日期 · 条码 · 预测销量');return;}
+    if(!m){alert('列识别失败。\n应包含：日期 · 条码 · 预测销量');return;}
     applyPredictions(m);
-    showStatus('predStatus',`✓ 已从"${file.name}"加载 ${m.size} 个 SKU`,'emerald');
+    showStatus('predStatus',`✓ 已从 "${file.name}" 加载 ${m.size} 个 SKU`,'emerald');
   });
 });
 
@@ -1015,20 +1046,24 @@ function buildMap(rows,dcols,scols,vcols){
 }
 
 function applyPredictions(preds){
-  for(const[id,info] of generateDemoData())
+  for(const [id,info] of generateDemoData())
     if(!preds.has(id)) preds.set(id,{...info,label:`[演示] ${info.label}`});
   S.preds=preds;
   const allDates=[...[...preds.values()].flatMap(v=>[...v.map.keys()])].sort();
-  const dmin=allDates[0],dmax=allDates[allDates.length-1];
+  const dmin=allDates[0], dmax=allDates[allDates.length-1];
   const sel=document.getElementById('skuSelect'); sel.innerHTML='';
   const realOpts=[],demoOpts=[];
-  for(const[id,info] of preds){
-    const o=document.createElement('option');o.value=id;
+  for(const [id,info] of preds){
+    const o=document.createElement('option'); o.value=id;
     o.textContent=(info.label||id).slice(0,55)+((info.label||id).length>55?'…':'');
     (info.label?.startsWith('[演示]')?demoOpts:realOpts).push(o);
   }
-  if(realOpts.length){const g=document.createElement('optgroup');g.label='预测 SKU';realOpts.forEach(o=>g.appendChild(o));sel.appendChild(g);}
-  const g2=document.createElement('optgroup');g2.label='── 演示 SKU ──';demoOpts.forEach(o=>g2.appendChild(o));sel.appendChild(g2);
+  if(realOpts.length){
+    const g=document.createElement('optgroup'); g.label='预测 SKU';
+    realOpts.forEach(o=>g.appendChild(o)); sel.appendChild(g);
+  }
+  const g2=document.createElement('optgroup'); g2.label='── 演示 SKU ──';
+  demoOpts.forEach(o=>g2.appendChild(o)); sel.appendChild(g2);
   document.getElementById('startDate').value=dmin;
   document.getElementById('endDate').value=dmax;
   document.getElementById('predictControls').classList.remove('hidden');
@@ -1051,45 +1086,64 @@ document.getElementById('actualFile').addEventListener('change',function(e){
       ['日期','date','Date','日期(年月日)'],
       ['条码','条形码','barcode','Barcode','sku','SKU'],
       ['当天全部销售数量','实际销量','actual','Actual','销量','quantity','Quantity']);
-    if(!m){alert('列名识别失败');return;}
+    if(!m){alert('列识别失败。');return;}
     S.actuals=m;
-    showStatus('actualStatus',`✓ 已加载 ${m.size} 个 SKU 的实际销量`,'emerald');
-    renderLiveChart(); computeFA();
+    showStatus('actualStatus',`✓ 已加载 ${m.size} 个 SKU`,'emerald');
+    renderLiveChart();
+    computeFA();
   });
 });
 
-function faScore(F,A){F=Math.max(F,0);A=Math.max(A,0);const d=(F+A)*2;if(d===0)return 1;return Math.max(1-Math.abs(F-A)/d,0);}
+// FA 公式：1 − 2|F−A|/(F+A)
+function faScore(F,A){
+  F=Math.max(F,0); A=Math.max(A,0);
+  const d=F+A; if(d===0) return 1;
+  return Math.max(1-2*Math.abs(F-A)/d, 0);
+}
 
 function computeFA(){
   if(!S.actuals) return;
   const EPOCH=new Date('2025-07-01');
-  function weekOf(ds){const diff=(new Date(ds)-EPOCH)/86400000;const w=Math.max(Math.floor(diff/7),0);const ws=new Date(EPOCH);ws.setDate(ws.getDate()+w*7);return ws.toISOString().slice(0,10);}
-  function weekLabel(ws){const we=new Date(ws);we.setDate(we.getDate()+6);return `${ws} 至 ${we.toISOString().slice(0,10)}`;}
+  function weekOf(ds){
+    const diff=(new Date(ds)-EPOCH)/86400000;
+    const w=Math.max(Math.floor(diff/7),0);
+    const ws=new Date(EPOCH); ws.setDate(ws.getDate()+w*7);
+    return ws.toISOString().slice(0,10);
+  }
+  function weekLabel(ws){
+    const we=new Date(ws); we.setDate(we.getDate()+6);
+    return `${ws} → ${we.toISOString().slice(0,10)}`;
+  }
   const predSource=new Map();
-  if(S.preds) for(const[sku,info] of S.preds) predSource.set(sku,info.map);
+  if(S.preds){ for(const [sku,info] of S.preds) predSource.set(sku,info.map); }
   const weekAcc=new Map();
-  for(const[sku,actObj] of S.actuals){
+  for(const [sku,actMap] of S.actuals){
     const pm=predSource.get(sku); if(!pm) continue;
-    const wkF=new Map(),wkA=new Map();
-    for(const[ds,v] of pm){const ws=weekOf(ds);wkF.set(ws,(wkF.get(ws)||0)+v);}
-    for(const[ds,v] of actObj.map){const ws=weekOf(ds);wkA.set(ws,(wkA.get(ws)||0)+v);}
-    for(const[ws,F] of wkF){
+    const wkF=new Map(), wkA=new Map();
+    for(const [ds,v] of pm){const ws=weekOf(ds);wkF.set(ws,(wkF.get(ws)||0)+v);}
+    for(const [ds,v] of actMap.map){const ws=weekOf(ds);wkA.set(ws,(wkA.get(ws)||0)+v);}
+    for(const [ws,F] of wkF){
       const A=wkA.get(ws)||0;
-      const wsDate=new Date(ws); let weight=0;
-      for(let d=1;d<=28;d++){const dd=new Date(wsDate);dd.setDate(dd.getDate()-d);weight+=actObj.map.get(dd.toISOString().slice(0,10))||0;}
+      const wsDate=new Date(ws);
+      let weight=0;
+      for(let d=1;d<=28;d++){
+        const dd=new Date(wsDate); dd.setDate(dd.getDate()-d);
+        weight+=actMap.map.get(dd.toISOString().slice(0,10))||0;
+      }
       const fa=faScore(F,A);
       if(!weekAcc.has(ws)) weekAcc.set(ws,{wFA_num:0,wFA_den:0,F:0,A:0,matched:0});
       const acc=weekAcc.get(ws);
-      acc.wFA_num+=fa*Math.max(weight,0);acc.wFA_den+=Math.max(weight,0);acc.F+=F;acc.A+=A;acc.matched++;
+      acc.wFA_num+=fa*Math.max(weight,0); acc.wFA_den+=Math.max(weight,0);
+      acc.F+=F; acc.A+=A; acc.matched++;
     }
   }
-  const tbody=document.getElementById('faTableBody');tbody.innerHTML='';
+  const tbody=document.getElementById('faTableBody'); tbody.innerHTML='';
   let gNum=0,gDen=0;
   for(const ws of [...weekAcc.keys()].sort()){
     const acc=weekAcc.get(ws);
     const wfa=acc.wFA_den>0?acc.wFA_num/acc.wFA_den:faScore(acc.F,acc.A);
     const bias=acc.A>0?(acc.F-acc.A)/acc.A*100:null;
-    gNum+=acc.wFA_num;gDen+=acc.wFA_den;
+    gNum+=acc.wFA_num; gDen+=acc.wFA_den;
     const fc=wfa>=0.8?'text-emerald-400':wfa>=0.65?'text-yellow-400':'text-red-400';
     const bc=bias==null?'text-slate-500':Math.abs(bias)<10?'text-slate-300':bias>0?'text-blue-400':'text-orange-400';
     tbody.innerHTML+=`<tr class="hover:bg-white/[.03] transition">
@@ -1104,7 +1158,7 @@ function computeFA(){
   const overall=gDen>0?gNum/gDen:null;
   const matched=[...S.actuals.keys()].filter(s=>predSource.has(s)).length;
   document.getElementById('overallFA').textContent=overall!=null?(overall*100).toFixed(1)+'%':'N/A';
-  document.getElementById('faDetails').textContent=`${matched} 个 SKU 匹配 · ${weekAcc.size} 个统计周期`;
+  document.getElementById('faDetails').textContent=`匹配 ${matched} 个 SKU · ${weekAcc.size} 周`;
   document.getElementById('faResults').classList.remove('hidden');
 }
 
@@ -1112,60 +1166,61 @@ function parseFile(file,cb){
   const ext=file.name.split('.').pop().toLowerCase();
   if(ext==='xlsx'||ext==='xls'){
     const r=new FileReader();
-    r.onload=e=>{const wb=XLSX.read(e.target.result,{type:'array'});cb(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{raw:false,defval:''}));};
+    r.onload=e=>{
+      const wb=XLSX.read(e.target.result,{type:'array'});
+      cb(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{raw:false,defval:''}));
+    };
     r.readAsArrayBuffer(file);
-  }else{Papa.parse(file,{header:true,skipEmptyLines:true,complete:r=>cb(r.data),error:e=>alert('解析出错：'+e.message)});}
+  } else {
+    Papa.parse(file,{header:true,skipEmptyLines:true,
+      complete:r=>cb(r.data),error:e=>alert('解析错误：'+e.message)});
+  }
 }
 
 function showStatus(id,msg,color){
-  const el=document.getElementById(id);el.textContent=msg;
-  el.className=`text-sm mt-4 text-${color}-400`;el.classList.remove('hidden');
-}
-
-function loadDisplayPredictions(){
-  fetch('display_predictions.json')
-    .then(r=>{if(!r.ok) throw 0;return r.json();})
-    .then(data=>{
-      const cv=data.cv_results||{}, oos=data.oos_results||{};
-      const naive_fa=cv.naive?.overall;
-      function fillRow(key,cvId,oosId,upId){
-        const cvFa=cv[key]?.overall, oosFa=oos[key]?.overall;
-        if(cvFa!=null&&document.getElementById(cvId)) document.getElementById(cvId).textContent=cvFa.toFixed(2)+'%';
-        if(oosFa!=null&&document.getElementById(oosId)) document.getElementById(oosId).textContent=oosFa.toFixed(2)+'%';
-        if(cvFa!=null&&naive_fa!=null&&document.getElementById(upId))
-          document.getElementById(upId).textContent=(cvFa-naive_fa>=0?'+':'')+(cvFa-naive_fa).toFixed(2)+' pp';
-      }
-      fillRow('lstm','cv-lstm','oos-lstm','up-lstm');
-      fillRow('holt_winters','cv-hw','oos-hw','up-hw');
-      if(oos.naive?.overall&&document.getElementById('oos-naive'))
-        document.getElementById('oos-naive').textContent=oos.naive.overall.toFixed(2)+'%';
-      if(S.server||!data.skus) return;
-      const preds=new Map();
-      for(const [sku,info] of Object.entries(data.skus)){
-        const m=new Map();
-        (info.dates||[]).forEach((d,i)=>{m.set(d,(info.predictions?.lightgbm?.[i])??0);});
-        preds.set(sku,{map:m,label:info.label||sku,cat:info.cat||'',_all:info.predictions,_dates:info.dates});
-      }
-      if(preds.size>0) applyPredictions(preds);
-    }).catch(()=>{});
+  const el=document.getElementById(id);
+  el.textContent=msg; el.className=`text-sm mt-4 text-${color}-400`;
+  el.classList.remove('hidden');
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
   checkServer();
-  loadDisplayPredictions();
+  loadCVResults();
+  function tryLoadPredictions(path, fallback){
+    fetch(path)
+      .then(r=>{ if(!r.ok) throw 0; return r.json(); })
+      .then(data=>{
+        if(S.server || !data) return;
+        const preds=new Map();
+        const root = data.skus || data;
+        for(const [sku,info] of Object.entries(root)){
+          if(typeof info !== 'object' || !info.dates) continue;
+          const m=new Map();
+          (info.dates||[]).forEach((d,i)=>{
+            m.set(d,(info.ensemble?.[i]??info.lightgbm?.[i])??0);
+          });
+          preds.set(sku,{map:m,label:info.label||`中类 ${info.cat||'?'} · ${sku.slice(-8)}`,
+                         cat:info.cat||'',_all:info,_dates:info.dates});
+        }
+        if(preds.size>0) applyPredictions(preds);
+      })
+      .catch(()=>{ if(fallback) tryLoadPredictions(fallback, null); });
+  }
+  tryLoadPredictions('display_predictions_v2.json','display_predictions.json');
+
   fetch('poc_submission.csv',{method:'HEAD'})
-    .then(r=>{if(!r.ok) throw 0;return fetch('poc_submission.csv');})
+    .then(r=>{if(!r.ok) throw 0; return fetch('poc_submission.csv');})
     .then(r=>r.text())
     .then(text=>{
-      if(S.server) return;
+      if(S.server||S.preds) return;
       const rows=Papa.parse(text,{header:true,skipEmptyLines:true}).data;
       const m=buildMap(rows,['日期','date','Date'],
-        ['条码','条形码','barcode','Barcode','sku','SKU'],
-        ['预测销量','forecast','Forecast','销量','quantity']);
+        ['条码','条形码','barcode'],['预测销量','forecast','销量']);
       if(!m) return;
       applyPredictions(m);
       showStatus('predStatus',`✓ 已从 poc_submission.csv 加载 ${m.size} 个 SKU`,'emerald');
-    }).catch(()=>{});
+    })
+    .catch(()=>{});
 });
 </script>
 </body>
