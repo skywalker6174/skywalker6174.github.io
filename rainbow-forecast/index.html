@@ -115,7 +115,7 @@
     </p>
   </div>
 
-  <!-- ── 5 model cards ────────────────────────────────────────────────────── -->
+  <!-- ── 6 model cards ────────────────────────────────────────────────────── -->
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 
     <!-- LightGBM -->
@@ -146,6 +146,34 @@
         <span class="bg-slate-800 rounded px-2 py-1">depth 6</span>
         <span class="bg-slate-800 rounded px-2 py-1">31 leaves</span>
         <span class="bg-slate-800 rounded px-2 py-1">GOSS sampling</span>
+      </div>
+    </div>
+
+    <!-- Random Forest -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
+        <span class="font-bold">Random Forest</span>
+        <span class="ml-auto text-xs text-slate-600">Global · All SKUs</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        Bagging ensemble of decision trees. Each tree is trained on a random
+        bootstrap sample of data and a random subset of features, reducing
+        variance through averaging of uncorrelated predictors.
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-emerald-300">ŷ = <sup>1</sup>&frasl;<sub>B</sub> &Sigma;<sub>b=1</sub><sup>B</sup> T<sub>b</sub>(<b>x</b>)
+          &nbsp;&nbsp;<span class="text-slate-500">(B = 200 trees)</span></div>
+        <div class="text-blue-300 mt-1">Var(ŷ) = &rho;&sigma;&sup2; + <sup>1&minus;&rho;</sup>&frasl;<sub>B</sub>&sigma;&sup2;</div>
+        <div class="text-slate-500 text-xs mt-1">
+          &rho; = correlation between trees; variance → 0 as B → &infin; when &rho; = 0
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">200 trees</span>
+        <span class="bg-slate-800 rounded px-2 py-1">depth 10</span>
+        <span class="bg-slate-800 rounded px-2 py-1">50% row sample</span>
+        <span class="bg-slate-800 rounded px-2 py-1">70% feature sample</span>
       </div>
     </div>
 
@@ -260,7 +288,82 @@
 
   <!-- ── 22 features compact ────────────────────────────────────────────── -->
   <div class="card rounded-2xl p-7 mb-8">
-    <h3 class="font-semibold mb-5">22 Shared Input Features (all models)</h3>
+    <h3 class="font-semibold mb-2">Feature Inputs by Model</h3>
+    <p class="text-slate-500 text-xs mb-5">
+      Not all models use all features — time-series models are inherently univariate
+      or use only a subset, while tree-based models benefit from the full feature set.
+    </p>
+    <div class="overflow-x-auto mb-5">
+      <table class="w-full text-xs">
+        <thead>
+          <tr class="border-b border-white/[.06] text-slate-500">
+            <th class="text-left py-2 pr-6">Feature group</th>
+            <th class="text-center py-2 px-3" style="color:#3B82F6">LightGBM</th>
+            <th class="text-center py-2 px-3" style="color:#10B981">Rand. Forest</th>
+            <th class="text-center py-2 px-3" style="color:#EC4899">LSTM</th>
+            <th class="text-center py-2 px-3" style="color:#F59E0B">Holt-Winters</th>
+            <th class="text-center py-2 px-3" style="color:#10B981">Prophet</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/[.04] text-slate-400">
+          <tr>
+            <td class="py-2 pr-6">Lag features (lag_1–28)</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">implicit*</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">Rolling means (roll7/14/28)</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">Calendar (dow, dom, month)</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">implicit†</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">Promotion (8 flags)</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">Similar SKU signal (cat_lag1/roll7)</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">SKU identity (sku_id)</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr class="border-t border-white/[.08] font-medium text-slate-300">
+            <td class="py-2 pr-6">Total features used</td>
+            <td class="text-center py-2" style="color:#3B82F6">24</td>
+            <td class="text-center py-2" style="color:#10B981">24</td>
+            <td class="text-center py-2" style="color:#EC4899">10 / step</td>
+            <td class="text-center py-2" style="color:#F59E0B">1 (series)</td>
+            <td class="text-center py-2" style="color:#10B981">1 (series)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="text-slate-600 text-xs mt-2">
+        * LSTM encodes past sales as a sequence — lags are implicit in the 28-step window &nbsp;·&nbsp;
+        † Prophet learns weekly/yearly seasonality internally from dates
+      </p>
+    </div>
+    <h4 class="font-medium text-sm mb-4 text-slate-400">Full 24-feature set used by LightGBM &amp; Random Forest</h4>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
       <div>
         <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">Lag · 7</div>
@@ -343,39 +446,90 @@
   </div>
 
   <!-- ── CV metrics ─────────────────────────────────────────────────────── -->
-  <h3 class="text-center font-semibold mb-5 text-slate-300">
-    Walk-Forward CV Results — LightGBM vs Baselines (3 folds · 28-day horizon)
+  <h3 class="text-center font-semibold mb-2 text-slate-300">
+    Walk-Forward CV Results — FA metric on sales quantity
   </h3>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-6">
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">Test-set MAE</div>
-      <div class="text-3xl font-bold text-blue-400">22.28</div>
-      <div class="text-xs text-slate-600 mt-1">LightGBM · cost units</div>
-    </div>
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">vs Naïve baseline</div>
-      <div class="text-3xl font-bold text-emerald-400">−21.9%</div>
-      <div class="text-xs text-slate-600 mt-1">MAE improvement</div>
-    </div>
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">Short-SKU CV MAE</div>
-      <div class="text-3xl font-bold text-cyan-400">16.11</div>
-      <div class="text-xs text-slate-600 mt-1">112–179 day history</div>
-    </div>
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">Long-SKU CV MAE</div>
-      <div class="text-3xl font-bold text-violet-400">23.47</div>
-      <div class="text-xs text-slate-600 mt-1">≥ 180 day history</div>
-    </div>
+  <p class="text-center text-xs text-slate-500 mb-6">
+    5 folds · 28-day horizon · 500-SKU sample · chronological order ·
+    Out-of-sample: Jul 1–31 2025
+  </p>
+
+  <!-- 6-model breakdown table -->
+  <div class="card rounded-2xl overflow-hidden mb-6">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
+          <th class="text-left px-6 py-3">Model</th>
+          <th class="text-right px-4 py-3">CV FA</th>
+          <th class="text-right px-4 py-3">OOS FA</th>
+          <th class="text-right px-4 py-3">8802</th>
+          <th class="text-right px-4 py-3">8803</th>
+          <th class="text-right px-4 py-3">8804</th>
+          <th class="text-right px-4 py-3">8805</th>
+          <th class="text-right px-4 py-3">8807</th>
+          <th class="text-right px-4 py-3">vs Naïve</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/[.04]">
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span><span class="font-medium">LightGBM</span></td>
+          <td class="px-4 py-3 text-right font-bold text-blue-400">84.45%</td>
+          <td class="px-4 py-3 text-right text-blue-300">87.41%</td>
+          <td class="px-4 py-3 text-right text-slate-300">90.8%</td>
+          <td class="px-4 py-3 text-right text-slate-300">92.3%</td>
+          <td class="px-4 py-3 text-right text-slate-300">80.8%</td>
+          <td class="px-4 py-3 text-right text-slate-300">73.5%</td>
+          <td class="px-4 py-3 text-right text-slate-300">81.5%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.83 pp</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span><span class="font-medium">Random Forest</span></td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-400">84.10%</td>
+          <td class="px-4 py-3 text-right text-emerald-300">87.55%</td>
+          <td class="px-4 py-3 text-right text-slate-300">89.5%</td>
+          <td class="px-4 py-3 text-right text-slate-300">92.0%</td>
+          <td class="px-4 py-3 text-right text-slate-300">80.9%</td>
+          <td class="px-4 py-3 text-right text-slate-300">73.4%</td>
+          <td class="px-4 py-3 text-right text-slate-300">82.0%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.49 pp</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#EC4899"></span><span class="font-medium">LSTM</span></td>
+          <td class="px-4 py-3 text-right font-bold text-pink-400" id="cv-lstm">computing…</td>
+          <td class="px-4 py-3 text-right text-pink-300" id="oos-lstm">—</td>
+          <td colspan="5" class="px-4 py-3 text-center text-slate-600 text-xs">results update automatically</td>
+          <td class="px-4 py-3 text-right text-slate-600" id="up-lstm">—</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#F59E0B"></span><span class="font-medium">Holt-Winters</span></td>
+          <td class="px-4 py-3 text-right font-bold text-amber-400" id="cv-hw">computing…</td>
+          <td class="px-4 py-3 text-right text-amber-300" id="oos-hw">—</td>
+          <td colspan="5" class="px-4 py-3 text-center text-slate-600 text-xs">results update automatically</td>
+          <td class="px-4 py-3 text-right text-slate-600" id="up-hw">—</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span><span class="text-slate-400">Seasonal Naïve</span></td>
+          <td class="px-4 py-3 text-right text-slate-400">83.62%</td>
+          <td class="px-4 py-3 text-right text-slate-500" id="oos-naive">—</td>
+          <td class="px-4 py-3 text-right text-slate-500">90.9%</td>
+          <td class="px-4 py-3 text-right text-slate-500">90.1%</td>
+          <td class="px-4 py-3 text-right text-slate-500">78.5%</td>
+          <td class="px-4 py-3 text-right text-slate-500">74.9%</td>
+          <td class="px-4 py-3 text-right text-slate-500">79.2%</td>
+          <td class="px-4 py-3 text-right text-slate-600">baseline</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <div class="bg-amber-500/8 border border-amber-500/20 rounded-xl p-4 text-sm
-              text-amber-300/90 flex items-start gap-3">
-    <span class="flex-shrink-0 text-base mt-0.5">ℹ️</span>
+  <div class="bg-blue-500/8 border border-blue-500/20 rounded-xl p-4 text-sm
+              text-blue-300/90 flex items-start gap-3">
+    <span class="flex-shrink-0 text-base mt-0.5">💡</span>
     <span>
-      MAE metrics are from the cost-of-sales model (v2 notebook).
-      The POC evaluation uses the <strong class="text-white">FA metric on sales quantity</strong>
-      computed weekly. Upload actual sales in the Evaluate section to compute your FA score.
+      <strong class="text-white">cat_roll7</strong> (7-day rolling mean of similar SKUs in the same category)
+      ranked <strong class="text-white">3rd</strong> in LightGBM feature importance — ahead of most lag features.
+      Cross-SKU signals meaningfully improve forecast accuracy. &nbsp;·&nbsp;
+      OOS = out-of-sample evaluation on Jul 1–31 2025 actual sales.
     </span>
   </div>
 </section>
@@ -1140,8 +1294,51 @@ function showStatus(id,msg,color){
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────
+// Auto-load display_predictions.json for multi-model static display + CV table
+function loadDisplayPredictions() {
+  fetch('display_predictions.json')
+    .then(r=>{ if(!r.ok) throw 0; return r.json(); })
+    .then(data=>{
+      // Populate CV table LSTM / HW rows if available
+      const cv = data.cv_results || {};
+      const oos = data.oos_results || {};
+      const naive_fa = cv.naive?.overall;
+
+      function fillRow(modelKey, cvId, oosId, upId, fmtColor) {
+        const cvFa  = cv[modelKey]?.overall;
+        const oosFa = oos[modelKey]?.overall;
+        if(cvFa  != null && document.getElementById(cvId))
+          document.getElementById(cvId).textContent = cvFa.toFixed(2)+'%';
+        if(oosFa != null && document.getElementById(oosId))
+          document.getElementById(oosId).textContent = oosFa.toFixed(2)+'%';
+        if(cvFa != null && naive_fa != null && document.getElementById(upId))
+          document.getElementById(upId).textContent =
+            (cvFa-naive_fa >= 0 ? '+' : '') + (cvFa-naive_fa).toFixed(2)+' pp';
+      }
+      fillRow('lstm',         'cv-lstm', 'oos-lstm', 'up-lstm');
+      fillRow('holt_winters', 'cv-hw',   'oos-hw',   'up-hw');
+      if(oos.naive?.overall && document.getElementById('oos-naive'))
+        document.getElementById('oos-naive').textContent = oos.naive.overall.toFixed(2)+'%';
+
+      // Load display SKU predictions if not in server mode
+      if(S.server || !data.skus) return;
+      const preds = new Map();
+      for(const [sku, info] of Object.entries(data.skus)) {
+        const m = new Map();
+        (info.dates||[]).forEach((d,i)=>{
+          // Use lightgbm as the primary series for the static dropdown
+          m.set(d, (info.predictions?.lightgbm?.[i]) ?? 0);
+        });
+        preds.set(sku, { map:m, label:info.label||sku, cat:info.cat||'', _all:info.predictions, _dates:info.dates });
+      }
+      if(preds.size > 0) applyPredictions(preds);
+    })
+    .catch(()=>{});
+}
+
 window.addEventListener('DOMContentLoaded',()=>{
   checkServer();
+  loadDisplayPredictions();
   // Also try auto-loading poc_submission.csv (static fallback)
   fetch('poc_submission.csv',{method:'HEAD'})
     .then(r=>{if(!r.ok) throw 0; return fetch('poc_submission.csv');})

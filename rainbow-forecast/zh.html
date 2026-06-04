@@ -116,7 +116,7 @@
     </p>
   </div>
 
-  <!-- ── 五个模型卡片 ─────────────────────────────────────────────────── -->
+  <!-- ── 六个模型卡片 ─────────────────────────────────────────────────── -->
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 
     <!-- LightGBM -->
@@ -143,6 +143,33 @@
         <span class="bg-slate-800 rounded px-2 py-1">深度 6</span>
         <span class="bg-slate-800 rounded px-2 py-1">31 叶节点</span>
         <span class="bg-slate-800 rounded px-2 py-1">GOSS 采样</span>
+      </div>
+    </div>
+
+    <!-- 随机森林 -->
+    <div class="card rounded-2xl p-7">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#10B981"></span>
+        <span class="font-bold">随机森林</span>
+        <span class="ml-auto text-xs text-slate-600">全局模型 · 全量 SKU</span>
+      </div>
+      <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+        决策树的 Bagging 集成。每棵树在数据的随机自助采样与特征随机子集上独立训练，
+        通过对不相关预测器取均值大幅降低预测方差。
+      </p>
+      <div class="bg-slate-800/60 rounded-xl p-4 font-mono text-xs leading-7 mb-4">
+        <div class="text-emerald-300">ŷ = <sup>1</sup>&frasl;<sub>B</sub> &Sigma;<sub>b=1</sub><sup>B</sup> T<sub>b</sub>(<b>x</b>)
+          &nbsp;&nbsp;<span class="text-slate-500">(B = 200 棵树)</span></div>
+        <div class="text-blue-300 mt-1">Var(ŷ) = &rho;&sigma;&sup2; + <sup>1&minus;&rho;</sup>&frasl;<sub>B</sub>&sigma;&sup2;</div>
+        <div class="text-slate-500 text-xs mt-1">
+          &rho; = 树间相关系数；当 &rho; → 0 时方差趋近于 0
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+        <span class="bg-slate-800 rounded px-2 py-1">200 棵树</span>
+        <span class="bg-slate-800 rounded px-2 py-1">深度 10</span>
+        <span class="bg-slate-800 rounded px-2 py-1">50% 行采样</span>
+        <span class="bg-slate-800 rounded px-2 py-1">70% 特征采样</span>
       </div>
     </div>
 
@@ -254,7 +281,76 @@
 
   <!-- ── 22 维特征简表 ───────────────────────────────────────────────── -->
   <div class="card rounded-2xl p-7 mb-8">
-    <h3 class="font-semibold mb-5">22 维共享输入特征（所有模型通用）</h3>
+    <h3 class="font-semibold mb-2">各模型特征输入对比</h3>
+    <p class="text-slate-500 text-xs mb-5">
+      不同模型使用的特征各不相同——时序模型本质上是单变量的，而树模型可充分利用完整特征集。
+    </p>
+    <div class="overflow-x-auto mb-5">
+      <table class="w-full text-xs">
+        <thead>
+          <tr class="border-b border-white/[.06] text-slate-500">
+            <th class="text-left py-2 pr-6">特征组</th>
+            <th class="text-center py-2 px-3" style="color:#3B82F6">LightGBM</th>
+            <th class="text-center py-2 px-3" style="color:#10B981">随机森林</th>
+            <th class="text-center py-2 px-3" style="color:#EC4899">LSTM</th>
+            <th class="text-center py-2 px-3" style="color:#F59E0B">Holt-Winters</th>
+            <th class="text-center py-2 px-3" style="color:#10B981">Prophet</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/[.04] text-slate-400">
+          <tr>
+            <td class="py-2 pr-6">滞后特征（lag_1–28）</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">隐式*</td>
+            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">滚动均值（roll7/14/28）</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">日历特征（星期/月中日/月份）</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">隐式†</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">促销特征（8 个标志位）</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">相似 SKU 信号（cat_lag1/roll7）</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-6">商品标识（sku_id）</td>
+            <td class="text-center py-2">✓</td><td class="text-center py-2">✓</td>
+            <td class="text-center py-2 text-slate-600">—</td>
+            <td class="text-center py-2 text-slate-600">—</td><td class="text-center py-2 text-slate-600">—</td>
+          </tr>
+          <tr class="border-t border-white/[.08] font-medium text-slate-300">
+            <td class="py-2 pr-6">使用特征总数</td>
+            <td class="text-center py-2" style="color:#3B82F6">24</td>
+            <td class="text-center py-2" style="color:#10B981">24</td>
+            <td class="text-center py-2" style="color:#EC4899">10/步</td>
+            <td class="text-center py-2" style="color:#F59E0B">1（序列）</td>
+            <td class="text-center py-2" style="color:#10B981">1（序列）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="text-slate-600 text-xs mt-2">
+        * LSTM 将过去 28 天销售值作为序列输入，滞后特征隐含其中 &nbsp;·&nbsp;
+        † Prophet 通过日期自动学习周/年季节性
+      </p>
+    </div>
+    <h4 class="font-medium text-sm mb-4 text-slate-400">LightGBM 与随机森林完整 24 维特征集</h4>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
       <div>
         <div class="text-blue-400 text-xs uppercase tracking-wider mb-2 font-semibold">滞后特征 · 7</div>
@@ -336,39 +432,88 @@
   </div>
 
   <!-- ── 交叉验证指标 ────────────────────────────────────────────────── -->
-  <h3 class="text-center font-semibold mb-5 text-slate-300">
-    LightGBM vs 基准模型交叉验证对比（3 折步进式 · 每折 28 天）
+  <h3 class="text-center font-semibold mb-2 text-slate-300">
+    滚动时间序列交叉验证结果 — FA 指标（销售数量）
   </h3>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-6">
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">测试集 MAE</div>
-      <div class="text-3xl font-bold text-blue-400">22.28</div>
-      <div class="text-xs text-slate-600 mt-1">LightGBM · 成本单位</div>
-    </div>
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">相较朴素基准</div>
-      <div class="text-3xl font-bold text-emerald-400">−21.9%</div>
-      <div class="text-xs text-slate-600 mt-1">MAE 改善幅度</div>
-    </div>
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">短历史 CV MAE</div>
-      <div class="text-3xl font-bold text-cyan-400">16.11</div>
-      <div class="text-xs text-slate-600 mt-1">历史跨度 112–179 天</div>
-    </div>
-    <div class="metric-card rounded-2xl p-6 text-center">
-      <div class="text-slate-400 text-xs mb-2">长历史 CV MAE</div>
-      <div class="text-3xl font-bold text-violet-400">23.47</div>
-      <div class="text-xs text-slate-600 mt-1">历史跨度 ≥ 180 天</div>
-    </div>
+  <p class="text-center text-xs text-slate-500 mb-6">
+    5 折 · 每折 28 天预测 · 500 SKU 样本 · 严格按时间顺序
+  </p>
+
+  <!-- 六模型明细表 -->
+  <div class="card rounded-2xl overflow-hidden mb-6">
+    <table class="w-full text-sm" id="cvTable">
+      <thead>
+        <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
+          <th class="text-left px-6 py-3">模型</th>
+          <th class="text-right px-4 py-3">CV FA</th>
+          <th class="text-right px-4 py-3">样本外 FA</th>
+          <th class="text-right px-4 py-3">8802</th>
+          <th class="text-right px-4 py-3">8803</th>
+          <th class="text-right px-4 py-3">8804</th>
+          <th class="text-right px-4 py-3">8805</th>
+          <th class="text-right px-4 py-3">8807</th>
+          <th class="text-right px-4 py-3">vs 基准</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/[.04]">
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span><span class="font-medium">LightGBM</span></td>
+          <td class="px-4 py-3 text-right font-bold text-blue-400">84.45%</td>
+          <td class="px-4 py-3 text-right text-blue-300">87.41%</td>
+          <td class="px-4 py-3 text-right text-slate-300">90.8%</td>
+          <td class="px-4 py-3 text-right text-slate-300">92.3%</td>
+          <td class="px-4 py-3 text-right text-slate-300">80.8%</td>
+          <td class="px-4 py-3 text-right text-slate-300">73.5%</td>
+          <td class="px-4 py-3 text-right text-slate-300">81.5%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.83 pp</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span><span class="font-medium">随机森林</span></td>
+          <td class="px-4 py-3 text-right font-bold text-emerald-400">84.10%</td>
+          <td class="px-4 py-3 text-right text-emerald-300">87.55%</td>
+          <td class="px-4 py-3 text-right text-slate-300">89.5%</td>
+          <td class="px-4 py-3 text-right text-slate-300">92.0%</td>
+          <td class="px-4 py-3 text-right text-slate-300">80.9%</td>
+          <td class="px-4 py-3 text-right text-slate-300">73.4%</td>
+          <td class="px-4 py-3 text-right text-slate-300">82.0%</td>
+          <td class="px-4 py-3 text-right text-emerald-400">+0.49 pp</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#EC4899"></span><span class="font-medium">LSTM</span></td>
+          <td class="px-4 py-3 text-right font-bold text-pink-400" id="cv-lstm">计算中…</td>
+          <td class="px-4 py-3 text-right text-pink-300" id="oos-lstm">—</td>
+          <td colspan="5" class="px-4 py-3 text-center text-slate-600 text-xs">结果生成后自动更新</td>
+          <td class="px-4 py-3 text-right text-slate-600" id="up-lstm">—</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#F59E0B"></span><span class="font-medium">Holt-Winters</span></td>
+          <td class="px-4 py-3 text-right font-bold text-amber-400" id="cv-hw">计算中…</td>
+          <td class="px-4 py-3 text-right text-amber-300" id="oos-hw">—</td>
+          <td colspan="5" class="px-4 py-3 text-center text-slate-600 text-xs">结果生成后自动更新</td>
+          <td class="px-4 py-3 text-right text-slate-600" id="up-hw">—</td>
+        </tr>
+        <tr class="hover:bg-white/[.03]">
+          <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span><span class="text-slate-400">朴素基准</span></td>
+          <td class="px-4 py-3 text-right text-slate-400">83.62%</td>
+          <td class="px-4 py-3 text-right text-slate-500" id="oos-naive">—</td>
+          <td class="px-4 py-3 text-right text-slate-500">90.9%</td>
+          <td class="px-4 py-3 text-right text-slate-500">90.1%</td>
+          <td class="px-4 py-3 text-right text-slate-500">78.5%</td>
+          <td class="px-4 py-3 text-right text-slate-500">74.9%</td>
+          <td class="px-4 py-3 text-right text-slate-500">79.2%</td>
+          <td class="px-4 py-3 text-right text-slate-600">基准</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <div class="bg-amber-500/8 border border-amber-500/20 rounded-xl p-4 text-sm
-              text-amber-300/90 flex items-start gap-3">
-    <span class="flex-shrink-0 text-base mt-0.5">ℹ️</span>
+  <div class="bg-blue-500/8 border border-blue-500/20 rounded-xl p-4 text-sm
+              text-blue-300/90 flex items-start gap-3">
+    <span class="flex-shrink-0 text-base mt-0.5">💡</span>
     <span>
-      以上 MAE 指标来自销售成本预测模型（v2 notebook）的交叉验证结果。
-      POC 评估采用<strong class="text-white">以销售数量为目标的 FA 指标</strong>，按周聚合计算。
-      请在下方"精度评估"模块上传实际销量数据，实时查看 FA 得分。
+      <strong class="text-white">cat_roll7</strong>（同品类 SKU 近 7 天滚动均值）在 LightGBM
+      中排名第 <strong class="text-white">3 位</strong>，超过大多数滞后特征。
+      跨 SKU 的相似商品信号对预测精度有显著贡献。
     </span>
   </div>
 </section>
