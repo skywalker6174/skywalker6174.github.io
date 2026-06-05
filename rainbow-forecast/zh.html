@@ -343,8 +343,8 @@
     滚动交叉验证结果 — 销量 FA 指标
   </h3>
   <p class="text-center text-xs text-slate-500 mb-6">
-    5 折 · 每折 7 天预测窗口 · 全部有效 SKU（20,372）· 按时间顺序 ·
-    FA = 1 − 2|F−A|/(F+A)，按过去 4 周销量加权
+    5 折 · 每折 7 天预测窗口 · 全部有效 SKU（20,372）· 30 个特征（24 基础 + 6 自动发现）·
+    按时间顺序 · FA = 1 − 2|F−A|/(F+A)，按过去 4 周销量加权
   </p>
 
   <div class="card rounded-2xl overflow-hidden mb-6">
@@ -446,8 +446,8 @@
       <div class="text-xs text-slate-500 mt-1">最佳代理 FA 提升<br>(LightGBM)</div>
     </div>
     <div class="card rounded-xl p-5 text-center">
-      <div class="text-3xl font-bold text-amber-400">+0.65pp</div>
-      <div class="text-xs text-slate-500 mt-1">真实递归提升<br>(已确认)</div>
+      <div class="text-3xl font-bold text-slate-400">≈ 0pp</div>
+      <div class="text-xs text-slate-500 mt-1">全量 20k 生产环境<br>(代理增益未迁移)</div>
     </div>
   </div>
 
@@ -529,8 +529,7 @@
       <h3 class="font-semibold mb-4">我们学到了什么</h3>
       <ul class="space-y-3 text-sm text-slate-300">
         <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0">▸</span>
-          自动发现的特征对<strong class="text-white">每个模型</strong>都有帮助，但对树模型
-          <strong class="text-white">提升有限</strong>（代理 +2.5 pp → 递归 +0.65 pp）。</li>
+          代理增益（2000 SKU、teacher-forced +2.5 pp）<strong class="text-white">未能迁移</strong>：整合进全量 20,372 SKU 递归生产 CV 后，这 6 个特征<strong class="text-white">≈ 中性</strong>（LightGBM +0.1，随机森林 −0.4 pp）。</li>
         <li class="flex gap-3"><span class="text-blue-400 flex-shrink-0">▸</span>
           更大的库（40 → 946 → 10,000）<strong class="text-white">并未</strong>抬高树模型上限——
           三种搜索均在第 3–8 代即收敛。</li>
