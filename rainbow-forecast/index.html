@@ -352,7 +352,8 @@
     </div>
   </div>
 
-  <!-- CV results table -->
+  <!-- CV results table — hidden per request (production CV not featured) -->
+  <div style="display:none" aria-hidden="true">
   <h3 class="text-center font-semibold mb-2 text-slate-300">
     Walk-Forward CV Results — FA metric on sales quantity
   </h3>
@@ -432,6 +433,7 @@
     <span class="flex-shrink-0 text-base mt-0.5">⏳</span>
     <span id="cvLoadMsg">CV results loading from <code>cv_results_v2.json</code>…</span>
   </div>
+  </div>
 </section>
 
 <!-- ── AUTO FEATURE ENGINEERING (FunSearch) ──────────────────────────────── -->
@@ -474,46 +476,62 @@
   <div class="card rounded-2xl overflow-hidden mb-6">
     <div class="px-6 py-4 border-b border-white/[.06]">
       <h3 class="font-semibold">LLM auto-FE improvement over each ML model — weekly FA (2,000 SKUs)</h3>
-      <p class="text-xs text-slate-500 mt-1">The single Kimi-discovered 6-feature set added to base-24, evaluated on every model · validation weeks 2025-07</p>
+      <p class="text-xs text-slate-500 mt-1">The single Kimi-discovered 6-feature set added to base-24, evaluated on every model · per-category &amp; overall FA · validation weeks 2025-07
+        <br><span class="text-slate-600">8802 Category A · 8803 Category B · 8804 Category C · 8805 Hardest · 8807 Category E · Overall = sales-weighted across all five</span></p>
     </div>
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
           <th class="text-left px-6 py-3">Model</th>
-          <th class="text-right px-4 py-3">Base-24 FA</th>
-          <th class="text-right px-4 py-3">+ LLM features</th>
+          <th class="text-right px-3 py-3">8802</th>
+          <th class="text-right px-3 py-3">8803</th>
+          <th class="text-right px-3 py-3">8804</th>
+          <th class="text-right px-3 py-3" title="hardest category">8805</th>
+          <th class="text-right px-3 py-3">8807</th>
+          <th class="text-right px-4 py-3">Overall</th>
           <th class="text-right px-4 py-3">Lift</th>
-          <th class="text-left px-6 py-3">Note</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-white/[.04]">
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span>LightGBM</td>
-          <td class="px-4 py-3 text-right text-slate-300">65.53%</td>
+          <td class="px-3 py-3 text-right text-slate-300">79.1%</td>
+          <td class="px-3 py-3 text-right text-slate-300">81.4%</td>
+          <td class="px-3 py-3 text-right text-slate-300">62.0%</td>
+          <td class="px-3 py-3 text-right text-amber-300/80">47.0%</td>
+          <td class="px-3 py-3 text-right text-slate-300">63.8%</td>
           <td class="px-4 py-3 text-right font-bold text-blue-400">67.25%</td>
           <td class="px-4 py-3 text-right text-emerald-400">+1.72 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">strongest baseline, smallest headroom</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#06B6D4"></span>XGBoost</td>
-          <td class="px-4 py-3 text-right text-slate-300">62.91%</td>
+          <td class="px-3 py-3 text-right text-slate-300">74.1%</td>
+          <td class="px-3 py-3 text-right text-slate-300">78.7%</td>
+          <td class="px-3 py-3 text-right text-slate-300">58.5%</td>
+          <td class="px-3 py-3 text-right text-amber-300/80">45.0%</td>
+          <td class="px-3 py-3 text-right text-slate-300">60.5%</td>
           <td class="px-4 py-3 text-right font-bold text-cyan-400">63.62%</td>
           <td class="px-4 py-3 text-right text-emerald-400">+0.71 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">model-specific tuning reaches +3.6 pp</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span>Random Forest</td>
-          <td class="px-4 py-3 text-right text-slate-300">63.08%</td>
+          <td class="px-3 py-3 text-right text-slate-300">77.8%</td>
+          <td class="px-3 py-3 text-right text-slate-300">78.6%</td>
+          <td class="px-3 py-3 text-right text-slate-300">55.5%</td>
+          <td class="px-3 py-3 text-right text-amber-300/80">40.1%</td>
+          <td class="px-3 py-3 text-right text-slate-300">61.9%</td>
           <td class="px-4 py-3 text-right font-bold text-emerald-400">63.25%</td>
           <td class="px-4 py-3 text-right text-emerald-400">+0.16 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">deep trees already capture interactions</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span>OLS (Ridge)</td>
-          <td class="px-4 py-3 text-right text-slate-400">15.84%</td>
+          <td class="px-3 py-3 text-right text-slate-400">45.3%</td>
+          <td class="px-3 py-3 text-right text-slate-400">45.4%</td>
+          <td class="px-3 py-3 text-right text-slate-400">44.7%</td>
+          <td class="px-3 py-3 text-right text-amber-300/60">27.0%</td>
+          <td class="px-3 py-3 text-right text-slate-400">44.3%</td>
           <td class="px-4 py-3 text-right font-bold text-violet-300">42.54%</td>
           <td class="px-4 py-3 text-right text-violet-400">+26.70 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">linear model can't build interactions itself</td>
         </tr>
       </tbody>
     </table>
@@ -1400,7 +1418,7 @@ window.addEventListener('DOMContentLoaded',()=>{
       })
       .catch(()=>{ if(fallback) tryLoadPredictions(fallback, null); });
   }
-  tryLoadPredictions('display_predictions_v2.json','display_predictions.json');
+  tryLoadPredictions('display_predictions_2000.json','display_predictions_v2.json');
 
   // CSV fallback
   fetch('poc_submission.csv',{method:'HEAD'})

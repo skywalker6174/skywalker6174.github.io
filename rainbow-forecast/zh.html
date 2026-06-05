@@ -338,7 +338,8 @@
     </div>
   </div>
 
-  <!-- CV 结果表 -->
+  <!-- CV 结果表 — 按要求隐藏（不展示生产 CV 结果） -->
+  <div style="display:none" aria-hidden="true">
   <h3 class="text-center font-semibold mb-2 text-slate-300">
     滚动交叉验证结果 — 销量 FA 指标
   </h3>
@@ -418,6 +419,7 @@
     <span class="flex-shrink-0 text-base mt-0.5">⏳</span>
     <span id="cvLoadMsg">CV 结果正在从 <code>cv_results_v2.json</code> 加载…</span>
   </div>
+  </div>
 </section>
 
 <!-- ── 自动特征工程 (FunSearch) ──────────────────────────────────────────── -->
@@ -454,46 +456,46 @@
   <div class="card rounded-2xl overflow-hidden mb-6">
     <div class="px-6 py-4 border-b border-white/[.06]">
       <h3 class="font-semibold">LLM 自动特征工程对各 ML 模型的提升 — 周度 FA (2000 SKU)</h3>
-      <p class="text-xs text-slate-500 mt-1">将 Kimi 发现的同一组 6 维特征加到 base-24，在每个模型上评估 · 验证周 2025-07</p>
+      <p class="text-xs text-slate-500 mt-1">将 Kimi 发现的同一组 6 维特征加到 base-24，在每个模型上评估 · 各品类与整体 FA · 验证周 2025-07
+        <br><span class="text-slate-600">8802 品类A · 8803 品类B · 8804 品类C · 8805 最难 · 8807 品类E · 整体 = 五类按销量加权</span></p>
     </div>
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-white/[.06] text-xs text-slate-500 uppercase tracking-wider">
           <th class="text-left px-6 py-3">模型</th>
-          <th class="text-right px-4 py-3">Base-24 FA</th>
-          <th class="text-right px-4 py-3">+ LLM 特征</th>
+          <th class="text-right px-3 py-3">8802</th>
+          <th class="text-right px-3 py-3">8803</th>
+          <th class="text-right px-3 py-3">8804</th>
+          <th class="text-right px-3 py-3" title="最难品类">8805</th>
+          <th class="text-right px-3 py-3">8807</th>
+          <th class="text-right px-4 py-3">整体</th>
           <th class="text-right px-4 py-3">提升</th>
-          <th class="text-left px-6 py-3">说明</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-white/[.04]">
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#3B82F6"></span>LightGBM</td>
-          <td class="px-4 py-3 text-right text-slate-300">65.53%</td>
+          <td class="px-3 py-3 text-right text-slate-300">79.1%</td><td class="px-3 py-3 text-right text-slate-300">81.4%</td><td class="px-3 py-3 text-right text-slate-300">62.0%</td><td class="px-3 py-3 text-right text-amber-300/80">47.0%</td><td class="px-3 py-3 text-right text-slate-300">63.8%</td>
           <td class="px-4 py-3 text-right font-bold text-blue-400">67.25%</td>
           <td class="px-4 py-3 text-right text-emerald-400">+1.72 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">最强基线，提升空间最小</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#06B6D4"></span>XGBoost</td>
-          <td class="px-4 py-3 text-right text-slate-300">62.91%</td>
+          <td class="px-3 py-3 text-right text-slate-300">74.1%</td><td class="px-3 py-3 text-right text-slate-300">78.7%</td><td class="px-3 py-3 text-right text-slate-300">58.5%</td><td class="px-3 py-3 text-right text-amber-300/80">45.0%</td><td class="px-3 py-3 text-right text-slate-300">60.5%</td>
           <td class="px-4 py-3 text-right font-bold text-cyan-400">63.62%</td>
           <td class="px-4 py-3 text-right text-emerald-400">+0.71 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">针对性调优可达 +3.6 pp</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:#10B981"></span>随机森林</td>
-          <td class="px-4 py-3 text-right text-slate-300">63.08%</td>
+          <td class="px-3 py-3 text-right text-slate-300">77.8%</td><td class="px-3 py-3 text-right text-slate-300">78.6%</td><td class="px-3 py-3 text-right text-slate-300">55.5%</td><td class="px-3 py-3 text-right text-amber-300/80">40.1%</td><td class="px-3 py-3 text-right text-slate-300">61.9%</td>
           <td class="px-4 py-3 text-right font-bold text-emerald-400">63.25%</td>
           <td class="px-4 py-3 text-right text-emerald-400">+0.16 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">深树已内化交互作用</td>
         </tr>
         <tr class="hover:bg-white/[.03]">
           <td class="px-6 py-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-500"></span>OLS (Ridge)</td>
-          <td class="px-4 py-3 text-right text-slate-400">15.84%</td>
+          <td class="px-3 py-3 text-right text-slate-400">45.3%</td><td class="px-3 py-3 text-right text-slate-400">45.4%</td><td class="px-3 py-3 text-right text-slate-400">44.7%</td><td class="px-3 py-3 text-right text-amber-300/60">27.0%</td><td class="px-3 py-3 text-right text-slate-400">44.3%</td>
           <td class="px-4 py-3 text-right font-bold text-violet-300">42.54%</td>
           <td class="px-4 py-3 text-right text-violet-400">+26.70 pp</td>
-          <td class="px-6 py-3 text-slate-500 text-xs">线性模型无法自构造交互项</td>
         </tr>
       </tbody>
     </table>
@@ -1318,7 +1320,7 @@ window.addEventListener('DOMContentLoaded',()=>{
       })
       .catch(()=>{ if(fallback) tryLoadPredictions(fallback, null); });
   }
-  tryLoadPredictions('display_predictions_v2.json','display_predictions.json');
+  tryLoadPredictions('display_predictions_2000.json','display_predictions_v2.json');
 
   fetch('poc_submission.csv',{method:'HEAD'})
     .then(r=>{if(!r.ok) throw 0; return fetch('poc_submission.csv');})
