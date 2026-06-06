@@ -457,6 +457,78 @@
       height: 430px;
       object-fit: cover;
     }
+    .fomo-case {
+      display: grid;
+      grid-template-columns: .88fr 1.12fr;
+      gap: 24px;
+      align-items: stretch;
+      height: 100%;
+      min-height: 0;
+    }
+    .fomo-copy {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      min-height: 0;
+    }
+    .fomo-copy .card {
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+    .fomo-ribbon {
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: 0;
+    }
+    .fomo-ribbon div {
+      min-height: 64px;
+      padding: 13px 14px;
+      font-size: 18px;
+    }
+    .douyin-embed {
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+      gap: 10px;
+      min-height: 0;
+    }
+    .douyin-frame {
+      min-height: 430px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgba(140,21,21,.14);
+      box-shadow: 0 14px 34px rgba(18, 22, 29, .10);
+    }
+    .douyin-frame iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 430px;
+      border: 0;
+      background: #fff;
+    }
+    .douyin-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .douyin-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--pku-red);
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 850;
+      box-shadow: 0 10px 20px rgba(140,21,21,.18);
+    }
     .mini-label {
       display: inline-flex;
       align-items: center;
@@ -966,6 +1038,7 @@
       .layout,
       .layout.wide-left,
       .layout.three,
+      .fomo-case,
       .two-up,
       .two-up.reverse,
       .case-strip,
@@ -1039,6 +1112,25 @@
         height: auto;
         max-height: none;
         object-fit: contain;
+      }
+      .fomo-copy {
+        gap: 12px;
+      }
+      .fomo-ribbon {
+        grid-template-columns: 1fr 1fr;
+      }
+      .fomo-ribbon div {
+        min-height: auto;
+        padding: 12px;
+        font-size: 16px;
+      }
+      .douyin-frame,
+      .douyin-frame iframe {
+        min-height: 520px;
+      }
+      .douyin-actions {
+        align-items: flex-start;
+        flex-direction: column;
       }
       .node {
         min-height: 96px;
@@ -1477,12 +1569,30 @@
     <section class="slide">
       <div class="slide-shell">
         <div><div class="kicker">AI FOMO</div><h2>最危险的不是不用AI，而是把AI直接扔进混乱流程</h2></div>
-        <div class="layout three">
-          <div class="card"><h3>Fear of Missing Out 错失恐惧</h3><p class="text">企业家怕错过，员工怕被替代。</p></div>
-          <div class="card"><h3>常见误区</h3><p class="text">买账号、买模型、买平台，却没有定义任务边界、数据口径和责任人。</p></div>
-          <div class="card"><h3>正确入口</h3><p class="text">从一个高频、重复、可验收、低风险的业务决策闭环开始。</p></div>
+        <div class="fomo-case">
+          <div class="fomo-copy">
+            <div class="card"><h3>Fear of Missing Out 错失恐惧</h3><p class="text">企业家怕错过，员工怕被替代。</p></div>
+            <div class="card"><h3>常见误区</h3><p class="text">买账号、买模型、买平台，却没有定义任务边界、数据口径和责任人。</p></div>
+            <div class="card"><h3>正确入口</h3><p class="text">从一个高频、重复、可验收、低风险的业务决策闭环开始。</p></div>
+            <div class="ribbon fomo-ribbon"><div>文档处理</div><div>客服售后</div><div>供应链方案</div><div>AI自我迭代</div></div>
+          </div>
+          <div class="douyin-embed">
+            <div class="douyin-frame">
+              <iframe
+                title="抖音 AI FOMO 案例"
+                src="https://www.douyin.com/video/7616381564742895077"
+                loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allow="fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                allowfullscreen></iframe>
+            </div>
+            <div class="douyin-actions">
+              <span>抖音 AI FOMO 案例</span>
+              <a class="douyin-link" href="https://www.douyin.com/video/7616381564742895077" target="_blank" rel="noopener noreferrer">打开原视频</a>
+            </div>
+            <p class="source">若抖音限制内嵌播放，请点击打开原视频。</p>
+          </div>
         </div>
-        <div class="ribbon"><div>文档处理</div><div>客服售后</div><div>供应链方案</div><div>AI自我迭代</div></div>
       </div>
     </section>
 
