@@ -107,22 +107,26 @@
     h1 {
       font-size: 64px;
       line-height: 1.08;
-      max-width: 980px;
+      max-width: none;
       font-weight: 800;
     }
     h2 {
-      font-size: 46px;
+      font-size: clamp(34px, 3vw, 44px);
       line-height: 1.12;
       margin-bottom: 28px;
-      max-width: 980px;
+      max-width: none;
       font-weight: 800;
+      white-space: nowrap;
     }
     h3 {
       font-size: 28px;
       margin-bottom: 12px;
       color: var(--charcoal);
     }
-    .title h1 { font-size: 74px; }
+    .title h1 {
+      font-size: clamp(46px, 5vw, 72px);
+      white-space: nowrap;
+    }
     h1::after, h2::after {
       content: "";
       display: block;
@@ -224,7 +228,6 @@
       color: var(--pku-red);
       margin-bottom: 10px;
     }
-    .agent-metric { font-size: 42px; }
     .caption {
       font-size: 16px;
       line-height: 1.35;
@@ -330,6 +333,23 @@
       font-style: italic;
       font-weight: 700;
       max-width: 1000px;
+    }
+    .quote-lead {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+      color: var(--pku-red);
+      font-size: .62em;
+      line-height: 1;
+      font-weight: 850;
+    }
+    .quote-lead::after {
+      content: "";
+      width: 72px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--pku-red), var(--gold));
+      border-radius: 99px;
     }
 
     .logo-img {
@@ -517,6 +537,17 @@
       border-radius: 10px;
       padding: 22px 24px;
       box-shadow: 0 14px 34px rgba(18, 22, 29, .10);
+    }
+    .html-chart.resilience-chart {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+    .html-chart.resilience-chart .chart-title {
+      margin-top: 12px;
+      margin-bottom: 8px;
     }
     .chart-title {
       font-size: 28px;
@@ -831,6 +862,349 @@
       font-weight: 750;
     }
 
+    @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+      html, body {
+        min-height: 100%;
+        overflow-x: hidden;
+      }
+      body {
+        overflow-y: auto;
+        background: #fbfaf8;
+      }
+      .deck {
+        width: 100%;
+        height: auto;
+        min-height: 100svh;
+        display: block;
+      }
+      .slide,
+      .slide.active,
+      .slide:not(.active) {
+        display: grid !important;
+        position: relative;
+        inset: auto;
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        padding: 28px 18px 54px;
+        overflow: visible;
+        border-bottom: 1px solid rgba(140,21,21,.12);
+        background:
+          linear-gradient(90deg, rgba(255,255,255,.98), rgba(255,255,255,.94)),
+          url("assets/boya-pagoda-bg.png");
+        background-size: auto, cover;
+        background-position: center;
+      }
+      .slide.title {
+        min-height: 100svh;
+        align-content: space-between;
+      }
+      .slide::before {
+        pointer-events: none;
+      }
+      .slide > * {
+        min-width: 0;
+      }
+      .kicker {
+        font-size: 16px;
+        gap: 9px;
+        margin-bottom: 12px;
+      }
+      .kicker::before {
+        width: 28px;
+        height: 3px;
+      }
+      h1,
+      .title h1 {
+        font-size: clamp(34px, 10vw, 46px);
+        line-height: 1.16;
+        max-width: 100%;
+        white-space: normal;
+      }
+      h2 {
+        font-size: clamp(22px, 6.2vw, 30px);
+        line-height: 1.18;
+        max-width: 100%;
+        margin-bottom: 16px;
+        white-space: normal;
+      }
+      h3 {
+        font-size: 21px;
+        line-height: 1.25;
+        margin-bottom: 8px;
+      }
+      h1::after,
+      h2::after {
+        width: 68px;
+        height: 4px;
+        margin-top: 14px;
+      }
+      .subtitle {
+        margin-top: 18px;
+        font-size: 18px;
+        line-height: 1.55;
+      }
+      .byline {
+        align-self: end;
+        font-size: 16px;
+        line-height: 1.55;
+        margin-top: 34px;
+      }
+      .slide-shell,
+      .stack {
+        display: grid;
+        grid-template-rows: auto;
+        gap: 14px;
+        height: auto;
+        min-height: 0;
+      }
+      .center-stack {
+        min-height: min(620px, calc(100svh - 110px));
+        height: auto;
+        padding: 24px 0;
+      }
+      .layout,
+      .layout.wide-left,
+      .layout.three,
+      .two-up,
+      .two-up.reverse,
+      .case-strip,
+      .ribbon,
+      .matrix,
+      .flow,
+      .ba-points {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 14px;
+      }
+      .card {
+        padding: 8px 0 8px 14px;
+        overflow: visible;
+      }
+      .card.dark {
+        padding: 16px;
+        border-radius: 8px;
+      }
+      .big {
+        font-size: 24px;
+        line-height: 1.45;
+      }
+      .text,
+      .slide .text,
+      ul {
+        font-size: 18px !important;
+        line-height: 1.62 !important;
+      }
+      li {
+        margin: 6px 0;
+      }
+      .quote {
+        font-size: clamp(28px, 8vw, 38px);
+        line-height: 1.35;
+      }
+      .quote-lead {
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: .66em;
+      }
+      .quote-lead::after {
+        width: 48px;
+      }
+      .metric {
+        font-size: 42px;
+      }
+      .pillrow {
+        gap: 8px;
+        margin-top: 14px;
+      }
+      .pill,
+      .tag,
+      .mini-label {
+        font-size: 15px;
+      }
+      .logo-img {
+        width: 180px;
+        max-width: 72%;
+        padding: 12px 14px;
+      }
+      .image-panel {
+        min-height: 220px;
+      }
+      .media-card {
+        overflow: visible;
+      }
+      .media-card img,
+      .media-card.cover img {
+        width: 100%;
+        height: auto;
+        max-height: none;
+        object-fit: contain;
+      }
+      .node {
+        min-height: 96px;
+        padding: 15px;
+        font-size: 19px;
+      }
+      .node .ico {
+        width: 38px;
+        height: 38px;
+      }
+      .matrix .cell,
+      .matrix.compact .cell {
+        min-height: auto;
+        padding: 15px;
+      }
+      .cell strong {
+        font-size: 19px;
+      }
+      .cell p {
+        font-size: 16px;
+      }
+      .timeline {
+        gap: 12px;
+      }
+      .step {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 14px 0 14px 14px;
+      }
+      .step strong {
+        font-size: 19px;
+      }
+      .step p {
+        font-size: 17px;
+      }
+      .big-red {
+        font-size: 48px;
+      }
+      .ribbon div,
+      .case-strip .card {
+        min-height: auto;
+      }
+      .html-chart,
+      .mile-map,
+      .supply-flow {
+        padding: 14px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      .chart-title {
+        font-size: 21px;
+      }
+      .chart-subtitle {
+        font-size: 15px;
+      }
+      .bar-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .bar-name {
+        text-align: left;
+        font-size: 15px;
+      }
+      .bar-value {
+        font-size: 16px;
+      }
+      .chart-axis {
+        display: none;
+      }
+      .moat-head,
+      .moat-row,
+      .mile-row,
+      .flow-band {
+        grid-template-columns: 1fr;
+      }
+      .moat-head {
+        display: none;
+      }
+      .moat-mid {
+        font-size: 16px;
+      }
+      .moat-arrow {
+        width: 100%;
+      }
+      .resilience-svg {
+        min-width: 560px;
+      }
+      .html-chart.resilience-chart .resilience-svg {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+      .mile-row {
+        gap: 12px;
+        min-height: auto;
+      }
+      .mile-name {
+        min-height: 64px;
+        font-size: 22px;
+      }
+      .mile-flow {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .mile-node,
+      .supply-stage {
+        min-height: 56px;
+        font-size: 16px;
+      }
+      .mile-node:not(:last-child)::after,
+      .supply-stage:not(:last-child)::after {
+        content: none;
+      }
+      .mile-decisions {
+        font-size: 16px;
+      }
+      .supply-chain-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .flow-band {
+        gap: 8px;
+        min-height: auto;
+        font-size: 17px;
+      }
+      .flow-arrow {
+        width: 100%;
+      }
+      .ba-point {
+        font-size: 16px;
+      }
+      .notes {
+        display: none !important;
+      }
+      .footer {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        justify-content: flex-end;
+        margin-top: 22px;
+        color: rgba(29,34,43,.58);
+        font-size: 13px;
+      }
+      .title .footer,
+      .photo .footer {
+        color: rgba(29,34,43,.58);
+      }
+      .bar {
+        width: 96px;
+      }
+      .nav {
+        left: 50%;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        padding: 6px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.92);
+        box-shadow: 0 10px 28px rgba(18,22,29,.14);
+        backdrop-filter: blur(8px);
+      }
+      button {
+        width: 44px;
+        height: 40px;
+      }
+    }
+
     @media print {
       body { overflow: visible; background: #fff; }
       .deck { height: auto; }
@@ -848,7 +1222,7 @@
   <main class="deck" id="deck">
     <section class="slide title active">
       <div class="stack">
-        <h1>超车还是出局？<br>AI时代的商业分析</h1>
+        <h1>超车还是出局？AI时代的商业分析</h1>
         <p class="subtitle">从数据、预测、决策，到智能体重构企业经营流程。</p>
       </div>
       <div class="byline">赵越<br>北京大学汇丰商学院助理教授<br>AI管理研究中心执行主任</div>
@@ -887,7 +1261,7 @@
     <section class="slide">
       <div class="center-stack">
         <div class="kicker">第一部分：起源</div>
-        <p class="quote">商业分析的本质：<br>用数据解释问题，用模型预测未来，用决策创造价值。</p>
+        <p class="quote"><span class="quote-lead">商业分析的本质</span><br>用数据解释问题<br>用模型预测未来<br>用决策创造价值</p>
       </div>
     </section>
 
@@ -917,7 +1291,7 @@
         </div>
         <div class="case-strip">
           <div class="card"><h3>传统商业分析</h3><p class="text">分析师做报表、建模型、汇报洞察，管理者再推动执行。</p></div>
-          <div class="card"><h3>AI商业分析</h3><p class="text">智能体能读数据、问问题、调用模型、生成方案，并进入业务系统执行小闭环。</p></div>
+          <div class="card"><h3>AI商业分析</h3><p class="text">智能体能读数据、提问题、调用模型、生成方案，并进入业务系统执行小闭环。</p></div>
           <div class="card"><h3>管理者的新任务</h3><p class="text">定义目标、约束、边界和复盘机制，而不是只看最后一张报表。</p></div>
         </div>
       </div>
@@ -1016,7 +1390,10 @@
       <div class="slide-shell">
         <div><div class="kicker">供应链风险：牛鞭效应</div><h2>牛鞭效应是供应链风险的典型体现，协同是关键解法</h2></div>
         <div class="two-up reverse">
-          <div class="media-card"><img src="assets/docx/image3.png" alt="牛鞭效应"></div>
+          <div class="media-card">
+            <img src="assets/docx/image3.png" alt="牛鞭效应">
+            <p class="source">图片来自inteli-chain.com</p>
+          </div>
           <div class="stack">
             <div class="card"><p class="text">需求信号（风险）沿供应链向上游传递时被逐级放大，会变成过量库存、缺货、产能错配和现金流压力。该现象由斯坦福大学商学院 Hau Leung Lee 教授于1997年提出。</p></div>
             <div class="card"><h3>商业分析怎么介入？</h3><ul><li>共享同一套需求和库存数据</li><li>用预测模型识别异常波动</li><li>用补货与产能模型协调上下游</li><li>把协同规则嵌入系统，而不只是靠会议</li></ul></div>
@@ -1030,7 +1407,7 @@
         <div><div class="kicker">供应链风险：韧性</div><h2>韧性也是风险管理的一部分，同样需要商业分析支撑</h2></div>
         <div class="two-up reverse">
           <div class="media-card">
-            <div class="html-chart">
+            <div class="html-chart resilience-chart">
               <div class="chart-title">供应链韧性：冲击之后，企业走向分化</div>
               <svg class="resilience-svg" viewBox="0 0 980 560" role="img" aria-label="供应链韧性曲线重绘图">
                 <defs>
@@ -1077,7 +1454,10 @@
       <div class="slide-shell">
         <div><div class="kicker">供应链 disruption 后的渠道分化</div><h2>电商在冲击后份额增加，大卖场越来越难</h2></div>
         <div class="two-up reverse">
-          <div class="media-card"><img src="assets/docx/image6.png" alt="中国消费渠道结构变化"></div>
+          <div class="media-card">
+            <img src="assets/docx/image6.png" alt="中国消费渠道结构变化">
+            <p class="source">图表来自贝恩公司携手凯度消费者指数发布报告</p>
+          </div>
           <div class="stack">
             <div class="card"><h3>冲击不是只带来损失</h3><p class="text">供应链 disruption会重新分配需求、履约能力和消费者习惯。反应快的渠道可能在恢复期继续加速。</p></div>
             <div class="card"><h3>电商更像适应曲线</h3><p class="text">电商渠道占比持续抬升，说明线上需求聚合、库存可视化和履约弹性在冲击后更有优势。</p></div>
@@ -1114,7 +1494,7 @@
             <div class="card"><h3>为什么适合AI？</h3><ul><li>文档多，字段多，规则多</li><li>错误成本高，但步骤可结构化</li><li>历史案例能沉淀为知识库</li></ul></div>
             <div class="card"><h3>对外贸企业的启发</h3><p class="text">第一步不是买大系统，而是把高频单据的字段、规则、异常和负责人整理清楚。</p></div>
           </div>
-          <div class="card dark"><div class="metric agent-metric">智能体</div><ul><li>读取合同、发票、装箱单</li><li>抽取字段并比对规则</li><li>提示缺失与异常</li><li>把高风险项交给专家复核</li></ul></div>
+          <div class="card dark"><h3>智能体</h3><ul><li>读取合同、发票、装箱单</li><li>抽取字段并比对规则</li><li>提示缺失与异常</li><li>把高风险项交给专家复核</li></ul></div>
         </div>
       </div>
     </section>
@@ -1441,9 +1821,9 @@
 
     <section class="slide">
       <div class="slide-shell">
-        <div><div class="kicker">结语</div><h2>AI重构的不仅是工具</h2></div>
+        <div><div class="kicker">结语</div><h2>AI重构的不仅是工具，还有企业的信息流动、执行方式、和组织架构。</h2></div>
         <div class="layout three">
-          <div class="card"><span class="tag green">信息</span><h3>经营信号更快流动</h3><p class="text">AI让数据、流程和智能体实时联动，减少层层汇报中的延迟与失真。</p></div>
+          <div class="card"><span class="tag green">信息</span><h3>经营信息更快流动</h3><p class="text">AI让数据、流程和智能体实时联动，减少层层汇报中的延迟与失真。</p></div>
           <div class="card"><span class="tag orange">组织</span><h3>执行方式被重新分配</h3><p class="text">重复执行交给智能体，员工转向定义边界、检查结果和持续复盘。</p></div>
           <div class="card"><span class="tag rose">窗口</span><h3>小企业更容易转身</h3><p class="text">越是中小型、初期企业，组织惯性越小，越适合自上而下快速试验。</p></div>
         </div>
@@ -1454,7 +1834,7 @@
     <section class="slide">
       <div class="center-stack">
         <div class="kicker">结尾：给企业家的三个问题</div>
-        <p class="quote">你最想让AI帮你分析并执行哪一个重复、昂贵、容易出错的经营决策？</p>
+        <p class="quote">你最想让AI帮你分析并执行哪一个经营决策？</p>
         <div class="layout three" style="width:100%; margin-top:30px">
           <div class="card"><h3>1. 从哪个业务开始？</h3><p class="text">选择高频、重复、可验收、低风险，同时又能看见经营价值的真实场景。</p></div>
           <div class="card"><h3>2. 如何塑造构建者？</h3><p class="text">让懂业务的人学会定义需求、指标和边界，并用AI coding 把想法快速做出来。</p></div>
@@ -1471,6 +1851,7 @@
 
   <script>
     const slides = Array.from(document.querySelectorAll('.slide'));
+    const mobileDeck = window.matchMedia('(max-width: 900px), (hover: none) and (pointer: coarse)');
     let index = 0;
 
     function footer(slide, i) {
@@ -1485,10 +1866,35 @@
 
     slides.forEach(footer);
 
+    function fitSlideTitles() {
+      const targets = mobileDeck.matches ? slides : [slides[index]];
+      targets.forEach((slide) => {
+        slide.querySelectorAll('h1, h2').forEach((title) => {
+          title.style.fontSize = '';
+          title.style.whiteSpace = mobileDeck.matches ? 'normal' : 'nowrap';
+          if (mobileDeck.matches || title.clientWidth === 0) return;
+
+          let size = parseFloat(getComputedStyle(title).fontSize);
+          const minSize = title.tagName === 'H1' ? 40 : 30;
+          while (title.scrollWidth > title.clientWidth && size > minSize) {
+            size -= 1;
+            title.style.fontSize = `${size}px`;
+          }
+          if (title.scrollWidth > title.clientWidth) {
+            title.style.whiteSpace = 'normal';
+          }
+        });
+      });
+    }
+
     function show(i) {
       index = Math.max(0, Math.min(slides.length - 1, i));
       slides.forEach((s, n) => s.classList.toggle('active', n === index));
+      fitSlideTitles();
       history.replaceState(null, '', `#${index + 1}`);
+      if (mobileDeck.matches) {
+        slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     document.getElementById('prev').addEventListener('click', () => show(index - 1));
@@ -1503,6 +1909,25 @@
 
     const start = parseInt(location.hash.replace('#', ''), 10);
     if (!Number.isNaN(start)) show(start - 1);
+    fitSlideTitles();
+    window.addEventListener('resize', fitSlideTitles);
+    if (mobileDeck.addEventListener) {
+      mobileDeck.addEventListener('change', fitSlideTitles);
+    } else {
+      mobileDeck.addListener(fitSlideTitles);
+    }
+
+    if (mobileDeck.matches && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        index = slides.indexOf(visible.target);
+        slides.forEach((s, n) => s.classList.toggle('active', n === index));
+      }, { threshold: [0.35, 0.6, 0.85] });
+      slides.forEach((slide) => observer.observe(slide));
+    }
   </script>
 </body>
 </html>
