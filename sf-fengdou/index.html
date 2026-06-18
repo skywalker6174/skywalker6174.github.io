@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Fengdou (丰豆) · Designing an Internal Token Economy for Workforce Incentives</title>
+  <meta name="description" content="An analytical-normative operations management study of SF Express's Fengdou internal reward-token economy: dual-cost goods, budget targeting, and the pressure-valve principle.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background: #0B0F14; }
+    .card  { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); }
+    .glow  { box-shadow: 0 0 40px rgba(245,158,11,0.12); }
+    .tag { display:inline-flex; align-items:center; gap:6px; background:rgba(245,158,11,.10);
+           border:1px solid rgba(245,158,11,.25); border-radius:999px; padding:4px 14px;
+           color:#FCD34D; font-size:.8rem; }
+    .metric-card { background: linear-gradient(135deg,rgba(245,158,11,.14),rgba(245,158,11,.03)); border: 1px solid rgba(245,158,11,.22); }
+    .coin { background: linear-gradient(135deg,#FBBF24,#F59E0B); }
+    hr.dim { border-color: rgba(255,255,255,0.06); }
+    .lever-num { width:26px;height:26px;border-radius:50%;
+                display:inline-flex;align-items:center;justify-content:center;
+                font-size:.78rem;font-weight:700;flex-shrink:0; }
+    .kbd { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem;
+           background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+           border-radius:.35rem; padding:1px 7px; color:#FCD34D; }
+    a.ref { color:#FCD34D; text-decoration: underline; text-underline-offset: 3px; }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+
+<!-- ── NAV ──────────────────────────────────────────────────────────────── -->
+<nav class="sticky top-0 z-50 bg-[#0B0F14]/90 backdrop-blur border-b border-white/[.06]">
+  <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xl">🪙</span>
+      <span class="font-semibold">Fengdou&nbsp;·&nbsp;丰豆</span>
+    </div>
+    <div class="hidden md:flex gap-7 text-sm text-slate-400">
+      <a href="#system"   class="hover:text-white transition">System</a>
+      <a href="#question" class="hover:text-white transition">Question</a>
+      <a href="#levers"   class="hover:text-white transition">Levers</a>
+      <a href="#model"    class="hover:text-white transition">Model</a>
+      <a href="#valve"    class="hover:text-white transition">Mechanism</a>
+      <a href="#results"  class="hover:text-white transition">Contributions</a>
+    </div>
+    <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1 text-xs font-medium">
+      <span class="px-3 py-1.5 rounded-md bg-amber-500 text-slate-900">EN</span>
+      <a href="zh.html" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">中文</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<section class="max-w-6xl mx-auto px-6 pt-24 pb-16 text-center">
+  <div class="tag mb-8">
+    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+    Operations Management · Analytical–Normative · SF Express field data (2024.07 – present)
+  </div>
+  <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-[1.12]">
+    Designing an Internal<br>
+    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500">
+      Token Economy
+    </span>
+    <br>for Workforce Incentives
+  </h1>
+  <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-10">
+    A firm rewards couriers with <b class="text-amber-300">Fengdou</b>, a closed-loop corporate token earned through work
+    and redeemed for either <b>zero-cost virtual goods</b> or <b>budget-consuming real goods</b>.
+    The firm controls token issuance and prices — but never the couriers' choices.
+    We ask how to steer this economy to motivate the workforce, hit an annual budget target,
+    and keep the token float in a healthy band.
+  </p>
+  <div class="flex flex-wrap justify-center gap-3 mb-20">
+    <a href="#question"
+       class="px-7 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl font-semibold text-sm transition">
+      Read the Research Question →
+    </a>
+    <a href="#model"
+       class="px-7 py-3 bg-white/[.07] hover:bg-white/[.12] rounded-xl font-medium text-sm transition">
+      See the Model
+    </a>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-3xl mx-auto">
+    <div class="card rounded-2xl p-5 glow">
+      <div class="text-3xl font-bold text-amber-400">3</div>
+      <div class="text-xs text-slate-500 mt-1.5">Control levers</div>
+    </div>
+    <div class="card rounded-2xl p-5">
+      <div class="text-3xl font-bold text-yellow-300">3</div>
+      <div class="text-xs text-slate-500 mt-1.5">Competing objectives</div>
+    </div>
+    <div class="card rounded-2xl p-5">
+      <div class="text-3xl font-bold text-emerald-400">≈¥40M</div>
+      <div class="text-xs text-slate-500 mt-1.5">Annual real-goods budget</div>
+    </div>
+    <div class="card rounded-2xl p-5">
+      <div class="text-3xl font-bold text-orange-400">2 yrs</div>
+      <div class="text-xs text-slate-500 mt-1.5">Transaction-level panel</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SYSTEM ───────────────────────────────────────────────────────────── -->
+<section id="system" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <h2 class="text-3xl font-bold mb-3">The Fengdou System</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+      A closed corporate token economy with a defining feature rarely studied in operations:
+      two redemption channels with <b class="text-amber-300">heterogeneous marginal cost to the firm</b>.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6 mb-10">
+    <div class="card rounded-2xl p-7">
+      <div class="w-11 h-11 rounded-xl coin flex items-center justify-center text-slate-900 text-xl font-bold mb-4">⛏</div>
+      <h3 class="font-semibold mb-2">Earn through work</h3>
+      <p class="text-sm text-slate-400">Couriers accrue Fengdou by completing delivery jobs. Issuance volume is a firm-controlled lever — effectively the "money supply" of the economy.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 text-xl mb-4">🎮</div>
+      <h3 class="font-semibold mb-2">Spend on virtual goods <span class="text-xs text-emerald-300 font-normal">(cost = 0)</span></h3>
+      <p class="text-sm text-slate-400">App skins, badges, status items. These deliver real utility to couriers yet cost the firm <b class="text-emerald-300">nothing</b> at the margin.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="w-11 h-11 rounded-xl bg-orange-500/20 border border-orange-400/30 flex items-center justify-center text-orange-300 text-xl mb-4">📦</div>
+      <h3 class="font-semibold mb-2">Spend on real goods <span class="text-xs text-orange-300 font-normal">(cost &gt; 0)</span></h3>
+      <p class="text-sm text-slate-400">Paper, food, daily necessities. Every redemption draws on the firm's <b class="text-orange-300">annual budget</b> from headquarters.</p>
+    </div>
+  </div>
+
+  <div class="card rounded-2xl p-7 metric-card">
+    <p class="text-sm text-slate-300 leading-relaxed">
+      <b class="text-amber-300">The bite:</b> the budget must be spent <i>close to its target</i>.
+      Overspend is infeasible; <b>underspend triggers a budget cut the following year</b> — a use-it-or-lose-it
+      <b>ratchet</b>. The firm sets issuance and prices <i>before</i> observing how couriers will actually redeem,
+      and it cannot dictate the virtual-vs-real split. It can only <i>steer</i>.
+    </p>
+  </div>
+</section>
+
+<!-- ── QUESTION ─────────────────────────────────────────────────────────── -->
+<section id="question" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="max-w-3xl mx-auto text-center">
+    <span class="tag mb-6">Research question</span>
+    <h2 class="text-3xl md:text-4xl font-bold mb-8 leading-snug">
+      How should a firm design a token economy with
+      <span class="text-amber-300">dual-cost rewards</span> to motivate labor while hitting
+      a budget target it controls only <span class="text-amber-300">indirectly</span>?
+    </h2>
+    <p class="text-slate-400 text-sm leading-relaxed">
+      This is not a cost-minimization problem and not a consumer loyalty program. Couriers earn the currency through
+      <b>effort</b>; the firm faces a <b>two-sided</b> budget target; and one redemption channel is <b>free</b>.
+      That combination — a labor-incentive scrip with heterogeneous marginal cost and an indirectly-controlled
+      budget target — sits in a gap between the loyalty-program, gig-incentive, and scrip-monetary-policy literatures.
+    </p>
+  </div>
+</section>
+
+<!-- ── LEVERS ───────────────────────────────────────────────────────────── -->
+<section id="levers" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <h2 class="text-3xl font-bold mb-3">Three Levers, Three Goals</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+      The central structural claim of the paper: the firm's three instruments map almost cleanly
+      onto its three objectives — a <b class="text-amber-300">near-separation</b> result.
+    </p>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl card">
+    <table class="w-full text-sm">
+      <thead class="text-left text-slate-400 border-b border-white/[.08]">
+        <tr>
+          <th class="px-6 py-4 font-medium">Lever (firm controls)</th>
+          <th class="px-6 py-4 font-medium">Primarily steers</th>
+          <th class="px-6 py-4 font-medium">Mechanism</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/[.05]">
+        <tr>
+          <td class="px-6 py-5"><span class="lever-num coin text-slate-900">1</span> <b class="ml-2">Token issuance</b><div class="text-xs text-slate-500 mt-1 ml-9">Fengdou granted per job</div></td>
+          <td class="px-6 py-5 text-amber-300">Incentive power + float</td>
+          <td class="px-6 py-5 text-slate-400">More tokens ⇒ stronger effort signal, but a larger outstanding liability.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5"><span class="lever-num bg-orange-500/30 text-orange-200">2</span> <b class="ml-2">Real-goods prices</b><div class="text-xs text-slate-500 mt-1 ml-9">Fengdou per real item</div></td>
+          <td class="px-6 py-5 text-orange-300">Budget burn rate</td>
+          <td class="px-6 py-5 text-slate-400">Sets how fast real redemptions draw down the annual budget.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5"><span class="lever-num bg-emerald-500/30 text-emerald-200">3</span> <b class="ml-2">Virtual-goods prices</b><div class="text-xs text-slate-500 mt-1 ml-9">Fengdou per virtual item</div></td>
+          <td class="px-6 py-5 text-emerald-300">Budget <i>steering</i> — the valve</td>
+          <td class="px-6 py-5 text-slate-400">Diverts token demand toward the zero-cost channel at will.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6 mt-8">
+    <div class="card rounded-2xl p-6"><div class="text-amber-300 text-sm font-semibold mb-1">Goal 1 · Incentivize</div><p class="text-xs text-slate-400">Maximize the effort / retention value couriers derive per yuan of budget.</p></div>
+    <div class="card rounded-2xl p-6"><div class="text-orange-300 text-sm font-semibold mb-1">Goal 2 · Hit the budget</div><p class="text-xs text-slate-400">Land real-goods spend near target — avoid overspend and the underspend ratchet.</p></div>
+    <div class="card rounded-2xl p-6"><div class="text-emerald-300 text-sm font-semibold mb-1">Goal 3 · Stable float <span class="text-slate-500">(secondary)</span></div><p class="text-xs text-slate-400">Keep outstanding Fengdou inside a healthy band — avoid hoarding or collapse.</p></div>
+  </div>
+</section>
+
+<!-- ── MODEL ────────────────────────────────────────────────────────────── -->
+<section id="model" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <h2 class="text-3xl font-bold mb-3">A Bilevel (Stackelberg) Model</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+      The firm leads; couriers follow. Calibrated on the full SF transaction panel, then optimized normatively.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card rounded-2xl p-7">
+      <div class="text-xs uppercase tracking-wider text-emerald-300 mb-3">Lower level · couriers (followers)</div>
+      <h3 class="font-semibold mb-3">A dynamic redemption-choice model</h3>
+      <ul class="text-sm text-slate-400 space-y-2.5">
+        <li>• Heterogeneous couriers earn tokens via effort each period.</li>
+        <li>• Each period they choose: <b>virtual</b> · <b>real</b> · <b>hold/save</b> (random-utility / threshold accumulation).</li>
+        <li>• Calibrated structurally on transaction-level redemptions, balances, and price variation.</li>
+      </ul>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="text-xs uppercase tracking-wider text-amber-300 mb-3">Upper level · the firm (leader)</div>
+      <h3 class="font-semibold mb-3">A dynamic policy-design program</h3>
+      <ul class="text-sm text-slate-400 space-y-2.5">
+        <li>• Choose issuance &amp; price vectors to optimize the weighted three-goal objective.</li>
+        <li>• <b>Budget targeting</b> ≈ a newsvendor with two-sided penalty ⇒ critical-fractile policy.</li>
+        <li>• <b>Float band</b> ≈ Miller–Orr cash-management control limits.</li>
+        <li>• <b>Multi-year ratchet</b> ⇒ an MDP where today's underspend lowers tomorrow's budget state.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card rounded-2xl p-7 mt-6">
+    <p class="text-sm text-slate-400 leading-relaxed">
+      <b class="text-white">Why each analogy earns its place.</b>
+      The firm commits to issuance and prices <i>before</i> stochastic redemption demand realizes and is penalized
+      for both over- and under-shoot — the <span class="kbd">newsvendor</span> skeleton, with the virtual good acting as
+      the substitution margin that thins the tails. The stock of outstanding Fengdou behaves like a money inventory,
+      so keeping it in a band is a <span class="kbd">Miller–Orr</span> problem. And because underspending permanently
+      lowers next year's allocation, the leader's problem is genuinely <span class="kbd">dynamic</span> — it may rationally
+      inflate virtual-good attractiveness today to <i>protect</i> tomorrow's budget.
+    </p>
+  </div>
+</section>
+
+<!-- ── VALVE / MECHANISM ────────────────────────────────────────────────── -->
+<section id="valve" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <h2 class="text-3xl font-bold mb-3">The Pressure-Valve Principle</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+      The paper's signature idea: <b class="text-emerald-300">virtual goods are a free budget-steering valve.</b>
+      They absorb token demand at zero marginal cost, so their relative attractiveness — not issuance, not real prices —
+      is the firm's sharpest instrument for hitting the budget target.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-8 items-center">
+    <div class="card rounded-2xl p-6">
+      <canvas id="valveChart" height="260"></canvas>
+      <p class="text-xs text-slate-500 mt-4 text-center">Illustrative. As virtual-good attractiveness λ rises, real-goods spend falls monotonically; the two-sided budget penalty is U-shaped with an interior optimum λ*.</p>
+    </div>
+    <div class="space-y-5">
+      <div class="card rounded-2xl p-6">
+        <h3 class="font-semibold mb-2 text-emerald-300">Too attractive →</h3>
+        <p class="text-sm text-slate-400">Couriers flock to free skins, real-goods spend <b>undershoots</b>, and the budget is ratcheted down next year.</p>
+      </div>
+      <div class="card rounded-2xl p-6">
+        <h3 class="font-semibold mb-2 text-orange-300">Too unattractive →</h3>
+        <p class="text-sm text-slate-400">Demand floods the real channel and spend <b>overshoots</b> the budget — infeasible.</p>
+      </div>
+      <div class="card rounded-2xl p-6 metric-card">
+        <h3 class="font-semibold mb-2 text-amber-300">The interior optimum λ*</h3>
+        <p class="text-sm text-slate-300">Tunes the valve so realized real-goods spend lands on target — <i>at zero incremental cost</i>, while virtual goods still deliver incentive value. Issuance is then freed to do its real job: motivation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTRIBUTIONS ────────────────────────────────────────────────────── -->
+<section id="results" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <h2 class="text-3xl font-bold mb-3">Intended Contributions</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">Targeting a UTD-24 OR/OM outlet (<i>Management Science</i> / <i>Operations Research</i>).</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="card rounded-2xl p-7">
+      <div class="text-amber-400 text-2xl font-bold mb-2">01</div>
+      <h3 class="font-semibold mb-2">A new problem class</h3>
+      <p class="text-sm text-slate-400">Formalizes the <b>dual-cost labor-incentive token economy</b> with an indirectly-controlled, two-sided budget target — distinct from loyalty points, gig cash bonuses, and scrip systems.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="text-amber-400 text-2xl font-bold mb-2">02</div>
+      <h3 class="font-semibold mb-2">The separation / pressure-valve theorem</h3>
+      <p class="text-sm text-slate-400">Conditions under which issuance governs incentives while relative virtual/real pricing governs the budget — a clean decoupling of instruments and goals.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="text-amber-400 text-2xl font-bold mb-2">03</div>
+      <h3 class="font-semibold mb-2">The ratchet distortion</h3>
+      <p class="text-sm text-slate-400">Characterizes how the multi-year use-it-or-lose-it dynamic distorts the static optimum, and quantifies the welfare cost of budget myopia.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="text-amber-400 text-2xl font-bold mb-2">04</div>
+      <h3 class="font-semibold mb-2">Calibrated policy counterfactuals</h3>
+      <p class="text-sm text-slate-400">Using two years of SF field data: how much closer to budget, and how much more incentive value per yuan, an optimized policy would have delivered.</p>
+    </div>
+  </div>
+
+  <div class="mt-10 card rounded-2xl p-7">
+    <h3 class="font-semibold mb-3 text-sm uppercase tracking-wider text-slate-400">Positioning against the literature</h3>
+    <div class="grid md:grid-cols-2 gap-x-10 gap-y-3 text-sm text-slate-400">
+      <p>• <b class="text-white">Loyalty / points programs</b> — single currency, breakage, point pressure. We add heterogeneous marginal cost and earned-through-labor tokens.</p>
+      <p>• <b class="text-white">Gig-economy incentives</b> — typically cash bonuses. Fengdou is non-cash scrip with a closed redemption market.</p>
+      <p>• <b class="text-white">Scrip monetary policy</b> — hoarding/inflation in token economies. We add a firm budget target and a real-goods channel.</p>
+      <p>• <b class="text-white">Budget-ratchet effect</b> — known in accounting; we embed it inside a prescriptive operations model.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── DATA / STATUS ────────────────────────────────────────────────────── -->
+<section id="data" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card rounded-2xl p-7">
+      <h3 class="font-semibold mb-2 text-amber-300">Data</h3>
+      <p class="text-sm text-slate-400">Full-granularity SF Express transaction panel — issuance, balances, prices, and individual redemption choices, <b>July 2024 → present</b>.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <h3 class="font-semibold mb-2 text-amber-300">Approach</h3>
+      <p class="text-sm text-slate-400">Analytical-normative core with theorems, calibrated on the panel; dynamic (multi-period) formulation capturing token accumulation and the budget ratchet.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <h3 class="font-semibold mb-2 text-amber-300">Status</h3>
+      <p class="text-sm text-slate-400">Active. Model formulation and structural calibration in progress; counterfactual policy experiments to follow.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────────────── -->
+<footer class="border-t border-white/[.06] mt-10">
+  <div class="max-w-6xl mx-auto px-6 py-10 text-sm text-slate-500 flex flex-col md:flex-row justify-between gap-4">
+    <div>
+      <div class="text-slate-300 font-medium mb-1">Fengdou · 丰豆 — Internal Token Economy Design</div>
+      Operations management research · in collaboration with SF Express.
+    </div>
+    <div class="text-right">
+      <div>Figures and budget magnitudes are rounded / illustrative for public presentation.</div>
+      <div class="mt-1">© 2026 · Yue Zhao · PHBS</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const ctx = document.getElementById('valveChart');
+  const xs = Array.from({length: 41}, (_, i) => i / 40);          // λ in [0,1]
+  // real-goods spend falls as virtual attractiveness rises
+  const spend = xs.map(l => 100 * Math.exp(-1.6 * l));
+  const target = 45;
+  // two-sided penalty around target (overspend penalized harder)
+  const penalty = spend.map(s => s > target ? 1.8 * (s - target) : 1.0 * (target - s));
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: xs.map(l => l.toFixed(2)),
+      datasets: [
+        { label: 'Real-goods spend', data: spend, borderColor: '#FB923C', backgroundColor: 'rgba(251,146,60,.08)', fill: true, tension: .35, pointRadius: 0, borderWidth: 2, yAxisID: 'y' },
+        { label: 'Budget target', data: xs.map(() => target), borderColor: '#34D399', borderDash: [6,5], pointRadius: 0, borderWidth: 1.5, yAxisID: 'y' },
+        { label: 'Budget penalty', data: penalty, borderColor: '#FCD34D', backgroundColor: 'rgba(252,211,77,.06)', fill: true, tension: .35, pointRadius: 0, borderWidth: 2, yAxisID: 'y' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#94A3B8', boxWidth: 12, font: { size: 11 } } },
+        tooltip: { enabled: true }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Virtual-good attractiveness  λ', color: '#64748B', font: { size: 11 } },
+             ticks: { color: '#475569', maxTicksLimit: 6 }, grid: { color: 'rgba(255,255,255,.04)' } },
+        y: { ticks: { color: '#475569' }, grid: { color: 'rgba(255,255,255,.04)' } }
+      }
+    }
+  });
+</script>
+</body>
+</html>
