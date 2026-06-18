@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Steering a Reward-Token Economy · Fengdou (丰豆) · Human–AI Collaboration under a Budget Target</title>
-  <meta name="description" content="An operations management study of human–AI collaboration in SF Express's Fengdou reward-token system: when human operators should override a forecasting/inventory algorithm whose decision environment is a dual-cost, budget-targeted incentive economy.">
+  <title>Steering a Reward-Token Economy · Fengdou (丰豆) · Issuance, Pricing & Budget Targeting</title>
+  <meta name="description" content="An operations management study of SF Express's Fengdou reward-token economy: how to set issuance and dual-cost pricing to hit a budget target and motivate couriers — with a second layer of human-AI collaboration over those levers.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -17,10 +17,12 @@
            color:#FCD34D; font-size:.8rem; }
     .metric-card { background: linear-gradient(135deg,rgba(245,158,11,.14),rgba(245,158,11,.03)); border: 1px solid rgba(245,158,11,.22); }
     .coin { background: linear-gradient(135deg,#FBBF24,#F59E0B); }
-    .algo { color:#FCD34D; }            /* algorithm = amber */
-    .human{ color:#7DD3FC; }            /* human = sky */
+    .algo { color:#FCD34D; }
+    .human{ color:#7DD3FC; }
     .chip-algo  { background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.28); color:#FCD34D; }
     .chip-human { background:rgba(56,189,248,.12); border:1px solid rgba(56,189,248,.30); color:#7DD3FC; }
+    .pill-2nd { background:rgba(56,189,248,.10); border:1px solid rgba(56,189,248,.25); color:#7DD3FC;
+                border-radius:999px; padding:3px 12px; font-size:.72rem; display:inline-flex; align-items:center; gap:6px; }
     hr.dim { border-color: rgba(255,255,255,0.06); }
     .lever-num { width:26px;height:26px;border-radius:50%;
                 display:inline-flex;align-items:center;justify-content:center;
@@ -28,8 +30,8 @@
     .kbd { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem;
            background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
            border-radius:.35rem; padding:1px 7px; color:#FCD34D; }
-    a.ref { color:#7DD3FC; text-decoration: underline; text-underline-offset: 3px; }
-    a.ref:hover { color:#BAE6FD; }
+    a.ref { color:#FCD34D; text-decoration: underline; text-underline-offset: 3px; }
+    a.ref:hover { color:#FDE68A; }
   </style>
 </head>
 <body class="text-white min-h-screen">
@@ -42,10 +44,10 @@
       <span class="font-semibold">Fengdou&nbsp;·&nbsp;丰豆</span>
     </div>
     <div class="hidden md:flex gap-6 text-sm text-slate-400">
-      <a href="#setting"   class="hover:text-white transition">Setting</a>
-      <a href="#collab"    class="hover:text-white transition">Collaboration</a>
+      <a href="#system"    class="hover:text-white transition">System</a>
+      <a href="#design"    class="hover:text-white transition">Design Problem</a>
+      <a href="#collab"    class="hover:text-white transition">Human–AI Layer</a>
       <a href="#questions" class="hover:text-white transition">Questions</a>
-      <a href="#model"     class="hover:text-white transition">Model</a>
       <a href="#lit"       class="hover:text-white transition">Literature</a>
       <a href="#results"   class="hover:text-white transition">Contributions</a>
     </div>
@@ -60,44 +62,46 @@
 <section class="max-w-6xl mx-auto px-6 pt-24 pb-16 text-center">
   <div class="tag mb-8">
     <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-    Operations Management · Human–AI Collaboration · SF Express field data (2024.07 – present)
+    Operations Management · Token-Economy Design · SF Express field data (2024.07 – present)
   </div>
   <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-[1.12]">
     Steering a<br>
-    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-sky-300">
+    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500">
       Reward-Token Economy
     </span>
   </h1>
-  <p class="text-base md:text-xl text-sky-200/80 max-w-2xl mx-auto mb-7 font-medium">
-    Human–AI Collaboration under a Budget Target
+  <p class="text-base md:text-xl text-slate-300 max-w-2xl mx-auto mb-7 font-medium">
+    Issuance, Pricing, and Budget Targeting in a Dual-Cost Incentive Currency
   </p>
   <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-5">
-    A forecasting-and-inventory <b class="algo">algorithm</b> recommends how many <b class="text-amber-300">Fengdou</b> tokens
-    to issue and how to price them. <b class="human">Human operators</b> then adjust those recommendations using private
-    information the algorithm cannot see — the budget ratchet, HQ pressure, fairness across courier groups.
+    SF Express pays couriers in <b class="text-amber-300">Fengdou</b>, a closed-loop token earned through work and
+    redeemed for either <b class="text-emerald-300">zero-cost virtual goods</b> or <b class="text-orange-300">budget-consuming
+    real goods</b>. The firm sets how many tokens to issue and what they cost — but not how couriers spend them — and must land
+    real-goods spending <b>close to an annual budget</b> it loses if it underspends.
   </p>
-  <p class="text-base text-slate-500 max-w-3xl mx-auto mb-10">
-    We observe the full <b class="text-slate-300">recommendation-vs-override trace</b> and ask which human departures add value,
-    and how decision rights should be split — inside a dual-cost, budget-targeted incentive economy.
+  <p class="text-sm text-slate-500 max-w-3xl mx-auto mb-10">
+    <span class="pill-2nd mr-1">Second layer</span>
+    these levers are set by a forecasting-and-inventory <b class="human">algorithm</b> and adjusted by
+    <b class="human">human operators</b> — a human–AI collaboration we also study, using the recorded recommendation-vs-override trace.
   </p>
   <div class="flex flex-wrap justify-center gap-3 mb-20">
-    <a href="#collab"
+    <a href="#design"
        class="px-7 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl font-semibold text-sm transition">
-      See the Collaboration →
+      The Design Problem →
     </a>
-    <a href="#model"
+    <a href="#collab"
        class="px-7 py-3 bg-white/[.07] hover:bg-white/[.12] rounded-xl font-medium text-sm transition">
-      The Decision Model
+      The Human–AI Layer
     </a>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-3xl mx-auto">
     <div class="card rounded-2xl p-5 glow">
       <div class="text-3xl font-bold text-amber-400">3</div>
-      <div class="text-xs text-slate-500 mt-1.5">Research questions</div>
+      <div class="text-xs text-slate-500 mt-1.5">Control levers</div>
     </div>
     <div class="card rounded-2xl p-5">
-      <div class="text-3xl font-bold text-sky-300">✓</div>
-      <div class="text-xs text-slate-500 mt-1.5">Override trace observed</div>
+      <div class="text-3xl font-bold text-yellow-300">3</div>
+      <div class="text-xs text-slate-500 mt-1.5">Competing goals</div>
     </div>
     <div class="card rounded-2xl p-5">
       <div class="text-3xl font-bold text-emerald-400">≈¥40M</div>
@@ -110,14 +114,14 @@
   </div>
 </section>
 
-<!-- ── SETTING ──────────────────────────────────────────────────────────── -->
-<section id="setting" class="max-w-6xl mx-auto px-6 py-20">
+<!-- ── SYSTEM ───────────────────────────────────────────────────────────── -->
+<section id="system" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">The Decision Environment: Fengdou</h2>
+    <h2 class="text-3xl font-bold mb-3">The Fengdou System</h2>
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">
-      <b class="text-amber-300">Fengdou (丰豆)</b> is SF Express's closed-loop reward token: couriers <b>earn</b> it through delivery work
-      and <b>redeem</b> it through two channels with very different cost to the firm.
+      A closed corporate token economy with a defining feature: two redemption channels with
+      <b class="text-amber-300">heterogeneous marginal cost to the firm</b>.
     </p>
   </div>
 
@@ -141,98 +145,25 @@
 
   <div class="card rounded-2xl p-7 metric-card">
     <p class="text-sm text-slate-300 leading-relaxed">
-      <b class="text-amber-300">Why this is hard to automate:</b> the budget must be spent <i>close to target</i> —
-      overspend is infeasible, and <b>underspend triggers a budget cut next year</b> (a use-it-or-lose-it <b>ratchet</b>).
-      Levers are set <i>before</i> redemption is observed, and the firm cannot dictate the virtual-vs-real split.
-      Much of what governs the right call — HQ politics, the ratchet, fairness — lives in the operators' heads, not the data.
-      That is precisely where <b class="human">human judgment</b> meets the <b class="algo">algorithm</b>.
+      <b class="text-amber-300">The bite:</b> the budget must be spent <i>close to target</i> — overspend is infeasible,
+      and <b>underspend triggers a budget cut next year</b> (a use-it-or-lose-it <b>ratchet</b>). Levers are set
+      <i>before</i> redemption is observed, and the firm cannot dictate the virtual-vs-real split. It can only <i>steer</i>.
     </p>
   </div>
 </section>
 
-<!-- ── COLLABORATION PIPELINE ───────────────────────────────────────────── -->
-<section id="collab" class="max-w-6xl mx-auto px-6 py-20">
+<!-- ── DESIGN PROBLEM (CORE) ────────────────────────────────────────────── -->
+<section id="design" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">The Human–AI Pipeline</h2>
+    <h2 class="text-3xl font-bold mb-3">The Design Problem</h2>
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">
-      The algorithm owns the <b class="algo">statistical</b> problem; the human owns the <b class="human">political-economy</b> problem.
-      We observe every step — including where they disagree.
+      Three levers, three goals — and a near-clean mapping between them. The <b class="text-emerald-300">virtual-goods price</b>
+      is a free budget-steering valve.
     </p>
   </div>
 
-  <div class="grid lg:grid-cols-4 gap-4 items-stretch">
-    <div class="card rounded-2xl p-6">
-      <div class="inline-flex chip-algo text-xs rounded-full px-3 py-1 mb-3">Algorithm</div>
-      <h3 class="font-semibold mb-2 text-sm">1 · Forecast &amp; optimize</h3>
-      <p class="text-xs text-slate-400">Predicts courier redemption demand and the Fengdou float; recommends issuance &amp; prices.</p>
-    </div>
-    <div class="card rounded-2xl p-6">
-      <div class="inline-flex chip-human text-xs rounded-full px-3 py-1 mb-3">Human</div>
-      <h3 class="font-semibold mb-2 text-sm">2 · Adjust with private info</h3>
-      <p class="text-xs text-slate-400">Operators override using signals the model lacks: ratchet risk, HQ pressure, campaigns, fairness.</p>
-    </div>
-    <div class="card rounded-2xl p-6">
-      <div class="inline-flex bg-white/[.07] text-slate-300 text-xs rounded-full px-3 py-1 mb-3">Policy</div>
-      <h3 class="font-semibold mb-2 text-sm">3 · Commit final levers</h3>
-      <p class="text-xs text-slate-400">The implemented issuance &amp; price vector — which may differ from the recommendation.</p>
-    </div>
-    <div class="card rounded-2xl p-6 metric-card">
-      <div class="inline-flex bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs rounded-full px-3 py-1 mb-3">Outcome</div>
-      <h3 class="font-semibold mb-2 text-sm">4 · Realized result</h3>
-      <p class="text-xs text-slate-300">Budget adherence · incentive value · float stability — the score each override is judged against.</p>
-    </div>
-  </div>
-
-  <div class="card rounded-2xl p-7 mt-6">
-    <p class="text-sm text-slate-400 leading-relaxed">
-      <b class="text-white">The data asset.</b> Because both the <b class="algo">algorithmic recommendation</b> and the
-      <b class="human">human-set final decision</b> are recorded, we can isolate <i>where</i> and <i>why</i> operators deviate —
-      and measure whether each deviation moved the firm closer to, or further from, its goals.
-      Two deviation types matter: <b>information</b> deviations (the human knows more) and
-      <b>complexity / discretion</b> deviations (the human won't or can't follow exactly).
-    </p>
-  </div>
-</section>
-
-<!-- ── RESEARCH QUESTIONS ───────────────────────────────────────────────── -->
-<section id="questions" class="max-w-6xl mx-auto px-6 py-20">
-  <hr class="dim mb-20">
-  <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">Three Research Questions</h2>
-    <p class="text-slate-400 max-w-2xl mx-auto text-sm">From normative design to empirical effect to deployable system.</p>
-  </div>
-  <div class="grid md:grid-cols-3 gap-6">
-    <div class="card rounded-2xl p-7">
-      <div class="text-2xl font-bold algo mb-2">Q1</div>
-      <h3 class="font-semibold mb-2">Optimal delegation <span class="text-xs text-slate-500 font-normal">(theory)</span></h3>
-      <p class="text-sm text-slate-400">Which decisions should be delegated to the algorithm vs. escalated to a human who holds a private budget-ratchet signal? A normative <b>decision-rights</b> model.</p>
-    </div>
-    <div class="card rounded-2xl p-7">
-      <div class="text-2xl font-bold human mb-2">Q2</div>
-      <h3 class="font-semibold mb-2">Do overrides add value? <span class="text-xs text-slate-500 font-normal">(empirical)</span></h3>
-      <p class="text-sm text-slate-400">Estimate the causal effect of operator overrides on budget adherence and incentive value — handling the <b>endogeneity</b> of when humans choose to intervene.</p>
-    </div>
-    <div class="card rounded-2xl p-7">
-      <div class="text-2xl font-bold text-emerald-300 mb-2">Q3</div>
-      <h3 class="font-semibold mb-2">Collaborative system <span class="text-xs text-slate-500 font-normal">(prescriptive)</span></h3>
-      <p class="text-sm text-slate-400">Design an <b>adherence-aware</b> recommendation policy that anticipates human deviation and routes the right calls to the right agent; quantify counterfactual gains.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ── MODEL ────────────────────────────────────────────────────────────── -->
-<section id="model" class="max-w-6xl mx-auto px-6 py-20">
-  <hr class="dim mb-20">
-  <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">The Decision Model Underneath</h2>
-    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
-      The collaboration runs on a dual-cost, budget-targeted token economy. Three firm levers map almost cleanly
-      onto three goals — and the <b class="text-emerald-300">virtual-goods price</b> is a free budget-steering valve.
-    </p>
-  </div>
-
-  <div class="overflow-hidden rounded-2xl card mb-10">
+  <div class="overflow-hidden rounded-2xl card mb-8">
     <table class="w-full text-sm">
       <thead class="text-left text-slate-400 border-b border-white/[.08]">
         <tr>
@@ -261,6 +192,12 @@
     </table>
   </div>
 
+  <div class="grid md:grid-cols-3 gap-6 mb-10">
+    <div class="card rounded-2xl p-6"><div class="text-amber-300 text-sm font-semibold mb-1">Goal 1 · Incentivize</div><p class="text-xs text-slate-400">Maximize effort / retention value per yuan of budget.</p></div>
+    <div class="card rounded-2xl p-6"><div class="text-orange-300 text-sm font-semibold mb-1">Goal 2 · Hit the budget</div><p class="text-xs text-slate-400">Land real-goods spend near target — avoid overspend and the underspend ratchet.</p></div>
+    <div class="card rounded-2xl p-6"><div class="text-emerald-300 text-sm font-semibold mb-1">Goal 3 · Stable float <span class="text-slate-500">(secondary)</span></div><p class="text-xs text-slate-400">Keep outstanding Fengdou in a healthy band — avoid hoarding or collapse.</p></div>
+  </div>
+
   <div class="grid lg:grid-cols-2 gap-8 items-center">
     <div class="card rounded-2xl p-6">
       <canvas id="valveChart" height="260"></canvas>
@@ -269,16 +206,71 @@
     <div class="space-y-4">
       <div class="card rounded-2xl p-6">
         <h3 class="font-semibold mb-2 text-amber-300">Pressure-valve principle</h3>
-        <p class="text-sm text-slate-400">Virtual goods absorb token demand at zero cost, so their relative price — not issuance — is the sharpest budget-steering instrument. This is the structural insight the algorithm encodes.</p>
+        <p class="text-sm text-slate-400">Virtual goods absorb token demand at zero cost, so their relative price — not issuance — is the sharpest budget-steering instrument. Issuance is then freed to do its real job: motivation.</p>
       </div>
       <div class="card rounded-2xl p-6">
-        <h3 class="font-semibold mb-2 human">Where the human enters</h3>
-        <p class="text-sm text-slate-400">λ* depends on the <i>ratchet</i> and HQ stance — soft, forward-looking knowledge the operator holds privately. The optimal λ the algorithm computes is exactly what a well-informed human is positioned to correct.</p>
+        <h3 class="font-semibold mb-2 text-orange-300">Budget targeting</h3>
+        <p class="text-sm text-slate-400">Levers commit before stochastic redemption realizes, with a two-sided over/under penalty — a <span class="kbd">newsvendor</span>-type critical-fractile policy, with the virtual good thinning the tails.</p>
       </div>
       <div class="card rounded-2xl p-6">
         <h3 class="font-semibold mb-2 text-emerald-300">Dynamics</h3>
-        <p class="text-sm text-slate-400">Multi-period: token accumulation (Miller–Orr-style float band) and a budget ratchet making the firm's problem an MDP.</p>
+        <p class="text-sm text-slate-400">Multi-period: token accumulation as a <span class="kbd">Miller–Orr</span> float band, and the use-it-or-lose-it <span class="kbd">ratchet</span> making the firm's problem an MDP.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HUMAN–AI LAYER (SECOND) ──────────────────────────────────────────── -->
+<section id="collab" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <span class="pill-2nd mb-5">Second layer</span>
+    <h2 class="text-3xl font-bold mb-3 mt-2">The Human–AI Layer</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">
+      A forecasting-and-inventory <b class="human">algorithm</b> recommends the levers; <b class="human">human operators</b>
+      adjust them with private information the model lacks — the ratchet, HQ pressure, fairness. We observe every step.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-4 gap-4 items-stretch mb-6">
+    <div class="card rounded-2xl p-6"><div class="inline-flex chip-algo text-xs rounded-full px-3 py-1 mb-3">Algorithm</div><h3 class="font-semibold mb-2 text-sm">1 · Forecast &amp; optimize</h3><p class="text-xs text-slate-400">Predicts redemption demand and the float; recommends issuance &amp; prices.</p></div>
+    <div class="card rounded-2xl p-6"><div class="inline-flex chip-human text-xs rounded-full px-3 py-1 mb-3">Human</div><h3 class="font-semibold mb-2 text-sm">2 · Adjust with private info</h3><p class="text-xs text-slate-400">Operators override using ratchet risk, HQ pressure, campaigns, fairness.</p></div>
+    <div class="card rounded-2xl p-6"><div class="inline-flex bg-white/[.07] text-slate-300 text-xs rounded-full px-3 py-1 mb-3">Policy</div><h3 class="font-semibold mb-2 text-sm">3 · Commit final levers</h3><p class="text-xs text-slate-400">The implemented vector — which may differ from the recommendation.</p></div>
+    <div class="card rounded-2xl p-6 metric-card"><div class="inline-flex bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs rounded-full px-3 py-1 mb-3">Outcome</div><h3 class="font-semibold mb-2 text-sm">4 · Realized result</h3><p class="text-xs text-slate-300">Budget adherence · incentive value · float — the override's score.</p></div>
+  </div>
+
+  <div class="card rounded-2xl p-7">
+    <p class="text-sm text-slate-400 leading-relaxed">
+      <b class="text-white">The data asset.</b> Both the <b class="human">algorithmic recommendation</b> and the
+      <b class="human">human-set decision</b> are recorded, so we can isolate where operators deviate and whether each
+      deviation moved the firm toward its goals — separating <b>information</b> deviations (the human knows more) from
+      <b>complexity / discretion</b> deviations (the human won't or can't follow exactly).
+    </p>
+  </div>
+</section>
+
+<!-- ── RESEARCH QUESTIONS ───────────────────────────────────────────────── -->
+<section id="questions" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <h2 class="text-3xl font-bold mb-3">Research Questions</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">Two on the token economy itself; one on the human–AI layer.</p>
+  </div>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card rounded-2xl p-7">
+      <div class="text-2xl font-bold text-amber-400 mb-2">Q1</div>
+      <h3 class="font-semibold mb-2">Optimal levers</h3>
+      <p class="text-sm text-slate-400">How to set issuance and dual-cost pricing to hit the budget target while maximizing incentive value — the pressure-valve / separation result.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="text-2xl font-bold text-emerald-400 mb-2">Q2</div>
+      <h3 class="font-semibold mb-2">Float &amp; ratchet dynamics</h3>
+      <p class="text-sm text-slate-400">How to manage the token supply over time — the float band and the multi-year use-it-or-lose-it ratchet that distorts the static optimum.</p>
+    </div>
+    <div class="card rounded-2xl p-7">
+      <div class="text-2xl font-bold human mb-2">Q3 <span class="pill-2nd align-middle ml-1">2nd layer</span></div>
+      <h3 class="font-semibold mb-2">When should humans override?</h3>
+      <p class="text-sm text-slate-400">Using the recommendation-vs-override trace: which operator deviations from the algorithmic levers add value, and how to make the recommendation adherence-aware.</p>
     </div>
   </div>
 </section>
@@ -289,49 +281,49 @@
   <div class="text-center mb-14">
     <h2 class="text-3xl font-bold mb-3">Where It Sits in the Literature</h2>
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">
-      Building on the active <i>Human–Algorithm Connection</i> conversation at <i>Management Science</i> —
-      extended to a budget-targeted incentive currency where the <b>ratchet</b> supplies the human's private signal.
+      Primarily a token-economy / incentive-currency paper; secondarily a human–AI collaboration paper.
     </p>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-6">
+  <div class="grid md:grid-cols-2 gap-6 mb-6">
     <div class="card rounded-2xl p-7">
-      <h3 class="text-xs uppercase tracking-wider text-amber-300 mb-4">Operations · the bullseye</h3>
+      <h3 class="text-xs uppercase tracking-wider text-amber-300 mb-4">Token economics · platform &amp; crypto currencies</h3>
       <ul class="space-y-3 text-sm text-slate-400">
-        <li><a class="ref" href="https://pubsonline.informs.org/toc/mnsc/72/1" target="_blank">Special Issue: The Human–Algorithm Connection</a> — <i>Manag. Sci.</i> 72(1), 2026. The home conversation.</li>
-        <li><b class="text-slate-200">Kesavan, Kushwaha &amp; Steele</b> — "Profit Implications of Judgmental Adjustments to Forecast Inputs," <i>Manag. Sci.</i> 2025. Human adjustments to forecast inputs lift profit (+4.92%). <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2024.06321" target="_blank">link</a></li>
-        <li><b class="text-slate-200">Balakrishnan, Ferreira &amp; Tong</b> — human–AI collaboration <i>with private information</i>. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.03850" target="_blank">link</a></li>
-        <li><b class="text-slate-200">Predicting Human Discretion to Adjust Algorithmic Prescription</b> — warehouse-ops field experiment. <a class="ref" href="https://pubsonline.informs.org/doi/abs/10.1287/mnsc.2021.3990" target="_blank">link</a></li>
-        <li><b class="text-slate-200">Kesavan &amp; Kushwaha</b> — "Merchants' Discretionary Power to Override Data-Driven Tools," <i>Manag. Sci.</i> 2020. Overrides <i>cut</i> profit 5.77% on average, yet help growth-stage SKUs — value is conditional. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2020.3743" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Tsoukalas &amp; Falk</b> — "Token-Weighted Crowdsourcing," <i>Manag. Sci.</i> 2020. Tokens <i>as an incentive mechanism</i> — closest to ours. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2019.3515" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Sockin &amp; Xiong</b> — "A Model of Cryptocurrencies," <i>Manag. Sci.</i> 2023. Utility-token valuation &amp; supply. <a class="ref" href="https://pubsonline.informs.org/doi/abs/10.1287/mnsc.2023.4756" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Cong, Li &amp; Wang</b> — "Tokenomics: Dynamic Adoption and Valuation," <i>Rev. Financial Studies</i> 2021. Dynamic token economy. <a class="ref" href="https://academic.oup.com/rfs/article-abstract/34/3/1105/5891182" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Meng, Hao &amp; Tan</b> — "Freemium Pricing with Virtual Currency," <i>Inf. Syst. Res.</i> 2021. Pricing/issuing a platform currency. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/isre.2020.0976" target="_blank">link</a></li>
       </ul>
     </div>
     <div class="card rounded-2xl p-7">
-      <h3 class="text-xs uppercase tracking-wider text-sky-300 mb-4">Model template &amp; economics anchors</h3>
+      <h3 class="text-xs uppercase tracking-wider text-amber-300 mb-4">Reward points · scrip · float</h3>
       <ul class="space-y-3 text-sm text-slate-400">
-        <li><b class="text-slate-200">Adherence-Aware Recommendations</b> — "The Best Decisions Are Not the Best Advice," <i>Manag. Sci.</i> 2024. The normative backbone for Q1/Q3. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2023.01851" target="_blank">link</a></li>
-        <li><b class="text-slate-200">Angelova, Dobbie &amp; Yang</b> — "Algorithmic Recommendations and Human Discretion," <i>Rev. Econ. Stud.</i> 2025. Identifies <i>which</i> overrides add value — the design for Q2. <a class="ref" href="https://www.nber.org/papers/w31747" target="_blank">link</a></li>
-        <li><b class="text-slate-200">Kleinberg et&nbsp;al.</b> — "Human Decisions and Machine Predictions," <i>QJE</i> 2018. The foundational humans-vs-machine study. <a class="ref" href="https://academic.oup.com/qje/article-abstract/133/1/237/4095198" target="_blank">link</a></li>
-        <li><b class="text-slate-200">Dietvorst, Simmons &amp; Massey</b> — people adopt algorithms they can adjust. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2016.2643" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Stourm, Bradlow &amp; Fader</b> — "Stockpiling Points in Linear Loyalty Programs," <i>J. Marketing Res.</i> 2015. Why holders hoard a points currency. <a class="ref" href="https://journals.sagepub.com/doi/abs/10.1509/jmr.12.0354" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Kash, Friedman &amp; Halpern</b> — "Optimizing Scrip Systems," <i>Distributed Computing</i> 2012. Artificial-currency money supply, crashes &amp; hoarding — the float band. <a class="ref" href="https://link.springer.com/article/10.1007/s00446-012-0170-z" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Breakage in loyalty programs</b> — <i>Int. J. Res. Marketing</i> 2024. Unredeemed-reward liability — the accounting twin of token float. <a class="ref" href="https://www.sciencedirect.com/science/article/abs/pii/S0167811624000909" target="_blank">link</a></li>
+        <li><b class="text-slate-200">Putting Teams into the Gig Economy</b> — <i>Manag. Sci.</i> 2022. Gamified workforce incentives at a ride-share platform. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4624" target="_blank">link</a></li>
       </ul>
     </div>
   </div>
 
-  <div class="card rounded-2xl p-7 mt-6">
-    <h3 class="text-xs uppercase tracking-wider text-emerald-300 mb-4">Token economies · the decision substrate</h3>
+  <div class="card rounded-2xl p-7 mb-6">
+    <h3 class="text-xs uppercase tracking-wider text-sky-300 mb-4">Human–AI collaboration <span class="text-slate-500 normal-case tracking-normal">· second layer</span></h3>
     <div class="grid md:grid-cols-2 gap-x-10 gap-y-3 text-sm text-slate-400">
-      <p><b class="text-slate-200">Stourm, Bradlow &amp; Fader</b> — "Stockpiling Points in Linear Loyalty Programs," <i>J. Marketing Res.</i> 2015. Why holders hoard a points currency instead of redeeming — the float dynamics of Fengdou. <a class="ref" href="https://journals.sagepub.com/doi/abs/10.1509/jmr.12.0354" target="_blank">link</a></p>
-      <p><b class="text-slate-200">Kash, Friedman &amp; Halpern</b> — "Optimizing Scrip Systems: …Hoarders, and Altruists," <i>Distributed Computing</i> 2012. Setting an artificial-currency money supply to avoid crashes &amp; hoarding — the basis for the float band. <a class="ref" href="https://link.springer.com/article/10.1007/s00446-012-0170-z" target="_blank">link</a></p>
-      <p><b class="text-slate-200">Meng, Hao &amp; Tan</b> — "Freemium Pricing in Digital Games with Virtual Currency," <i>Inf. Syst. Res.</i> 2021. Pricing and issuing a platform virtual currency. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/isre.2020.0976" target="_blank">link</a></p>
-      <p><b class="text-slate-200">Putting Teams into the Gig Economy</b> — <i>Manag. Sci.</i> 2022. Gamified team incentives at a ride-share platform — the workforce-motivation side. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4624" target="_blank">link</a></p>
-      <p><b class="text-slate-200">Breakage in loyalty programs</b> — <i>Int. J. Res. Marketing</i> 2024. Unredeemed-reward liability management — the accounting twin of token float. <a class="ref" href="https://www.sciencedirect.com/science/article/abs/pii/S0167811624000909" target="_blank">link</a></p>
+      <p><a class="ref" href="https://pubsonline.informs.org/toc/mnsc/72/1" target="_blank">Special Issue: The Human–Algorithm Connection</a> — <i>Manag. Sci.</i> 72(1), 2026.</p>
+      <p><b class="text-slate-200">Kesavan, Kushwaha &amp; Steele</b> — judgmental adjustments lift profit (+4.92%), <i>Manag. Sci.</i> 2025. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2024.06321" target="_blank">link</a></p>
+      <p><b class="text-slate-200">Kesavan &amp; Kushwaha</b> — merchant overrides cut profit 5.77% on average, <i>Manag. Sci.</i> 2020 — value is conditional. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2020.3743" target="_blank">link</a></p>
+      <p><b class="text-slate-200">Balakrishnan, Ferreira &amp; Tong</b> — collaboration <i>with private information</i>, <i>Manag. Sci.</i> 2026. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.03850" target="_blank">link</a></p>
+      <p><b class="text-slate-200">Adherence-Aware Recommendations</b> — "The Best Decisions Are Not the Best Advice," <i>Manag. Sci.</i> 2024. The template for Q3. <a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2023.01851" target="_blank">link</a></p>
+      <p><b class="text-slate-200">Angelova, Dobbie &amp; Yang</b> — "Algorithmic Recommendations and Human Discretion," <i>Rev. Econ. Stud.</i> 2025. Identifies which overrides add value. <a class="ref" href="https://www.nber.org/papers/w31747" target="_blank">link</a></p>
     </div>
   </div>
 
-  <div class="card rounded-2xl p-7 mt-6 metric-card">
+  <div class="card rounded-2xl p-7 metric-card">
     <p class="text-sm text-slate-300 leading-relaxed">
-      <b class="text-amber-300">The gap we fill:</b> none of these is set in a <b>budget-targeted incentive currency</b> with a
-      <b>use-it-or-lose-it ratchet</b> that endows human operators with the very private signal that makes overrides valuable.
-      That is the wedge — and the special issue shows the editors are actively looking for it.
+      <b class="text-amber-300">The gap we fill:</b> the token-economy canon is dominated by <i>tradeable</i> crypto tokens and
+      consumer <i>loyalty points</i>. Fengdou is neither — a <b>closed-loop, non-tradeable incentive currency</b> with
+      <b>dual marginal cost</b> (free virtual / budget-consuming real) and a <b>two-sided budget target</b> under a
+      use-it-or-lose-it ratchet. The human–AI layer is a second contribution on top of that design.
     </p>
   </div>
 </section>
@@ -346,23 +338,23 @@
   <div class="grid md:grid-cols-2 gap-6">
     <div class="card rounded-2xl p-7">
       <div class="text-amber-400 text-2xl font-bold mb-2">01</div>
-      <h3 class="font-semibold mb-2">A new collaboration setting</h3>
-      <p class="text-sm text-slate-400">First study of human–AI collaboration in a <b>dual-cost, budget-targeted incentive economy</b>, where the human's private signal is the budget ratchet itself.</p>
+      <h3 class="font-semibold mb-2">A new problem class</h3>
+      <p class="text-sm text-slate-400">Formalizes the <b>closed-loop, dual-cost, budget-targeted incentive currency</b> — distinct from tradeable crypto tokens and consumer loyalty points.</p>
     </div>
     <div class="card rounded-2xl p-7">
       <div class="text-amber-400 text-2xl font-bold mb-2">02</div>
-      <h3 class="font-semibold mb-2">An optimal-delegation model</h3>
-      <p class="text-sm text-slate-400">Characterizes when to delegate to the algorithm vs. escalate to the human — an adherence-aware decision-rights policy with provable improvement over either alone.</p>
+      <h3 class="font-semibold mb-2">Pressure-valve &amp; budget targeting</h3>
+      <p class="text-sm text-slate-400">A separation result — issuance for incentives, relative virtual/real pricing for the budget — and a two-sided, newsvendor-type targeting policy.</p>
     </div>
     <div class="card rounded-2xl p-7">
       <div class="text-amber-400 text-2xl font-bold mb-2">03</div>
-      <h3 class="font-semibold mb-2">Causal value of overrides</h3>
-      <p class="text-sm text-slate-400">Using the recommendation-vs-override trace, identifies which operator deviations improve budget adherence and incentive value — and which merely add noise.</p>
+      <h3 class="font-semibold mb-2">Float &amp; ratchet dynamics</h3>
+      <p class="text-sm text-slate-400">Token-supply management as a float band, and how the multi-year use-it-or-lose-it ratchet distorts the static optimum.</p>
     </div>
     <div class="card rounded-2xl p-7">
-      <div class="text-amber-400 text-2xl font-bold mb-2">04</div>
-      <h3 class="font-semibold mb-2">Calibrated policy counterfactuals</h3>
-      <p class="text-sm text-slate-400">Quantifies how much closer to budget, and how much more incentive value per yuan, an optimally collaborative policy would have delivered over two years of SF data.</p>
+      <div class="text-sky-300 text-2xl font-bold mb-2">04 <span class="pill-2nd align-middle ml-1">2nd layer</span></div>
+      <h3 class="font-semibold mb-2">Value of human overrides</h3>
+      <p class="text-sm text-slate-400">Using the recommendation-vs-override trace, identifies which operator deviations from the algorithmic levers improve budget adherence and incentive value.</p>
     </div>
   </div>
 </section>
@@ -373,15 +365,15 @@
   <div class="grid md:grid-cols-3 gap-6">
     <div class="card rounded-2xl p-7">
       <h3 class="font-semibold mb-2 text-amber-300">Data</h3>
-      <p class="text-sm text-slate-400">Full-granularity SF Express panel — issuance, balances, prices, individual redemptions, <b>and the algorithm-recommendation-vs-human-decision trace</b>, July 2024 → present.</p>
+      <p class="text-sm text-slate-400">Full-granularity SF Express panel — issuance, balances, prices, individual redemptions (and the algorithm-recommendation-vs-human-decision trace), July 2024 → present.</p>
     </div>
     <div class="card rounded-2xl p-7">
       <h3 class="font-semibold mb-2 text-amber-300">Approach</h3>
-      <p class="text-sm text-slate-400">Normative delegation model + adherence-aware recommendation policy, with causal estimation of override value; dynamic token-economy decision model as the substrate.</p>
+      <p class="text-sm text-slate-400">Analytical-normative token-economy model with theorems, calibrated on the panel; dynamic (multi-period) float and ratchet. Human–AI overrides as a second, empirically-identified layer.</p>
     </div>
     <div class="card rounded-2xl p-7">
       <h3 class="font-semibold mb-2 text-amber-300">Status</h3>
-      <p class="text-sm text-slate-400">Active. Model formulation and identification design in progress; counterfactual policy experiments to follow.</p>
+      <p class="text-sm text-slate-400">Active. Model formulation and calibration in progress; counterfactual policy experiments to follow.</p>
     </div>
   </div>
 </section>
@@ -390,7 +382,7 @@
 <footer class="border-t border-white/[.06] mt-10">
   <div class="max-w-6xl mx-auto px-6 py-10 text-sm text-slate-500 flex flex-col md:flex-row justify-between gap-4">
     <div>
-      <div class="text-slate-300 font-medium mb-1">Fengdou · 丰豆 — Human–AI Collaboration in Workforce-Incentive Operations</div>
+      <div class="text-slate-300 font-medium mb-1">Fengdou · 丰豆 — Steering a Reward-Token Economy</div>
       Operations management research · in collaboration with SF Express.
     </div>
     <div class="text-right">
@@ -402,8 +394,8 @@
 
 <script>
   const ctx = document.getElementById('valveChart');
-  const xs = Array.from({length: 41}, (_, i) => i / 40);          // λ in [0,1]
-  const spend = xs.map(l => 100 * Math.exp(-1.6 * l));            // real-goods spend falls with λ
+  const xs = Array.from({length: 41}, (_, i) => i / 40);
+  const spend = xs.map(l => 100 * Math.exp(-1.6 * l));
   const target = 45;
   const penalty = spend.map(s => s > target ? 1.8 * (s - target) : 1.0 * (target - s));
   new Chart(ctx, {

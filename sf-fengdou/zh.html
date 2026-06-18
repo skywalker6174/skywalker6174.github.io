@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>调控奖励代币经济 · 丰豆 Fengdou · 预算目标下的人与AI协同</title>
-  <meta name="description" content="对顺丰丰豆奖励代币系统中"人与AI协同"的运营管理研究：在双重成本、预算精准达成的激励经济这一决策环境下,人类操作员何时应推翻预测与库存算法的建议。">
+  <title>调控奖励代币经济 · 丰豆 Fengdou · 发行、定价与预算达成</title>
+  <meta name="description" content="对顺丰丰豆奖励代币经济的运营管理研究：如何设定发行量与双重成本定价以达成预算并激励快递员——并附带研究操作员对这些杠杆进行调整的"人与AI协同"第二层。">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -21,12 +21,17 @@
     .human{ color:#7DD3FC; }
     .chip-algo  { background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.28); color:#FCD34D; }
     .chip-human { background:rgba(56,189,248,.12); border:1px solid rgba(56,189,248,.30); color:#7DD3FC; }
+    .pill-2nd { background:rgba(56,189,248,.10); border:1px solid rgba(56,189,248,.25); color:#7DD3FC;
+                border-radius:999px; padding:3px 12px; font-size:.72rem; display:inline-flex; align-items:center; gap:6px; }
     hr.dim { border-color: rgba(255,255,255,0.06); }
     .lever-num { width:26px;height:26px;border-radius:50%;
                 display:inline-flex;align-items:center;justify-content:center;
                 font-size:.78rem;font-weight:700;flex-shrink:0; }
-    a.ref { color:#7DD3FC; text-decoration: underline; text-underline-offset: 3px; }
-    a.ref:hover { color:#BAE6FD; }
+    .kbd { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem;
+           background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+           border-radius:.35rem; padding:1px 7px; color:#FCD34D; }
+    a.ref { color:#FCD34D; text-decoration: underline; text-underline-offset: 3px; }
+    a.ref:hover { color:#FDE68A; }
   </style>
 </head>
 <body class="text-white min-h-screen">
@@ -38,10 +43,10 @@
       <span class="font-semibold">丰豆&nbsp;·&nbsp;Fengdou</span>
     </div>
     <div class="hidden md:flex gap-6 text-sm text-slate-400">
-      <a href="#setting"   class="hover:text-white transition">场景</a>
-      <a href="#collab"    class="hover:text-white transition">协作</a>
+      <a href="#system"    class="hover:text-white transition">系统</a>
+      <a href="#design"    class="hover:text-white transition">设计问题</a>
+      <a href="#collab"    class="hover:text-white transition">人与AI层</a>
       <a href="#questions" class="hover:text-white transition">研究问题</a>
-      <a href="#model"     class="hover:text-white transition">模型</a>
       <a href="#lit"       class="hover:text-white transition">文献</a>
       <a href="#results"   class="hover:text-white transition">贡献</a>
     </div>
@@ -55,42 +60,44 @@
 <section class="max-w-6xl mx-auto px-6 pt-24 pb-16 text-center">
   <div class="tag mb-8">
     <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-    运营管理 · 人与AI协同 · 顺丰实地数据（2024.07 至今）
+    运营管理 · 代币经济设计 · 顺丰实地数据（2024.07 至今）
   </div>
   <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-[1.18]">
     调控<br>
-    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-sky-300">
+    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500">
       奖励代币经济
     </span>
   </h1>
-  <p class="text-base md:text-xl text-sky-200/80 max-w-2xl mx-auto mb-7 font-medium">
-    预算目标下的人与AI协同
+  <p class="text-base md:text-xl text-slate-300 max-w-2xl mx-auto mb-7 font-medium">
+    双重成本激励货币中的发行、定价与预算达成
   </p>
   <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-5">
-    一套预测与库存 <b class="algo">算法</b> 给出应发行多少 <b class="text-amber-300">丰豆</b> 代币、如何定价的建议。
-    <b class="human">人类操作员</b> 再凭借算法看不到的私有信息——预算棘轮、总部压力、各快递员群体间的公平性——对其进行调整。
+    顺丰以 <b class="text-amber-300">丰豆</b> 支付快递员——一种通过工作赚取、在闭环内兑换的代币，
+    可兑换 <b class="text-emerald-300">零成本虚拟商品</b> 或 <b class="text-orange-300">消耗预算的实物商品</b>。
+    企业能设定发行多少代币、定价几何，<b>却无法控制快递员如何花用</b>，且必须使实物支出 <b>贴近年度预算</b>——结余即削减。
   </p>
-  <p class="text-base text-slate-500 max-w-3xl mx-auto mb-10">
-    我们观测到完整的 <b class="text-slate-300">"算法建议 vs 人工推翻"轨迹</b>，并追问：哪些人工偏离带来价值，
-    以及在双重成本、预算精准达成的激励经济中，决策权应如何划分。
+  <p class="text-sm text-slate-500 max-w-3xl mx-auto mb-10">
+    <span class="pill-2nd mr-1">第二层</span>
+    这些杠杆由一套预测与库存 <b class="human">算法</b> 给出建议、再由 <b class="human">人类操作员</b> 调整——
+    我们也借助所记录的"建议 vs 推翻"轨迹研究这一人与AI协同。
   </p>
   <div class="flex flex-wrap justify-center gap-3 mb-20">
-    <a href="#collab" class="px-7 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl font-semibold text-sm transition">查看协作流程 →</a>
-    <a href="#model" class="px-7 py-3 bg-white/[.07] hover:bg-white/[.12] rounded-xl font-medium text-sm transition">决策模型</a>
+    <a href="#design" class="px-7 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl font-semibold text-sm transition">设计问题 →</a>
+    <a href="#collab" class="px-7 py-3 bg-white/[.07] hover:bg-white/[.12] rounded-xl font-medium text-sm transition">人与AI层</a>
   </div>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-3xl mx-auto">
-    <div class="card rounded-2xl p-5 glow"><div class="text-3xl font-bold text-amber-400">3</div><div class="text-xs text-slate-500 mt-1.5">研究问题</div></div>
-    <div class="card rounded-2xl p-5"><div class="text-3xl font-bold text-sky-300">✓</div><div class="text-xs text-slate-500 mt-1.5">可观测推翻轨迹</div></div>
+    <div class="card rounded-2xl p-5 glow"><div class="text-3xl font-bold text-amber-400">3</div><div class="text-xs text-slate-500 mt-1.5">控制杠杆</div></div>
+    <div class="card rounded-2xl p-5"><div class="text-3xl font-bold text-yellow-300">3</div><div class="text-xs text-slate-500 mt-1.5">相互竞争的目标</div></div>
     <div class="card rounded-2xl p-5"><div class="text-3xl font-bold text-emerald-400">≈¥4千万</div><div class="text-xs text-slate-500 mt-1.5">年度实物预算</div></div>
     <div class="card rounded-2xl p-5"><div class="text-3xl font-bold text-orange-400">2 年</div><div class="text-xs text-slate-500 mt-1.5">交易级面板数据</div></div>
   </div>
 </section>
 
-<section id="setting" class="max-w-6xl mx-auto px-6 py-20">
+<section id="system" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">决策环境：丰豆</h2>
-    <p class="text-slate-400 max-w-2xl mx-auto text-sm"><b class="text-amber-300">丰豆</b> 是顺丰的闭环奖励代币：快递员通过派件工作 <b>赚取</b>，再通过两条对企业成本迥异的渠道 <b>兑换</b>。</p>
+    <h2 class="text-3xl font-bold mb-3">丰豆系统</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">一个闭环企业代币经济，其核心特征：两条兑换渠道对企业具有 <b class="text-amber-300">异质的边际成本</b>。</p>
   </div>
   <div class="grid md:grid-cols-3 gap-6 mb-10">
     <div class="card rounded-2xl p-7"><div class="w-11 h-11 rounded-xl coin flex items-center justify-center text-slate-900 text-xl font-bold mb-4">⛏</div><h3 class="font-semibold mb-2">通过工作赚取</h3><p class="text-sm text-slate-400">每单累积代币。发行量即"货币供给"——企业可控杠杆。</p></div>
@@ -99,55 +106,19 @@
   </div>
   <div class="card rounded-2xl p-7 metric-card">
     <p class="text-sm text-slate-300 leading-relaxed">
-      <b class="text-amber-300">为何难以完全自动化：</b>预算必须 <i>贴近目标</i> 使用——超支不可行，<b>结余则会导致来年预算被削减</b>（用进废退的 <b>棘轮</b>）。
-      杠杆须在观察到兑换 <i>之前</i> 设定，且企业无法指定虚拟/实物比例。
-      决定正确做法的诸多因素——总部博弈、棘轮、公平——存于操作员脑中，而非数据里。
-      这恰是 <b class="human">人类判断</b> 与 <b class="algo">算法</b> 交汇之处。
+      <b class="text-amber-300">关键约束：</b>预算必须 <i>贴近目标</i> 使用——超支不可行，<b>结余则会导致来年预算被削减</b>（用进废退的 <b>棘轮</b>）。
+      杠杆须在观察到兑换 <i>之前</i> 设定，且企业无法指定虚拟/实物比例。它只能 <i>引导</i>。
     </p>
   </div>
 </section>
 
-<section id="collab" class="max-w-6xl mx-auto px-6 py-20">
+<section id="design" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">人与AI协同流程</h2>
-    <p class="text-slate-400 max-w-2xl mx-auto text-sm">算法主管 <b class="algo">统计</b> 问题，人类主管 <b class="human">政治经济</b> 问题。我们观测每一步——包括二者分歧之处。</p>
+    <h2 class="text-3xl font-bold mb-3">设计问题</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">三个杠杆、三个目标，且二者近乎干净地映射。<b class="text-emerald-300">虚拟品定价</b> 是一个免费的预算调控阀。</p>
   </div>
-  <div class="grid lg:grid-cols-4 gap-4 items-stretch">
-    <div class="card rounded-2xl p-6"><div class="inline-flex chip-algo text-xs rounded-full px-3 py-1 mb-3">算法</div><h3 class="font-semibold mb-2 text-sm">1 · 预测与优化</h3><p class="text-xs text-slate-400">预测快递员兑换需求与丰豆存量；建议发行量与定价。</p></div>
-    <div class="card rounded-2xl p-6"><div class="inline-flex chip-human text-xs rounded-full px-3 py-1 mb-3">人类</div><h3 class="font-semibold mb-2 text-sm">2 · 凭私有信息调整</h3><p class="text-xs text-slate-400">操作员凭模型缺失的信号推翻：棘轮风险、总部压力、活动安排、公平性。</p></div>
-    <div class="card rounded-2xl p-6"><div class="inline-flex bg-white/[.07] text-slate-300 text-xs rounded-full px-3 py-1 mb-3">政策</div><h3 class="font-semibold mb-2 text-sm">3 · 确定最终杠杆</h3><p class="text-xs text-slate-400">最终执行的发行量与价格向量——可能不同于算法建议。</p></div>
-    <div class="card rounded-2xl p-6 metric-card"><div class="inline-flex bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs rounded-full px-3 py-1 mb-3">结果</div><h3 class="font-semibold mb-2 text-sm">4 · 实际产出</h3><p class="text-xs text-slate-300">预算达成 · 激励价值 · 存量稳定——衡量每次推翻的标尺。</p></div>
-  </div>
-  <div class="card rounded-2xl p-7 mt-6">
-    <p class="text-sm text-slate-400 leading-relaxed">
-      <b class="text-white">数据资产。</b>由于 <b class="algo">算法建议</b> 与 <b class="human">人工最终决策</b> 均被记录，
-      我们得以分离操作员 <i>在何处、为何</i> 偏离，并衡量每次偏离是否令企业更接近其目标。
-      两类偏离值得关注：<b>信息型</b> 偏离（人知道得更多）与 <b>复杂度/裁量型</b> 偏离（人不愿或无法精确执行）。
-    </p>
-  </div>
-</section>
-
-<section id="questions" class="max-w-6xl mx-auto px-6 py-20">
-  <hr class="dim mb-20">
-  <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">三个研究问题</h2>
-    <p class="text-slate-400 max-w-2xl mx-auto text-sm">从规范设计，到因果效应，再到可部署系统。</p>
-  </div>
-  <div class="grid md:grid-cols-3 gap-6">
-    <div class="card rounded-2xl p-7"><div class="text-2xl font-bold algo mb-2">Q1</div><h3 class="font-semibold mb-2">最优委派 <span class="text-xs text-slate-500 font-normal">（理论）</span></h3><p class="text-sm text-slate-400">哪些决策应委派给算法、哪些应上交给握有私有棘轮信号的人类？一个规范化的 <b>决策权</b> 模型。</p></div>
-    <div class="card rounded-2xl p-7"><div class="text-2xl font-bold human mb-2">Q2</div><h3 class="font-semibold mb-2">推翻是否带来价值？ <span class="text-xs text-slate-500 font-normal">（实证）</span></h3><p class="text-sm text-slate-400">估计操作员推翻对预算达成与激励价值的因果效应——处理人类何时介入的 <b>内生性</b>。</p></div>
-    <div class="card rounded-2xl p-7"><div class="text-2xl font-bold text-emerald-300 mb-2">Q3</div><h3 class="font-semibold mb-2">协作系统 <span class="text-xs text-slate-500 font-normal">（规范应用）</span></h3><p class="text-sm text-slate-400">设计一个 <b>顺从性感知</b> 的建议策略，预判人工偏离并把对的决策交给对的主体；量化反事实收益。</p></div>
-  </div>
-</section>
-
-<section id="model" class="max-w-6xl mx-auto px-6 py-20">
-  <hr class="dim mb-20">
-  <div class="text-center mb-14">
-    <h2 class="text-3xl font-bold mb-3">底层决策模型</h2>
-    <p class="text-slate-400 max-w-2xl mx-auto text-sm">协作运行在一个双重成本、预算精准达成的代币经济之上。企业的三个杠杆几乎干净地映射到三个目标——而 <b class="text-emerald-300">虚拟品定价</b> 是一个免费的预算调控阀。</p>
-  </div>
-  <div class="overflow-hidden rounded-2xl card mb-10">
+  <div class="overflow-hidden rounded-2xl card mb-8">
     <table class="w-full text-sm">
       <thead class="text-left text-slate-400 border-b border-white/[.08]"><tr><th class="px-6 py-4 font-medium">杠杆</th><th class="px-6 py-4 font-medium">主要调控</th><th class="px-6 py-4 font-medium">机制</th></tr></thead>
       <tbody class="divide-y divide-white/[.05]">
@@ -157,16 +128,55 @@
       </tbody>
     </table>
   </div>
+  <div class="grid md:grid-cols-3 gap-6 mb-10">
+    <div class="card rounded-2xl p-6"><div class="text-amber-300 text-sm font-semibold mb-1">目标一 · 激励</div><p class="text-xs text-slate-400">最大化每元预算所带来的努力 / 留存价值。</p></div>
+    <div class="card rounded-2xl p-6"><div class="text-orange-300 text-sm font-semibold mb-1">目标二 · 达成预算</div><p class="text-xs text-slate-400">使实物支出贴近目标——避免超支与结余棘轮。</p></div>
+    <div class="card rounded-2xl p-6"><div class="text-emerald-300 text-sm font-semibold mb-1">目标三 · 存量稳定 <span class="text-slate-500">（次要）</span></div><p class="text-xs text-slate-400">将未兑付丰豆维持在健康区间——防止囤积或崩溃。</p></div>
+  </div>
   <div class="grid lg:grid-cols-2 gap-8 items-center">
     <div class="card rounded-2xl p-6">
       <canvas id="valveChart" height="260"></canvas>
       <p class="text-xs text-slate-500 mt-4 text-center">示意图。随虚拟品吸引力 λ 上升，实物支出下降；双向预算惩罚呈 U 形，存在内点最优 λ*。</p>
     </div>
     <div class="space-y-4">
-      <div class="card rounded-2xl p-6"><h3 class="font-semibold mb-2 text-amber-300">泄压阀原理</h3><p class="text-sm text-slate-400">虚拟品以零成本吸收代币需求，故其相对价格——而非发行量——是最锋利的预算调控工具。这是算法所编码的结构性洞见。</p></div>
-      <div class="card rounded-2xl p-6"><h3 class="font-semibold mb-2 human">人类介入之处</h3><p class="text-sm text-slate-400">λ* 取决于 <i>棘轮</i> 与总部立场——操作员私有掌握的、面向未来的软性知识。算法算出的最优 λ，恰是消息灵通的人类最有条件去修正的。</p></div>
-      <div class="card rounded-2xl p-6"><h3 class="font-semibold mb-2 text-emerald-300">动态性</h3><p class="text-sm text-slate-400">多期：代币累积（Miller–Orr 式存量区间）与预算棘轮，使企业问题成为一个 MDP。</p></div>
+      <div class="card rounded-2xl p-6"><h3 class="font-semibold mb-2 text-amber-300">泄压阀原理</h3><p class="text-sm text-slate-400">虚拟品以零成本吸收代币需求，故其相对价格——而非发行量——是最锋利的预算调控工具。发行量由此被解放出来做它真正该做的事：激励。</p></div>
+      <div class="card rounded-2xl p-6"><h3 class="font-semibold mb-2 text-orange-300">预算达成</h3><p class="text-sm text-slate-400">杠杆须在随机兑换实现前承诺，并对超支/结余双向受罚——一个 <span class="kbd">报童</span> 式临界分位策略，虚拟品削薄两端尾部。</p></div>
+      <div class="card rounded-2xl p-6"><h3 class="font-semibold mb-2 text-emerald-300">动态性</h3><p class="text-sm text-slate-400">多期：代币累积形如 <span class="kbd">Miller–Orr</span> 存量区间，而用进废退的 <span class="kbd">棘轮</span> 使企业问题成为一个 MDP。</p></div>
     </div>
+  </div>
+</section>
+
+<section id="collab" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <span class="pill-2nd mb-5">第二层</span>
+    <h2 class="text-3xl font-bold mb-3 mt-2">人与AI层</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">一套预测与库存 <b class="human">算法</b> 建议杠杆；<b class="human">人类操作员</b> 凭模型缺失的私有信息加以调整——棘轮、总部压力、公平。我们观测每一步。</p>
+  </div>
+  <div class="grid lg:grid-cols-4 gap-4 items-stretch mb-6">
+    <div class="card rounded-2xl p-6"><div class="inline-flex chip-algo text-xs rounded-full px-3 py-1 mb-3">算法</div><h3 class="font-semibold mb-2 text-sm">1 · 预测与优化</h3><p class="text-xs text-slate-400">预测兑换需求与存量；建议发行量与定价。</p></div>
+    <div class="card rounded-2xl p-6"><div class="inline-flex chip-human text-xs rounded-full px-3 py-1 mb-3">人类</div><h3 class="font-semibold mb-2 text-sm">2 · 凭私有信息调整</h3><p class="text-xs text-slate-400">操作员凭棘轮风险、总部压力、活动、公平推翻。</p></div>
+    <div class="card rounded-2xl p-6"><div class="inline-flex bg-white/[.07] text-slate-300 text-xs rounded-full px-3 py-1 mb-3">政策</div><h3 class="font-semibold mb-2 text-sm">3 · 确定最终杠杆</h3><p class="text-xs text-slate-400">最终执行的向量——可能不同于算法建议。</p></div>
+    <div class="card rounded-2xl p-6 metric-card"><div class="inline-flex bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs rounded-full px-3 py-1 mb-3">结果</div><h3 class="font-semibold mb-2 text-sm">4 · 实际产出</h3><p class="text-xs text-slate-300">预算达成 · 激励价值 · 存量——衡量推翻的标尺。</p></div>
+  </div>
+  <div class="card rounded-2xl p-7">
+    <p class="text-sm text-slate-400 leading-relaxed">
+      <b class="text-white">数据资产。</b><b class="human">算法建议</b> 与 <b class="human">人工决策</b> 均被记录，
+      故我们得以分离操作员在何处偏离、每次偏离是否令企业更接近目标——区分 <b>信息型</b> 偏离（人知道得更多）与 <b>复杂度/裁量型</b> 偏离（人不愿或无法精确执行）。
+    </p>
+  </div>
+</section>
+
+<section id="questions" class="max-w-6xl mx-auto px-6 py-20">
+  <hr class="dim mb-20">
+  <div class="text-center mb-14">
+    <h2 class="text-3xl font-bold mb-3">研究问题</h2>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">两个关于代币经济本身；一个关于人与AI层。</p>
+  </div>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card rounded-2xl p-7"><div class="text-2xl font-bold text-amber-400 mb-2">Q1</div><h3 class="font-semibold mb-2">最优杠杆</h3><p class="text-sm text-slate-400">如何设定发行量与双重成本定价，在达成预算目标的同时最大化激励价值——即泄压阀 / 分离结果。</p></div>
+    <div class="card rounded-2xl p-7"><div class="text-2xl font-bold text-emerald-400 mb-2">Q2</div><h3 class="font-semibold mb-2">存量与棘轮动态</h3><p class="text-sm text-slate-400">如何跨期管理代币供给——存量区间，以及扭曲静态最优的多年用进废退棘轮。</p></div>
+    <div class="card rounded-2xl p-7"><div class="text-2xl font-bold human mb-2">Q3 <span class="pill-2nd align-middle ml-1">第二层</span></div><h3 class="font-semibold mb-2">人类何时应推翻？</h3><p class="text-sm text-slate-400">利用"建议 vs 推翻"轨迹：操作员对算法杠杆的哪些偏离带来价值，以及如何令建议具备顺从性感知。</p></div>
   </div>
 </section>
 
@@ -174,45 +184,44 @@
   <hr class="dim mb-20">
   <div class="text-center mb-14">
     <h2 class="text-3xl font-bold mb-3">文献定位</h2>
-    <p class="text-slate-400 max-w-2xl mx-auto text-sm">立足 <i>Management Science</i> 正在热议的 <i>"人与AI协同"</i>，并拓展到一个以 <b>棘轮</b> 赋予人类私有信号的、预算精准达成的激励货币场景。</p>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm">主体是一篇代币经济 / 激励货币论文；其次才是一篇人与AI协同论文。</p>
   </div>
-  <div class="grid md:grid-cols-2 gap-6">
+  <div class="grid md:grid-cols-2 gap-6 mb-6">
     <div class="card rounded-2xl p-7">
-      <h3 class="text-xs uppercase tracking-wider text-amber-300 mb-4">运营 · 正中靶心</h3>
+      <h3 class="text-xs uppercase tracking-wider text-amber-300 mb-4">代币经济学 · 平台与加密货币</h3>
       <ul class="space-y-3 text-sm text-slate-400">
-        <li><a class="ref" href="https://pubsonline.informs.org/toc/mnsc/72/1" target="_blank">特刊：人与AI协同</a> — <i>Manag. Sci.</i> 72(1), 2026。本课题的归属对话。</li>
-        <li><b class="text-slate-200">Kesavan, Kushwaha &amp; Steele</b> — "对预测输入的人工判断调整的利润影响"，<i>Manag. Sci.</i> 2025。人工调整预测输入提升利润（+4.92%）。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2024.06321" target="_blank">链接</a></li>
-        <li><b class="text-slate-200">Balakrishnan, Ferreira &amp; Tong</b> — <i>带私有信息</i> 的人与AI协同。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.03850" target="_blank">链接</a></li>
-        <li><b class="text-slate-200">预测人类何时调整算法处方</b> — 仓储运营大规模田野实验。<a class="ref" href="https://pubsonline.informs.org/doi/abs/10.1287/mnsc.2021.3990" target="_blank">链接</a></li>
-        <li><b class="text-slate-200">Kesavan &amp; Kushwaha</b> — "商家推翻数据驱动工具的裁量权"，<i>Manag. Sci.</i> 2020。推翻平均使利润 <i>下降</i> 5.77%，但对成长期 SKU 有益——价值是有条件的。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2020.3743" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">Tsoukalas &amp; Falk</b> — "代币加权众包"，<i>Manag. Sci.</i> 2020。代币 <i>作为激励机制</i>——与我们最接近。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2019.3515" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">Sockin &amp; Xiong</b> — "加密货币模型"，<i>Manag. Sci.</i> 2023。效用代币的估值与供给。<a class="ref" href="https://pubsonline.informs.org/doi/abs/10.1287/mnsc.2023.4756" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">Cong, Li &amp; Wang</b> — "代币经济学：动态采用与估值"，<i>Rev. Financial Studies</i> 2021。动态代币经济。<a class="ref" href="https://academic.oup.com/rfs/article-abstract/34/3/1105/5891182" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">Meng, Hao &amp; Tan</b> — "带虚拟货币的免费增值定价"，<i>Inf. Syst. Res.</i> 2021。平台货币的定价与发行。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/isre.2020.0976" target="_blank">链接</a></li>
       </ul>
     </div>
     <div class="card rounded-2xl p-7">
-      <h3 class="text-xs uppercase tracking-wider text-sky-300 mb-4">模型范本与经济学锚点</h3>
+      <h3 class="text-xs uppercase tracking-wider text-amber-300 mb-4">奖励积分 · 代币券 · 存量</h3>
       <ul class="space-y-3 text-sm text-slate-400">
-        <li><b class="text-slate-200">顺从性感知建议</b> — "最优决策未必是最优建议"，<i>Manag. Sci.</i> 2024。Q1/Q3 的规范化骨架。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2023.01851" target="_blank">链接</a></li>
-        <li><b class="text-slate-200">Angelova, Dobbie &amp; Yang</b> — "算法建议与人类裁量"，<i>Rev. Econ. Stud.</i> 2025。识别 <i>哪些</i> 推翻带来价值——Q2 的识别设计。<a class="ref" href="https://www.nber.org/papers/w31747" target="_blank">链接</a></li>
-        <li><b class="text-slate-200">Kleinberg 等</b> — "人类决策与机器预测"，<i>QJE</i> 2018。人机决策的奠基之作。<a class="ref" href="https://academic.oup.com/qje/article-abstract/133/1/237/4095198" target="_blank">链接</a></li>
-        <li><b class="text-slate-200">Dietvorst, Simmons &amp; Massey</b> — 人们愿用可调整的算法。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2016.2643" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">Stourm, Bradlow &amp; Fader</b> — "线性忠诚度计划中的积分囤积"，<i>J. Marketing Res.</i> 2015。持有者为何囤积积分货币。<a class="ref" href="https://journals.sagepub.com/doi/abs/10.1509/jmr.12.0354" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">Kash, Friedman &amp; Halpern</b> — "优化代币系统"，<i>Distributed Computing</i> 2012。人造货币供给、崩溃与囤积——存量区间。<a class="ref" href="https://link.springer.com/article/10.1007/s00446-012-0170-z" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">忠诚度计划中的沉淀（breakage）</b> — <i>Int. J. Res. Marketing</i> 2024。未兑付奖励负债——代币存量的会计学孪生。<a class="ref" href="https://www.sciencedirect.com/science/article/abs/pii/S0167811624000909" target="_blank">链接</a></li>
+        <li><b class="text-slate-200">将团队引入零工经济</b> — <i>Manag. Sci.</i> 2022。网约车平台的游戏化劳动力激励。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4624" target="_blank">链接</a></li>
       </ul>
     </div>
   </div>
-  <div class="card rounded-2xl p-7 mt-6">
-    <h3 class="text-xs uppercase tracking-wider text-emerald-300 mb-4">代币经济 · 决策底层的根基</h3>
+  <div class="card rounded-2xl p-7 mb-6">
+    <h3 class="text-xs uppercase tracking-wider text-sky-300 mb-4">人与AI协同 <span class="text-slate-500 normal-case tracking-normal">· 第二层</span></h3>
     <div class="grid md:grid-cols-2 gap-x-10 gap-y-3 text-sm text-slate-400">
-      <p><b class="text-slate-200">Stourm, Bradlow &amp; Fader</b> — "线性忠诚度计划中的积分囤积"，<i>J. Marketing Res.</i> 2015。持有者为何囤积积分货币而不兑换——丰豆的存量动态。<a class="ref" href="https://journals.sagepub.com/doi/abs/10.1509/jmr.12.0354" target="_blank">链接</a></p>
-      <p><b class="text-slate-200">Kash, Friedman &amp; Halpern</b> — "优化代币系统：囤积者与利他者"，<i>Distributed Computing</i> 2012。设定人造货币供给以避免崩溃与囤积——存量区间的理论依据。<a class="ref" href="https://link.springer.com/article/10.1007/s00446-012-0170-z" target="_blank">链接</a></p>
-      <p><b class="text-slate-200">Meng, Hao &amp; Tan</b> — "带虚拟货币的数字游戏免费增值定价"，<i>Inf. Syst. Res.</i> 2021。平台虚拟货币的定价与发行。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/isre.2020.0976" target="_blank">链接</a></p>
-      <p><b class="text-slate-200">将团队引入零工经济</b> — <i>Manag. Sci.</i> 2022。网约车平台的游戏化团队激励——劳动力激励一侧。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4624" target="_blank">链接</a></p>
-      <p><b class="text-slate-200">忠诚度计划中的沉淀（breakage）</b> — <i>Int. J. Res. Marketing</i> 2024。未兑付奖励的负债管理——代币存量的会计学孪生。<a class="ref" href="https://www.sciencedirect.com/science/article/abs/pii/S0167811624000909" target="_blank">链接</a></p>
+      <p><a class="ref" href="https://pubsonline.informs.org/toc/mnsc/72/1" target="_blank">特刊：人—算法连接</a> — <i>Manag. Sci.</i> 72(1), 2026。</p>
+      <p><b class="text-slate-200">Kesavan, Kushwaha &amp; Steele</b> — 人工判断调整提升利润（+4.92%），<i>Manag. Sci.</i> 2025。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2024.06321" target="_blank">链接</a></p>
+      <p><b class="text-slate-200">Kesavan &amp; Kushwaha</b> — 商家推翻平均使利润下降 5.77%，<i>Manag. Sci.</i> 2020——价值有条件。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2020.3743" target="_blank">链接</a></p>
+      <p><b class="text-slate-200">Balakrishnan, Ferreira &amp; Tong</b> — <i>带私有信息</i> 的协作，<i>Manag. Sci.</i> 2026。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2022.03850" target="_blank">链接</a></p>
+      <p><b class="text-slate-200">顺从性感知建议</b> — "最优决策未必是最优建议"，<i>Manag. Sci.</i> 2024。Q3 的范本。<a class="ref" href="https://pubsonline.informs.org/doi/10.1287/mnsc.2023.01851" target="_blank">链接</a></p>
+      <p><b class="text-slate-200">Angelova, Dobbie &amp; Yang</b> — "算法建议与人类裁量"，<i>Rev. Econ. Stud.</i> 2025。识别哪些推翻带来价值。<a class="ref" href="https://www.nber.org/papers/w31747" target="_blank">链接</a></p>
     </div>
   </div>
-
-  <div class="card rounded-2xl p-7 mt-6 metric-card">
+  <div class="card rounded-2xl p-7 metric-card">
     <p class="text-sm text-slate-300 leading-relaxed">
-      <b class="text-amber-300">我们填补的空白：</b>上述研究无一设于一个 <b>预算精准达成的激励货币</b> 场景，
-      其 <b>用进废退的棘轮</b> 恰好赋予人类操作员那种使推翻变得有价值的私有信号。
-      这正是切入点——而该特刊表明，编辑们正在积极寻找它。
+      <b class="text-amber-300">我们填补的空白：</b>代币经济文献由 <i>可交易</i> 的加密代币与消费者 <i>忠诚度积分</i> 主导。
+      丰豆二者皆非——一种 <b>闭环、不可交易的激励货币</b>，具 <b>双重边际成本</b>（虚拟免费 / 实物消耗预算），
+      并在用进废退棘轮下面临 <b>双向预算目标</b>。人与AI层是在该设计之上的第二项贡献。
     </p>
   </div>
 </section>
@@ -224,25 +233,25 @@
     <p class="text-slate-400 max-w-2xl mx-auto text-sm">目标期刊为 UTD-24 OR/OM 类（<i>Management Science</i> / <i>Operations Research</i>）。</p>
   </div>
   <div class="grid md:grid-cols-2 gap-6">
-    <div class="card rounded-2xl p-7"><div class="text-amber-400 text-2xl font-bold mb-2">01</div><h3 class="font-semibold mb-2">一个全新的协作场景</h3><p class="text-sm text-slate-400">首次在 <b>双重成本、预算精准达成的激励经济</b> 中研究人与AI协同，其中人类的私有信号正是预算棘轮本身。</p></div>
-    <div class="card rounded-2xl p-7"><div class="text-amber-400 text-2xl font-bold mb-2">02</div><h3 class="font-semibold mb-2">一个最优委派模型</h3><p class="text-sm text-slate-400">刻画何时委派算法、何时上交人类——一个顺从性感知的决策权策略，并可证明优于二者单独使用。</p></div>
-    <div class="card rounded-2xl p-7"><div class="text-amber-400 text-2xl font-bold mb-2">03</div><h3 class="font-semibold mb-2">推翻的因果价值</h3><p class="text-sm text-slate-400">利用"建议 vs 推翻"轨迹，识别哪些操作员偏离改善了预算达成与激励价值，哪些仅是增添噪声。</p></div>
-    <div class="card rounded-2xl p-7"><div class="text-amber-400 text-2xl font-bold mb-2">04</div><h3 class="font-semibold mb-2">标定的政策反事实</h3><p class="text-sm text-slate-400">量化在两年顺丰数据上，一个最优协作策略本可让支出多贴近预算、每元产生多少额外激励价值。</p></div>
+    <div class="card rounded-2xl p-7"><div class="text-amber-400 text-2xl font-bold mb-2">01</div><h3 class="font-semibold mb-2">一类新问题</h3><p class="text-sm text-slate-400">形式化 <b>闭环、双重成本、预算精准达成的激励货币</b>——区别于可交易加密代币与消费者忠诚度积分。</p></div>
+    <div class="card rounded-2xl p-7"><div class="text-amber-400 text-2xl font-bold mb-2">02</div><h3 class="font-semibold mb-2">泄压阀与预算达成</h3><p class="text-sm text-slate-400">一个分离结果——发行量管激励、虚拟/实物相对定价管预算——以及一个双向报童式达成策略。</p></div>
+    <div class="card rounded-2xl p-7"><div class="text-amber-400 text-2xl font-bold mb-2">03</div><h3 class="font-semibold mb-2">存量与棘轮动态</h3><p class="text-sm text-slate-400">将代币供给作为存量区间管理，并刻画多年用进废退棘轮如何扭曲静态最优。</p></div>
+    <div class="card rounded-2xl p-7"><div class="text-sky-300 text-2xl font-bold mb-2">04 <span class="pill-2nd align-middle ml-1">第二层</span></div><h3 class="font-semibold mb-2">人工推翻的价值</h3><p class="text-sm text-slate-400">利用"建议 vs 推翻"轨迹，识别操作员对算法杠杆的哪些偏离改善了预算达成与激励价值。</p></div>
   </div>
 </section>
 
 <section id="data" class="max-w-6xl mx-auto px-6 py-20">
   <hr class="dim mb-20">
   <div class="grid md:grid-cols-3 gap-6">
-    <div class="card rounded-2xl p-7"><h3 class="font-semibold mb-2 text-amber-300">数据</h3><p class="text-sm text-slate-400">完整粒度的顺丰面板——发行、余额、价格、个体兑换，<b>以及"算法建议 vs 人工决策"轨迹</b>，2024 年 7 月至今。</p></div>
-    <div class="card rounded-2xl p-7"><h3 class="font-semibold mb-2 text-amber-300">方法</h3><p class="text-sm text-slate-400">规范化委派模型 + 顺从性感知建议策略，配合对推翻价值的因果估计；以动态代币经济决策模型为底层。</p></div>
-    <div class="card rounded-2xl p-7"><h3 class="font-semibold mb-2 text-amber-300">进展</h3><p class="text-sm text-slate-400">进行中。模型构建与识别设计推进中；反事实政策实验随后展开。</p></div>
+    <div class="card rounded-2xl p-7"><h3 class="font-semibold mb-2 text-amber-300">数据</h3><p class="text-sm text-slate-400">完整粒度的顺丰面板——发行、余额、价格、个体兑换（以及"算法建议 vs 人工决策"轨迹），2024 年 7 月至今。</p></div>
+    <div class="card rounded-2xl p-7"><h3 class="font-semibold mb-2 text-amber-300">方法</h3><p class="text-sm text-slate-400">带定理的解析—规范型代币经济模型，在面板上标定；动态（多期）存量与棘轮。人与AI推翻作为第二层、经实证识别。</p></div>
+    <div class="card rounded-2xl p-7"><h3 class="font-semibold mb-2 text-amber-300">进展</h3><p class="text-sm text-slate-400">进行中。模型构建与标定推进中；反事实政策实验随后展开。</p></div>
   </div>
 </section>
 
 <footer class="border-t border-white/[.06] mt-10">
   <div class="max-w-6xl mx-auto px-6 py-10 text-sm text-slate-500 flex flex-col md:flex-row justify-between gap-4">
-    <div><div class="text-slate-300 font-medium mb-1">丰豆 Fengdou — 一线劳动力激励运营中的人与AI协同</div>运营管理研究 · 与顺丰速运合作。</div>
+    <div><div class="text-slate-300 font-medium mb-1">丰豆 Fengdou — 调控奖励代币经济</div>运营管理研究 · 与顺丰速运合作。</div>
     <div class="text-right"><div>图中数字与预算量级为公开展示而做了取整 / 示意处理。</div><div class="mt-1">© 2026 · 赵越 · 北京大学汇丰商学院</div></div>
   </div>
 </footer>
