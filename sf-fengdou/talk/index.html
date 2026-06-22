@@ -72,6 +72,22 @@ td.good{color:var(--pku-red);font-weight:800}
 .node small{display:block;margin-top:4px;font-weight:500}
 .node.free{border-top-color:#2e7d32}.node.cost{border-top-color:var(--pku-red-2)}
 .arrow{display:flex;align-items:center;color:var(--pku-red);font-size:26px;font-weight:700}
+.node .ico{font-size:30px;display:block;margin-bottom:3px;line-height:1}
+.bigico{font-size:46px;text-align:center;display:block;margin-bottom:6px;line-height:1}
+.card.hot{border-left-width:6px;background:var(--pku-red-soft);border-color:var(--pku-red-line)}
+/* lever cards */
+.lever{background:var(--card);border:1px solid #ececec;border-top:4px solid var(--pku-red);border-radius:8px;padding:16px 12px;text-align:center}
+.lever .ico{font-size:38px;display:block;margin-bottom:8px;line-height:1}
+.lever h3{color:var(--pku-red);margin:0 0 4px;font-size:17px}
+.lever p{font-size:14.5px;line-height:1.35;color:var(--ink-soft)}
+/* timeline */
+.tl{display:flex;align-items:stretch;margin:14px 0}
+.tl .step{flex:1;background:#fff;border:1.5px solid var(--pku-red-line);border-top:4px solid var(--pku-red);border-radius:10px;padding:14px 10px;text-align:center}
+.tl .step .ico{font-size:34px;display:block;margin-bottom:5px;line-height:1}
+.tl .step b{color:var(--ink);font-size:16px}
+.tl .step small{display:block;margin-top:2px}
+.tl .gap{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--pku-red);font-size:26px;font-weight:700;padding:0 12px}
+.tl .gap small{font-size:11px;color:var(--muted);margin-top:2px}
 /* title */
 #s-title{justify-content:center;align-items:flex-start;padding:0 72px;background:radial-gradient(1200px 500px at 80% -10%, #fbeeee 0%, #fff 55%);}
 #s-title .pre{font-size:15px;letter-spacing:5px;color:var(--pku-red);font-weight:700;text-transform:uppercase}
@@ -112,14 +128,14 @@ td.good{color:var(--pku-red);font-weight:800}
   <div class="content">
     <p>SF Express pays more than <span class="red">400,000 couriers</span> in <b>Fengdou</b> — a non-tradeable token earned by completing delivery and service tasks, and spent in an internal mall.</p>
     <div class="flow">
-      <div class="node">Work<br><small>tasks completed</small></div>
+      <div class="node"><span class="ico">🚚</span>Work<br><small>tasks completed</small></div>
       <div class="arrow">→</div>
-      <div class="node">Issuance<br><small>tokens minted, <span class="red">firm sets</span> rate</small></div>
+      <div class="node"><span class="ico">🪙</span>Issuance<br><small><span class="red">firm sets</span> the rate</small></div>
       <div class="arrow">→</div>
-      <div class="node">Token float<br><small>outstanding balance</small></div>
+      <div class="node"><span class="ico">🏦</span>Token float<br><small>outstanding balance</small></div>
       <div class="arrow">→</div>
-      <div class="node free">Virtual goods<br><small>cost ≈ 0</small></div>
-      <div class="node cost">Real goods<br><small>draw on <span class="red">budget</span></small></div>
+      <div class="node free"><span class="ico">🎮</span>Virtual goods<br><small>cost ≈ 0</small></div>
+      <div class="node cost"><span class="ico">📦</span>Real goods<br><small>draw on <span class="red">budget</span></small></div>
     </div>
     <div class="grid g2">
       <div class="card"><h3>Firm = bank + merchant</h3><p>The firm sets the token supply <em>and</em> every price — but <strong>does not choose how workers spend</strong>. It can only <em>steer</em>.</p></div>
@@ -135,20 +151,16 @@ td.good{color:var(--pku-red);font-weight:800}
   <h1 class="kicker">Problem Setting · 2 / 6</h1>
   <h2>A New Problem Class</h2>
   <div class="content">
-    <p>Fengdou is <b>neither</b> a tradeable crypto/utility token <b>nor</b> a consumer loyalty point. It is a third object:</p>
-    <table>
-      <thead><tr><th>Feature</th><th>Tradeable tokens</th><th>Loyalty points</th><th>Classic inventory</th><th>Incentive-token system</th></tr></thead>
-      <tbody>
-        <tr><td>Who holds it</td><td>investors / users</td><td>customers</td><td>—</td><td class="good">workers</td></tr>
-        <tr><td>Tradeable / market price</td><td>yes</td><td>no</td><td>—</td><td class="good">no</td></tr>
-        <tr><td>Supply set by firm</td><td>partial</td><td>yes</td><td>—</td><td class="good">yes (issuance)</td></tr>
-        <tr><td>Cost of redemption</td><td>—</td><td>single</td><td>holding / shortage</td><td class="good">dual (free / budget)</td></tr>
-        <tr><td>Objective on cost</td><td>valuation</td><td>min liability</td><td>min cost</td><td class="good">hit a target (2-sided)</td></tr>
-        <tr><td>Intertemporal coupling</td><td>adoption</td><td>breakage / expiry</td><td>lead time</td><td class="good">budget ratchet</td></tr>
-        <tr><td>Demand vs. decision</td><td>market-clearing</td><td>exogenous</td><td>exogenous</td><td class="good">predicted response to levers</td></tr>
-      </tbody>
-    </table>
-    <div class="box"><span class="lbl">The class</span><p style="margin-top:3px">A <strong>closed-loop, non-tradeable, dual-cost, budget-targeted incentive currency</strong> — no single column's structure fits it.</p></div>
+    <p>Fengdou is <b>neither</b> a tradeable crypto/utility token <b>nor</b> a consumer loyalty point — it is a third kind of currency:</p>
+    <div class="grid g3">
+      <div class="card plain"><span class="bigico">📈</span><h3 style="text-align:center;color:var(--ink)">Crypto / utility token</h3>
+        <ul><li>Held by <b>investors</b></li><li><b>Tradeable</b>, market-priced</li><li>No firm budget to hit</li></ul></div>
+      <div class="card plain"><span class="bigico">🎟️</span><h3 style="text-align:center;color:var(--ink)">Loyalty points</h3>
+        <ul><li>Held by <b>customers</b></li><li><b>Single</b> redemption cost</li><li>Expire → breakage / liability</li></ul></div>
+      <div class="card hot"><span class="bigico">🚚</span><h3 style="text-align:center;color:var(--pku-red)">Fengdou — this work</h3>
+        <ul><li>Held by <b>workers</b>; non-tradeable</li><li><b>Dual cost</b>: free virtual / budget real</li><li><b>Budget target</b> + use-it-or-lose-it ratchet</li></ul></div>
+    </div>
+    <div class="box" style="text-align:center"><span class="lbl">The new class</span><p style="margin-top:4px;font-size:20px"><strong>A closed-loop, non-tradeable, dual-cost, budget-targeted incentive currency.</strong></p></div>
   </div>
   <div class="footer"><span class="sec">Problem Setting</span><span>A New Problem Class</span></div>
 </section>
@@ -158,14 +170,21 @@ td.good{color:var(--pku-red);font-weight:800}
   <h1 class="kicker">Problem Setting · 3 / 6</h1>
   <h2>Levers, Timing &amp; Predict-then-Optimize</h2>
   <div class="content">
-    <p>The firm commits a <span class="red">lever vector</span> each period:</p>
-    <div class="eq hl">$$\bm u=\big(\,\underbrace{\bm h}_{\text{issuance}},\ \underbrace{\bm p^{R}}_{\text{real prices}},\ \underbrace{\bm p^{V}}_{\text{virtual prices}}\,\big)\in\mathcal U,\qquad I_t=\sum_q h_q\,\tilde N_{q,t}$$</div>
-    <p>The levers commit <b>before</b> the stochastic, price-dependent redemption response \(\bm x(\bm u,\tilde{\bm z})\) is realized — and the firm influences but cannot dictate it. This makes the decision <span class="red">predict-then-optimize</span> (prescriptive analytics):</p>
-    <div class="grid g2">
-      <div class="card"><h3>① Predict</h3><p>Estimate how workers redeem as a function of the levers — issuance volume and the price response across goods — from the transaction panel.</p></div>
-      <div class="card"><h3>② Optimize</h3><p>Set \(\bm u\) against that prediction to hit the budget while controlling float and preserving incentive value.</p></div>
+    <p>The firm pulls <span class="red">three levers</span> — but never decides how workers spend:</p>
+    <div class="grid g3">
+      <div class="lever"><span class="ico">🎛️</span><h3>Issuance</h3><p>how many tokens to mint<br><small>→ incentive power &amp; float</small></p></div>
+      <div class="lever"><span class="ico">🏷️</span><h3>Real-goods prices</h3><p>token price of budget items<br><small>→ budget burn rate</small></p></div>
+      <div class="lever"><span class="ico">🎮</span><h3>Virtual-goods prices</h3><p>token price of free items<br><small>→ the budget <span class="red">valve</span></small></p></div>
     </div>
-    <p><small>Closest paradigm: predictive-to-prescriptive analytics (Bertsimas &amp; Kallus 2020; Elmachtoub &amp; Grigas 2022) — an estimated response model embedded inside an optimization.</small></p>
+    <h3 style="margin-top:16px">The catch: levers are set <span class="red">before</span> workers spend</h3>
+    <div class="tl">
+      <div class="step"><span class="ico">🎛️</span><b>Set levers</b><small>issuance &amp; prices</small></div>
+      <div class="gap">→<small>commit</small></div>
+      <div class="step"><span class="ico">🎲</span><b>Workers redeem</b><small>uncertain response</small></div>
+      <div class="gap">→<small>observe</small></div>
+      <div class="step"><span class="ico">🎯</span><b>Budget &amp; float realized</b><small>did we hit target?</small></div>
+    </div>
+    <div class="box"><span class="lbl">Predict-then-optimize</span><p style="margin-top:3px">The response is unknown at decision time, so the firm must <b>predict</b> how workers will redeem, then <b>optimize</b> the levers against that prediction and the budget. <small>(Bertsimas &amp; Kallus 2020; Elmachtoub &amp; Grigas 2022.)</small></p></div>
   </div>
   <div class="footer"><span class="sec">Problem Setting</span><span>Levers, Timing &amp; Predict-then-Optimize</span></div>
 </section>
