@@ -452,9 +452,9 @@ ol li::marker{color:var(--pku-red);font-weight:700}
   <h2>Data-Driven Stochastic &amp; Robust Optimization</h2>
   <div class="content">
     <div class="grid g3">
-      <div class="card"><h3>Stochastic / SAA</h3><p>Model uncertainty via a distribution; SAA replaces it with the empirical one — asymptotic &amp; finite-sample guarantees.</p><small>Birge &amp; Louveaux; Shapiro; Kleywegt et al.</small></div>
-      <div class="card"><h3>Robust / Adjustable RO</h3><p>Guard against all realizations in an uncertainty set; adjustable RO for adaptivity.</p><small>Ben-Tal et al.; Bertsimas &amp; Sim</small></div>
-      <div class="card"><h3>Distributionally Robust</h3><p>Worst case over an ambiguity set (moment, conic, Wasserstein); robust satisficing.</p><small>Delage &amp; Ye; Mohajerin Esfahani &amp; Kuhn; Long et al.</small></div>
+      <div class="card"><h3>Stochastic / SAA</h3><p>Model uncertainty via a distribution; SAA replaces it with the empirical one — asymptotic &amp; finite-sample guarantees.</p><small>Birge and Louveaux (2011); Kleywegt et al. (2002); Shapiro et al. (2009)</small></div>
+      <div class="card"><h3>Robust / Adjustable RO</h3><p>Guard against all realizations in an uncertainty set; adjustable RO for adaptivity.</p><small>Ben-Tal et al. (2004); Bertsimas and Sim (2004)</small></div>
+      <div class="card"><h3>Distributionally Robust</h3><p>Worst case over an ambiguity set (moment, conic, Wasserstein); robust satisficing.</p><small>Delage and Ye (2010); Mohajerin Esfahani and Kuhn (2018); Long et al. (2023)</small></div>
     </div>
     <div class="box"><span class="lbl">Our relation</span><p style="margin-top:4px">GenSO is <strong>compatible</strong> with all of these. For a fixed generated basis, basis values are <em>lifted uncertain quantities</em>; coefficients can be fit by SAA, robust, or DRO machinery — enriching recourse while keeping tractability and out-of-sample evaluation.</p></div>
   </div>
@@ -467,8 +467,8 @@ ol li::marker{color:var(--pku-red);font-weight:700}
   <h2>Decision Rules &amp; Operational Data Analytics</h2>
   <div class="content">
     <div class="grid g2">
-      <div class="card"><h3>Decision rules in optimization</h3><ul><li>LDR (Ben-Tal et al. 2004); when affine rules are optimal (Bertsimas et al.; Georghiou et al.)</li><li>Deflected / segregated LDR (Chen et al.); polynomial rules (Bampou &amp; Kuhn); piecewise-linear &amp; primal-dual (Kuhn et al.)</li><li>Lifted uncertainty in adaptive DRO (Bertsimas et al. 2019); multi-deflected CARA (Chen et al. 2025)</li></ul></div>
-      <div class="card"><h3>ODA &amp; prescriptive analytics</h3><ul><li>Operational statistics judged by <em>decision value</em>, not predictive accuracy (Feng et al.)</li><li>Covariate-to-decision prescriptions (Bertsimas &amp; Kallus; Ban &amp; Rudin)</li></ul></div>
+      <div class="card"><h3>Decision rules in optimization</h3><ul><li>LDR (Ben-Tal et al. 2004); optimality of affine rules (Bertsimas and Goyal 2012, Georghiou et al. 2026)</li><li>Deflected / segregated LDR (Chen et al. 2008, Chen and Zhang 2009); polynomial rules (Bampou and Kuhn 2011); piecewise-linear &amp; primal-dual (Kuhn et al. 2011)</li><li>Lifted uncertainty in adaptive DRO (Bertsimas et al. 2019); multi-deflected CARA (Chen et al. 2025)</li></ul></div>
+      <div class="card"><h3>ODA &amp; prescriptive analytics</h3><ul><li>Operational statistics judged by <em>decision value</em>, not predictive accuracy (Feng and Shanthikumar 2023)</li><li>Covariate-to-decision prescriptions (Bertsimas and Kallus 2020, Ban and Rudin 2019)</li></ul></div>
     </div>
     <div class="box"><span class="lbl">The common limitation</span><p style="margin-top:4px">In all of these, the transformation / lifting / basis is <strong>specified manually by the modeler</strong>. <span class="red">GenSO automates this representation-design step</span>. ODA serves as a conceptual bridge: both judge data summaries by downstream decision value.</p></div>
   </div>
@@ -481,8 +481,8 @@ ol li::marker{color:var(--pku-red);font-weight:700}
   <h2>LLM-Guided Function Search &amp; LLMs in OR</h2>
   <div class="content">
     <div class="grid g2">
-      <div class="card"><h3>LLM + evolutionary search</h3><p><strong>FunSearch</strong> (Romera-Paredes et al., <em>Nature</em> 2024): pair an LLM with an evaluator to discover new mathematical constructions / algorithms. Extended by EoH, ReEvo, AlphaEvolve, …</p><p>Mostly in CS/AI; LLMs generate <em>complete programs</em>.</p></div>
-      <div class="card"><h3>LLMs in OR</h3><ul><li>Auto-formulation: NL → model (OptiMUS, ORLM, …)</li><li>Auto-modeling for robust / DP / SAA</li><li>LLMs as end-to-end combinatorial solvers</li><li>Operational apps: fleets, inventory; OM vision papers</li></ul></div>
+      <div class="card"><h3>LLM + evolutionary search</h3><p><strong>FunSearch</strong> (Romera-Paredes et al. 2024): pair an LLM with an evaluator to discover new mathematical constructions / algorithms. Extended by EoH (Liu et al. 2024a), ReEvo (Ye et al. 2024), AlphaEvolve (Novikov et al. 2025), …</p><p>Mostly in CS/AI; LLMs generate <em>complete programs</em>.</p></div>
+      <div class="card"><h3>LLMs in OR</h3><ul><li>Auto-formulation: NL → model (OptiMUS; ORLM, Huang et al. 2025)</li><li>Auto-modeling for robust / DP / SAA</li><li>LLMs as end-to-end combinatorial solvers</li><li>Operational apps: fleets, inventory; OM vision papers</li></ul></div>
     </div>
     <div class="box"><span class="lbl">Our positioning</span><p style="margin-top:4px">We <strong>transfer the FunSearch idea to adaptive decision rules</strong> and redesign the search around mathematical optimization: the LLM searches for <em>expressive representations</em>, while coefficients come from an optimization model — not an end-to-end optimizer, not a replacement for modeling.</p></div>
   </div>
@@ -884,7 +884,7 @@ ol li::marker{color:var(--pku-red);font-weight:700}
       </table>
       <div class="box"><span class="lbl">Improvement</span><p style="margin-top:4px">vs LDR: <strong>~4–9%↓</strong> &nbsp;·&nbsp; vs DRO: <strong>~8–11%↓</strong> &nbsp;·&nbsp; lowest mean <em>and</em> CVaR throughout.</p></div>
     </div>
-    <figure><img src="plots/newsvendor_theta_0025_boxplot.png" alt="inventory-control boxplot"><figcaption>Out-of-sample cost over 1,000 test scenarios (γ=0.025). GenSO: lower median, narrower spread.</figcaption></figure>
+    <figure><img src="plots/newsvendor_theta_0025_boxplot.png?v=2" alt="inventory-control boxplot"><figcaption>Out-of-sample cost over 1,000 test scenarios (γ=0.025). GenSO: lower median, narrower spread.</figcaption></figure>
   </div>
   <div class="footer"><span class="ftitle">Case 1 — Inventory Control</span></div>
 </section>
@@ -894,7 +894,7 @@ ol li::marker{color:var(--pku-red);font-weight:700}
   <h1 class="kicker">Numerical · 3 / 6</h1>
   <h2>Figure 3 — Sensitivity Validates the Bound</h2>
   <div class="two">
-    <figure><img src="plots/main_parameter_analysis.png" alt="parameter sensitivity for K M S"><figcaption>Out-of-sample cost under γ=0.025 as search budget, population size, and sample size vary.</figcaption></figure>
+    <figure><img src="plots/main_parameter_analysis.png?v=2" alt="parameter sensitivity for K M S"><figcaption>Out-of-sample cost under γ=0.025 as search budget, population size, and sample size vary.</figcaption></figure>
     <div>
       <div class="box"><span class="lbl">Theory prediction</span><p style="margin-top:4px">Theorem 2 separates <strong>estimation</strong> and <strong>search</strong>:</p><div class="eq small-eq" style="background:#fff">$$\epsilon+C_1R\sigma\sqrt{\frac{N+\log K}{S}}+\frac{C_2}{\eta'}e^{-K\rho_\theta}$$</div></div>
       <ul>
