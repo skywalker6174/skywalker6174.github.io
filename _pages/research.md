@@ -23,4 +23,5 @@ Download my [research statement](/file/research.pdf).
 
 ## Working Papers
 
-* Yifan Zhang, Chenyi Fu, Sheng Liu, Yue Zhao, Jingwen Zhang. *Fleet Allocation for Shared Mobility Systems with Endogenous Demand and Network Effects*. Submitted.
+* Yifan Zhang, Chenyi Fu, Sheng Liu, Yue Zhao, Jingwen Zhang. *Fleet Allocation for Shared Mobility Systems with Endogenous Demand and Network Effects*. Submitted. [(Preprint)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5680524)
+* Huan Zhang, Yang Wang, Hanzhang Qin, Yue Zhao. *Beyond Linear Decision Rules: LLM-Guided Representation Discovery for Data-Driven Optimization*. Submitted. [(Preprint)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7165538) [(Code)](https://github.com/zhanghuan-npu/GenSO)
