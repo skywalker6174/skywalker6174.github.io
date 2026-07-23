@@ -19,7 +19,7 @@ Download my [research statement](/file/research.pdf).
 ## Conferences
 * Wenzhuo Zhu, Zheng Cui, Wenhan Lu, Sheng Liu, Yue Zhao. DAOpt: Modeling and Evaluation of Data-Driven Optimization under Uncertainty with LLMs (2025). 39th Conference on Neural Information Processing Systems (***NeurIPS Workshop: MLxOR***).
 * Xinke Li, Zhirui Chen, Yue Zhao, Zekun Tong, Yabang Zhao, Andrew Lim, Joey Tianyi Zhou. PointBA: Towards Backdoor Attacks in 3D Point Cloud (2021). IEEE/CVF International Conference on Computer Vision (***ICCV***).
-* Yue Zhao, Yuwei Wu, Caihua Chen, Andrew Lim. On Isometry Robustness of Deep 3D Models under Adversarial Attacks (2020). IEEE/CVF Conference on Computer Vision and Pattern Recognition (***CVPR***). [(Code)](https://github.com/skywalker6174/3d-isometry-robust).
+* Yue Zhao, Yuwei Wu, Caihua Chen, Andrew Lim. On Isometry Robustness of Deep 3D Models under Adversarial Attacks (2020). IEEE/CVF Conference on Computer Vision and Pattern Recognition (***CVPR***). [(Code)](https://github.com/skywalker6174/3d-isometry-robust)
 
 ## Working Papers
 
