@@ -8,11 +8,11 @@ author_profile: true
 Download my [research statement](/file/research.pdf).
 
 ## Journals
-* Cheng Chun, Melvyn Sim, Yue Zhao. *Robust Workforce Management with Crowdsourced Delivery*. **Operations Research** 73(2) (2025): 595-612. [(code)](https://drive.google.com/file/d/1qsRWNQxlWSA64Q_FsSyqa0hTY5SEZ_Zl/view?usp=sharing)
+* Cheng Chun, Melvyn Sim, Yue Zhao. *Robust Workforce Management with Crowdsourced Delivery*. **Operations Research** 73.2 (2025): 595-612. [(code)](https://drive.google.com/file/d/1qsRWNQxlWSA64Q_FsSyqa0hTY5SEZ_Zl/view?usp=sharing)
 * Yue Zhao, Zhixing Luo, Stanley Frederick W. T. Lim, Caihua Chen, Melvyn Sim. *Service Oriented Considerate Routing: Data, Predictions, and Robust Decisions*. Forthcoming in **Management Science**.
-* Long He, Xiaobo Li, Yue Zhao. *Proactive Policing: Resource Allocation for Crime Prevention with Deterrence Effect*. Forthcoming in **Operations Research**.
+* Long He, Xiaobo Li, Yue Zhao. *Proactive Policing: Resource Allocation for Crime Prevention with Deterrence Effect*. Forthcoming in **Operations Research** 74.2 (2026): 700-721.
   - Accepted at the 2025 MSOM SIG-Day Conference.
-* Jianpeng Ding, Liuxin Chen, Lianmin Zhang, Yue Zhao. *Robust Satisficing Newsvendor Problem*. Forthcoming in **Operations Research Letters**.
+* Jianpeng Ding, Liuxin Chen, Lianmin Zhang, Yue Zhao. *Robust Satisficing Newsvendor Problem*. **Operations Research Letters** (2026): 107408.
 * Yue Zhao, Zhi Chen, Zhenzhen Zhang. *Distributionally Robust Chance Constrained p-Hub Center Problem*. **Informs Journal on Computing** 35(6) (2023): 1361-1382.
 * Yue Zhao, Zhi Chen, Zhenzhen Zhang, Andrew Lim. *Vessel Deployment with Limited Information: Distributionally Robust Chance Constrained Models*. **Transportation Research Part B: Methodological** 161 (2022): 197-217.
 
