@@ -149,16 +149,31 @@ const Kimi = {
     if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 200));
     return (await r.json()).data.map((m) => m.id).sort();
   },
-  async json(messages) {
-    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 180000);
+  /** 选定模型:优先用户设置;否则从账号可用模型里挑(通用模型优先,排除 code 专用)。 */
+  async resolveModel(force) {
+    const c = cfg();
+    if (c.model && !force) return c.model;
+    const list = await this.models(), pref = ["kimi-k3", "kimi-k2.6", "kimi-latest", "moonshot-v1-32k"];
+    const model = pref.find((m) => list.includes(m)) || list.find((m) => !/code|vision/.test(m)) || list[0];
+    localStorage.setItem(CFG, JSON.stringify({ ...cfg(), model, models: list }));
+    return model;
+  },
+  async json(messages, retry = true) {
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 300000);
     try {
+      const model = await this.resolveModel();
+      // 不传 temperature:Kimi 新一代推理模型只接受默认值;推理过程也计入 max_tokens,所以给足额度
       const r = await fetch(this.base() + "/chat/completions", {
         method: "POST", headers: this.headers(), signal: ctl.signal,
-        body: JSON.stringify({ model: cfg().model || "moonshot-v1-32k", messages, temperature: 0.4, max_tokens: 6000, response_format: { type: "json_object" } }),
+        body: JSON.stringify({ model, messages, max_tokens: 16000, response_format: { type: "json_object" } }),
       });
-      if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 300));
+      if (!r.ok) {
+        const msg = (await r.text()).slice(0, 300);
+        if (retry && (r.status === 404 || /model/i.test(msg))) { await this.resolveModel(true); return this.json(messages, false); }
+        throw new Error("HTTP " + r.status + " " + msg);
+      }
       const txt = (await r.json()).choices[0].message.content || "";
-      return JSON.parse(txt.replace(/^```(?:json)?/i, "").replace(/```\s*$/, "").trim());
+      return JSON.parse(txt.replace(/^\s*```(?:json)?/i, "").replace(/```\s*$/, "").trim());
     } finally { clearTimeout(timer); }
   },
 };
@@ -170,7 +185,7 @@ function buildPrompt(code, a, p, c) {
 写作要求:
 - 简体中文,第二人称"你",专业但口语化;按下面"对TA说话的方式"调整语气。类型是帮助理解用户的语言而不是标签,不要说"你们XX型都……",让用户觉得准确且有尊严。
 - 所有数字(仓位、占比、金额、税优)已由系统算好,原样引用,不得改动或自创数字;不得承诺或预测收益率。
-- 选品只能从"产品目录"中选择,用 id 引用;不得编造目录外的产品、代码或利率。每个资产岗位选1–2只,weight 表示同一岗位内的相对权重。
+- 选品只能从"产品目录"中选择,只在 picks[].id 字段里用 id 引用,正文和理由里一律写产品名称、不要出现 id;不得编造目录外的产品、代码或利率。每个资产岗位选1–2只,weight 表示同一岗位内的相对权重。
 - 选品理由必须同时联系:①这只产品在组合中的岗位,②用户的客观情况,③用户的财富身份与行为特点。目标日期基金优先选择最接近用户退休年份(${c.retireYear},建议档 ${c.targetVintage})的。
 - 区分事实、假设与情景;不确定就明说。不制造焦虑,不使用 R3/R4 这类黑箱术语而不解释。
 - 只输出一个 JSON 对象,不要输出其它文字。`;
@@ -234,15 +249,28 @@ function ruleNarrative(code, p, c) {
   };
 }
 
+/** 模型偶尔会在正文里写目录 id(如 GK04),统一换成产品名;picks[].id 保持不变。 */
+function deId(n) {
+  const names = Object.fromEntries(CATALOG.items.map((x) => [x.id, "「" + x.name + "」"]));
+  const fix = (v) => (typeof v === "string" ? v.replace(/\b(?:FOF|IDX|WM|GK|INS)\d{2}\b/g, (m) => names[m] || m) : v);
+  const out = {};
+  for (const [k, v] of Object.entries(n)) {
+    if (k === "picks") out[k] = (v || []).map((x) => ({ ...x, reason: fix(x.reason) }));
+    else out[k] = Array.isArray(v) ? v.map(fix) : fix(v);
+  }
+  return out;
+}
+
 /* ---------------- 报告渲染 ---------------- */
 function renderReport(R) {
   const { code, a, p, c, n, picks, mode } = R, t = TYPES[code], m = MATRICES[t.matrix];
   const today = new Date().toISOString().slice(0, 10);
   const para = (s) => String(s || "").split(/\n+/).map((x) => `<p>${esc(x)}</p>`).join("");
   const roleRows = Object.keys(ROLES).map((r) => `<tr><td>${r}</td><td>${ROLES[r]}</td><td class="num">${c.rolesBefore[r]}%</td><td class="num"><b>${c.rolesAfter[r]}%</b></td><td><div class="bar"><i style="width:${c.rolesAfter[r]}%"></i></div></td><td class="num">${yuan((c.contrib * c.rolesAfter[r]) / 100)}</td></tr>`).join("");
-  const prodHtml = Object.keys(ROLES).map((r) => {
+  const H5 = "<h2>五、具体产品建议(个人养老金账户内)</h2>";
+  const prodHtml = Object.keys(ROLES).map((r, ri) => {
     const ps = picks.filter((x) => x.role === r); if (!ps.length) return "";
-    return `<div class="avoid"><h3>${r} · ${ROLES[r]}(合计 ${c.rolesAfter[r]}%)</h3>` + ps.map((x) => `<div class="prod">
+    return `<div class="avoid">${ri === 0 ? H5 : ""}<h3>${r} · ${ROLES[r]}(合计 ${c.rolesAfter[r]}%)</h3>` + ps.map((x) => `<div class="prod">
       <span class="amt">${x.pct}% · ${yuan(x.amount)}/年</span>
       <div class="name">${esc(x.name)}${x.code ? `(${esc(x.code)})` : ""}</div>
       <div class="meta"><span class="chip">${esc(x.cat)}</span><span class="chip">风险 ${esc(x.risk)}</span>${x.hold ? `<span class="chip">${esc(x.hold)}</span>` : ""} ${esc(x.issuer)}${x.note ? " · " + esc(x.note) : ""}</div>
@@ -291,7 +319,6 @@ function renderReport(R) {
   <table><tr><th>岗位</th><th>对应资产</th><th class="num">校准前</th><th class="num">校准后</th><th></th><th class="num">今年缴存分配</th></tr>${roleRows}</table>
   <p class="muted">球队隐喻:守门员守住本金,后卫提供稳健收益,自动挡中场随年龄自动换挡,前锋负责长期增长,长期后勤官提供终身现金流。</p>
 
-  <h2>五、具体产品建议(个人养老金账户内)</h2>
   ${prodHtml}
   <p class="muted">以上产品均选自个人养老金产品目录中的公开产品。可购买范围取决于你的开户银行与销售机构,买入前请在银行App或国家社会保险公共服务平台核对产品是否在售、最新费率与利率。</p>
 
@@ -408,12 +435,14 @@ const App = {
     this.go("loading");
     let n, mode;
     if (Kimi.ready()) {
-      $("loadMsg").textContent = "Kimi 正在为你撰写报告…";
-      try { n = await Kimi.json(buildPrompt(code, a, p, c)); mode = `由 Kimi(${cfg().model || "moonshot-v1-32k"})撰写`; }
+      const t0 = Date.now(), tick = setInterval(() => ($("loadMsg").textContent = `Kimi 正在为你撰写报告… 已用时 ${Math.round((Date.now() - t0) / 1000)} 秒`), 1000);
+      this._tick = tick;
+      try { n = await Kimi.json(buildPrompt(code, a, p, c)); mode = `由 Kimi(${cfg().model})撰写`; }
       catch (e) { console.error(e); n = null; mode = "规则引擎简版(Kimi 调用失败:" + String(e.message).slice(0, 80) + ")"; }
+      finally { clearInterval(this._tick); }
     } else mode = "规则引擎简版(未配置 Kimi,点击右上角「AI 设置」后可生成完整版)";
     const base = ruleNarrative(code, p, c);
-    n = { ...base, ...(n || {}) };
+    n = deId({ ...base, ...(n || {}) });
     if (!Array.isArray(n.action_steps) || !n.action_steps.length) n.action_steps = base.action_steps;
     const picks = materialize(n.picks, code, p, c);
     S.result = { code, a, p, c, n, picks, mode }; save();
@@ -431,7 +460,7 @@ const App = {
 };
 
 /* ---------------- 设置 ---------------- */
-const DEFAULT_MODELS = ["moonshot-v1-32k", "moonshot-v1-8k", "moonshot-v1-128k", "kimi-latest"];
+const DEFAULT_MODELS = ["kimi-k3", "kimi-k2.6"];
 const Settings = {
   open() { const c = cfg(); $("setKey").value = c.key || ""; $("setProxy").value = c.proxy || ""; this.fill(c.models || DEFAULT_MODELS, c.model); $("setMsg").textContent = ""; $("settings").classList.replace("hidden", "flex"); },
   close() { $("settings").classList.replace("flex", "hidden"); },
@@ -451,4 +480,12 @@ const Settings = {
 };
 
 $("btnSettings").onclick = () => Settings.open();
+// 一次性导入:打开 …/wmbti/#key=sk-xxx 会把 Key 存入本机浏览器并立刻从地址栏抹掉(# 后的内容不会发送到服务器)
+(() => {
+  const m = location.hash.match(/[#&]key=([^&]+)/), px = location.hash.match(/[#&]proxy=([^&]+)/);
+  if (!m && !px) return;
+  const c = cfg(); if (m) c.key = decodeURIComponent(m[1]); if (px) c.proxy = decodeURIComponent(px[1]);
+  delete c.model; localStorage.setItem(CFG, JSON.stringify(c));
+  history.replaceState(null, "", location.pathname);
+})();
 if (load() && Object.keys(load().answers || {}).length) $("btnResume").classList.remove("hidden");
