@@ -1,5 +1,5 @@
 /* 报告:浅色 A4 版式,供 html2pdf 与打印使用。不依赖 Tailwind,避免截图时样式丢失。 */
-#report { width: 720px; margin: 0 auto; background: #fff; color: #1f2933; padding: 36px 40px;
+#report { width: 100%; max-width: 720px; margin: 0 auto; background: #fff; color: #1f2933; padding: 36px 40px;
   font: 13.5px/1.75 -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
 #report * { box-sizing: border-box; }
 #report h1 { font-size: 26px; line-height: 1.3; margin: 0; color: #0b3b2e; }
@@ -35,6 +35,27 @@
 #report .disclaimer { margin-top: 28px; padding: 12px 14px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 11.5px; color: #4b5563; }
 #report .avoid, #report .prod, #report table, #report .kpis, #report .motto, #report .warn { page-break-inside: avoid; break-inside: avoid; }
 #report .pagebreak { page-break-before: always; break-before: page; }
+
+/* 导出PDF时固定为A4版心宽度,保证手机和电脑导出的PDF一致 */
+#report.pdf { width: 720px; max-width: none; }
+
+/* 手机阅读版式(导出PDF时不生效) */
+@media (max-width: 640px) {
+  #report:not(.pdf) { padding: 22px 16px; font-size: 14.5px; border-radius: 12px; }
+  #report:not(.pdf) h1 { font-size: 21px; }
+  #report:not(.pdf) h2 { font-size: 16.5px; margin-top: 26px; }
+  #report:not(.pdf) .cover .type { font-size: 17px; }
+  #report:not(.pdf) .two { flex-direction: column; gap: 6px; }
+  #report:not(.pdf) .two > div { width: 100%; }
+  #report:not(.pdf) .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  #report:not(.pdf) .kpi b { font-size: 17px; }
+  #report:not(.pdf) table { font-size: 12px; }
+  #report:not(.pdf) th, #report:not(.pdf) td { padding: 5px 6px; }
+  #report:not(.pdf) .hide-m { display: none; }
+  #report:not(.pdf) .prod .amt { float: none; display: block; margin-bottom: 2px; }
+  #report:not(.pdf) .prod .name { word-break: break-all; }
+  #report:not(.pdf) .chip { margin-bottom: 3px; }
+}
 
 @media print {
   body { background: #fff !important; }

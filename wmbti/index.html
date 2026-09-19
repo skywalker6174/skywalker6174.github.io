@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <meta name="theme-color" content="#0B0F14">
   <title>犀鸟财富伴侣 · W-MBTI 养老财富身份测评</title>
   <meta name="description" content="3分钟完成 W-MBTI 养老财富身份测评,回答几个关于个人养老金账户的问题,获得一份属于你的财富身份与养老金配置PDF报告。">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,9 +26,11 @@
     .btn-ghost { border:1px solid rgba(255,255,255,.15); border-radius:.75rem; padding:.7rem 1.4rem; color:#CBD5E1; }
     .btn-ghost:hover { border-color:rgba(255,255,255,.35); color:#fff; }
     input.field, select.field, textarea.field { width:100%; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
-      border-radius:.6rem; padding:.6rem .8rem; color:#fff; outline:none; }
+      border-radius:.6rem; padding:.6rem .8rem; color:#fff; outline:none; font-size:16px; /* ≥16px:避免 iOS 聚焦时自动放大 */ }
     input.field:focus, select.field:focus, textarea.field:focus { border-color:#10B981; }
     select.field option { color:#111; }
+    .opt { min-height:48px; -webkit-tap-highlight-color:transparent; }
+    body { padding-bottom: env(safe-area-inset-bottom); overflow-x:hidden; }
     .screen { display:none; } .screen.active { display:block; }
     .spinner { width:38px;height:38px;border:3px solid rgba(255,255,255,.15);border-top-color:#10B981;border-radius:50%;animation:spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -46,6 +49,7 @@
   <div class="h-0.5 bg-white/5"><div id="progress" class="h-0.5 bg-emerald-400 transition-all" style="width:0%"></div></div>
 </nav>
 
+<div id="wxTip" class="hidden bg-amber-400/15 border-b border-amber-400/30 text-amber-100 text-sm px-5 py-2.5">你正在微信中打开:测评可以正常进行;下载PDF请点右上角「···」→「在浏览器打开」。</div>
 <main class="max-w-5xl mx-auto px-5">
 
   <!-- ① 首页 -->
@@ -136,12 +140,12 @@
   <!-- ⑥ 报告 -->
   <section id="s-report" class="screen py-8">
     <div class="flex flex-wrap items-center gap-3 mb-5">
-      <button class="btn" onclick="App.downloadPDF()">⬇ 下载 PDF 报告</button>
-      <button class="btn-ghost" onclick="window.print()">打印 / 另存为PDF</button>
+      <button id="btnPdf" class="btn" onclick="App.downloadPDF()">⬇ 下载 PDF 报告</button>
+      <button class="btn-ghost hidden sm:inline-block" onclick="window.print()">打印 / 另存为PDF</button>
       <button class="btn-ghost" onclick="App.go('pension')">← 修改信息重新生成</button>
       <span id="reportMode" class="text-xs text-slate-400"></span>
     </div>
-    <div class="overflow-x-auto rounded-xl"><div id="report"></div></div>
+    <div class="overflow-x-auto rounded-xl -mx-2 sm:mx-0"><div id="report"></div></div>
   </section>
 </main>
 

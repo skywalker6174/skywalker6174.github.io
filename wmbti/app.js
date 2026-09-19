@@ -266,7 +266,7 @@ function renderReport(R) {
   const { code, a, p, c, n, picks, mode } = R, t = TYPES[code], m = MATRICES[t.matrix];
   const today = new Date().toISOString().slice(0, 10);
   const para = (s) => String(s || "").split(/\n+/).map((x) => `<p>${esc(x)}</p>`).join("");
-  const roleRows = Object.keys(ROLES).map((r) => `<tr><td>${r}</td><td>${ROLES[r]}</td><td class="num">${c.rolesBefore[r]}%</td><td class="num"><b>${c.rolesAfter[r]}%</b></td><td><div class="bar"><i style="width:${c.rolesAfter[r]}%"></i></div></td><td class="num">${yuan((c.contrib * c.rolesAfter[r]) / 100)}</td></tr>`).join("");
+  const roleRows = Object.keys(ROLES).map((r) => `<tr><td>${r}<div class="muted">${ROLES[r]}</div></td><td class="num">${c.rolesBefore[r]}%</td><td class="num"><b>${c.rolesAfter[r]}%</b></td><td class="hide-m"><div class="bar"><i style="width:${c.rolesAfter[r]}%"></i></div></td><td class="num">${yuan((c.contrib * c.rolesAfter[r]) / 100)}</td></tr>`).join("");
   const H5 = "<h2>五、具体产品建议(个人养老金账户内)</h2>";
   const prodHtml = Object.keys(ROLES).map((r, ri) => {
     const ps = picks.filter((x) => x.role === r); if (!ps.length) return "";
@@ -316,7 +316,7 @@ function renderReport(R) {
   ${para(n.calibration_reading)}
 
   <h2>四、资产岗位配置</h2>
-  <table><tr><th>岗位</th><th>对应资产</th><th class="num">校准前</th><th class="num">校准后</th><th></th><th class="num">今年缴存分配</th></tr>${roleRows}</table>
+  <table><tr><th>岗位</th><th class="num">校准前</th><th class="num">校准后</th><th class="hide-m"></th><th class="num">今年缴存</th></tr>${roleRows}</table>
   <p class="muted">球队隐喻:守门员守住本金,后卫提供稳健收益,自动挡中场随年龄自动换挡,前锋负责长期增长,长期后勤官提供终身现金流。</p>
 
   ${prodHtml}
@@ -450,12 +450,19 @@ const App = {
   },
 
   async downloadPDF() {
-    const t = TYPES[S.result.code];
-    await html2pdf().set({
-      margin: [10, 0, 12, 0], filename: `W-MBTI养老财富报告_${t.code}_${new Date().toISOString().slice(0, 10)}.pdf`,
-      image: { type: "jpeg", quality: 0.96 }, html2canvas: { scale: 2, backgroundColor: "#ffffff", useCORS: true },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }, pagebreak: { mode: ["css", "legacy"], avoid: [".avoid", ".prod", "table", ".kpis", ".motto", ".warn", "h2", "h3", "img"] },
-    }).from($("report")).save();
+    if (/MicroMessenger/i.test(navigator.userAgent)) { alert("微信内置浏览器无法下载文件。请点右上角「···」选择「在浏览器打开」,再下载PDF。"); return; }
+    const t = TYPES[S.result.code], el = $("report"), btn = $("btnPdf"), mobile = window.innerWidth < 700;
+    btn.disabled = true; btn.textContent = "正在生成 PDF…";
+    el.classList.add("pdf"); // 固定A4版心,手机上也导出与电脑一致的版式
+    try {
+      await html2pdf().set({
+        margin: [10, 0, 12, 0], filename: `W-MBTI养老财富报告_${t.code}_${new Date().toISOString().slice(0, 10)}.pdf`,
+        image: { type: "jpeg", quality: 0.95 },
+        // 手机浏览器的画布面积有上限,降低倍率避免长报告导出空白
+        html2canvas: { scale: mobile ? 1.5 : 2, backgroundColor: "#ffffff", useCORS: true, windowWidth: 800, scrollX: 0, scrollY: 0 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }, pagebreak: { mode: ["css", "legacy"], avoid: [".avoid", ".prod", "table", ".kpis", ".motto", ".warn", "h2", "h3", "img"] },
+      }).from(el).save();
+    } finally { el.classList.remove("pdf"); btn.disabled = false; btn.textContent = "⬇ 下载 PDF 报告"; }
   },
 };
 
@@ -480,6 +487,7 @@ const Settings = {
 };
 
 $("btnSettings").onclick = () => Settings.open();
+if (/MicroMessenger/i.test(navigator.userAgent)) $("wxTip").classList.remove("hidden");
 // 一次性导入:打开 …/wmbti/#key=sk-xxx 会把 Key 存入本机浏览器并立刻从地址栏抹掉(# 后的内容不会发送到服务器)
 (() => {
   const m = location.hash.match(/[#&]key=([^&]+)/), px = location.hash.match(/[#&]proxy=([^&]+)/);
