@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>犀鸟财富伴侣 · W-MBTI 养老财富身份测评</title>
+  <meta name="description" content="3分钟完成 W-MBTI 养老财富身份测评,回答几个关于个人养老金账户的问题,获得一份属于你的财富身份与养老金配置PDF报告。">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="report.css">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background: #0B0F14; }
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); }
+    .tag { display:inline-flex; align-items:center; gap:6px; background:rgba(16,185,129,.10);
+           border:1px solid rgba(16,185,129,.28); border-radius:999px; padding:4px 14px; color:#6EE7B7; font-size:.8rem; }
+    .metric-card { background: linear-gradient(135deg,rgba(16,185,129,.14),rgba(16,185,129,.03)); border:1px solid rgba(16,185,129,.22); }
+    hr.dim { border-color: rgba(255,255,255,0.06); }
+    .opt { border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.03); transition:.15s; }
+    .opt:hover { border-color:rgba(16,185,129,.5); background:rgba(16,185,129,.06); }
+    .opt.on { border-color:#10B981; background:rgba(16,185,129,.16); color:#A7F3D0; }
+    .btn { background:#10B981; color:#04130d; font-weight:600; border-radius:.75rem; padding:.7rem 1.4rem; transition:.15s; }
+    .btn:hover { background:#34D399; } .btn:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-ghost { border:1px solid rgba(255,255,255,.15); border-radius:.75rem; padding:.7rem 1.4rem; color:#CBD5E1; }
+    .btn-ghost:hover { border-color:rgba(255,255,255,.35); color:#fff; }
+    input.field, select.field, textarea.field { width:100%; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+      border-radius:.6rem; padding:.6rem .8rem; color:#fff; outline:none; }
+    input.field:focus, select.field:focus, textarea.field:focus { border-color:#10B981; }
+    select.field option { color:#111; }
+    .screen { display:none; } .screen.active { display:block; }
+    .spinner { width:38px;height:38px;border:3px solid rgba(255,255,255,.15);border-top-color:#10B981;border-radius:50%;animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+
+<nav class="sticky top-0 z-40 bg-[#0B0F14]/90 backdrop-blur border-b border-white/[.06]">
+  <div class="max-w-5xl mx-auto px-5 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3"><span class="text-xl">🦜</span><span class="font-semibold">犀鸟财富伴侣 · W-MBTI</span></div>
+    <div class="flex items-center gap-3 text-sm">
+      <span id="stepLabel" class="hidden sm:inline text-slate-400"></span>
+      <button id="btnSettings" class="btn-ghost !py-1.5 !px-3 text-xs">⚙︎ AI 设置</button>
+    </div>
+  </div>
+  <div class="h-0.5 bg-white/5"><div id="progress" class="h-0.5 bg-emerald-400 transition-all" style="width:0%"></div></div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-5">
+
+  <!-- ① 首页 -->
+  <section id="s-home" class="screen active py-16 md:py-24">
+    <span class="tag">🧭 4.0 人生 CFO · 养老财富身份</span>
+    <h1 class="mt-6 text-4xl md:text-6xl font-bold leading-tight">
+      先认识你,<br><span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 to-teal-400">再安排你的养老金</span>
+    </h1>
+    <p class="mt-6 text-slate-300 text-lg max-w-2xl leading-relaxed">
+      传统风险问卷只问“你能承受多少亏损”,却预测不了市场大跌那天你会怎么做。W-MBTI 用16型财富身份回答另一个问题:
+      <b class="text-white">你会怎样决定、学习和坚持。</b>完成测评并回答几个个人养老金账户的问题,AI 会为你生成一份可下载的 PDF 报告。
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <button class="btn" onclick="App.start()">开始测评 →</button>
+      <button id="btnResume" class="btn-ghost hidden" onclick="App.resume()">继续上次进度</button>
+    </div>
+    <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="metric-card rounded-2xl p-5"><div class="text-3xl font-bold text-emerald-300">20</div><div class="text-sm text-slate-400 mt-1">道情境题 · 约3分钟</div></div>
+      <div class="metric-card rounded-2xl p-5"><div class="text-3xl font-bold text-emerald-300">16</div><div class="text-sm text-slate-400 mt-1">型养老财富身份</div></div>
+      <div class="metric-card rounded-2xl p-5"><div class="text-3xl font-bold text-emerald-300">5</div><div class="text-sm text-slate-400 mt-1">个资产岗位 · 球队式配置</div></div>
+      <div class="metric-card rounded-2xl p-5"><div class="text-3xl font-bold text-emerald-300">PDF</div><div class="text-sm text-slate-400 mt-1">身份报告 + 产品级配置建议</div></div>
+    </div>
+    <div class="mt-10 card rounded-2xl p-5 text-sm text-slate-400 leading-relaxed">
+      <b class="text-slate-200">隐私与边界:</b>不收集姓名、手机号或证件信息;你的答案只保存在本机浏览器里。生成报告时,答案会以匿名形式发送给 Kimi(月之暗面)大模型。
+      本工具是研究性质的演示,只做解释与建议,不代客交易、不销售产品,报告内容不构成投资建议。
+    </div>
+  </section>
+
+  <!-- ② W-MBTI 测评 -->
+  <section id="s-quiz" class="screen py-10 md:py-14">
+    <div class="flex items-center justify-between text-sm text-slate-400">
+      <span id="qCounter"></span><span id="qAspect" class="tag !py-0.5 !px-3 !text-xs"></span>
+    </div>
+    <h2 id="qPrompt" class="mt-5 text-2xl md:text-3xl font-semibold leading-snug"></h2>
+    <div class="mt-7 grid md:grid-cols-2 gap-4">
+      <div class="card rounded-2xl p-5"><div class="text-emerald-300 font-bold mb-2">A</div><div id="qA" class="text-slate-200 leading-relaxed"></div></div>
+      <div class="card rounded-2xl p-5"><div class="text-sky-300 font-bold mb-2">B</div><div id="qB" class="text-slate-200 leading-relaxed"></div></div>
+    </div>
+    <div id="qScale" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+    <div class="mt-8 flex justify-between">
+      <button class="btn-ghost" onclick="App.prevQ()">← 上一题</button>
+      <span class="text-xs text-slate-500 self-center">没有对错,选更像你的那一边</span>
+    </div>
+  </section>
+
+  <!-- ③ 财富身份 -->
+  <section id="s-identity" class="screen py-10 md:py-14">
+    <span class="tag">你的养老财富身份</span>
+    <div class="mt-5 grid md:grid-cols-5 gap-6">
+      <div class="md:col-span-3">
+        <h2 class="text-4xl font-bold"><span id="idCode" class="text-emerald-300"></span> · <span id="idName"></span></h2>
+        <div id="idSub" class="mt-2 text-slate-400 text-sm"></div>
+        <blockquote id="idMotto" class="mt-5 border-l-2 border-emerald-400 pl-4 text-lg text-slate-200 italic"></blockquote>
+        <div id="idBody" class="mt-6 space-y-4 text-slate-300 leading-relaxed"></div>
+      </div>
+      <div class="md:col-span-2 card rounded-2xl p-4">
+        <div class="text-sm font-semibold text-slate-200 mb-2">WMBTI 八爪图</div>
+        <canvas id="radar" height="300"></canvas>
+        <div id="idClarity" class="mt-3 text-xs text-slate-500"></div>
+      </div>
+    </div>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <button class="btn" onclick="App.go('pension')">下一步:我的养老金账户 →</button>
+      <button class="btn-ghost" onclick="App.restart()">重新测评</button>
+    </div>
+  </section>
+
+  <!-- ④ 养老金问题 -->
+  <section id="s-pension" class="screen py-10 md:py-14">
+    <span class="tag">盘清钱 · 算清未来</span>
+    <h2 class="mt-4 text-3xl font-bold">关于你的个人养老金账户</h2>
+    <p class="mt-2 text-slate-400">W 回答“客观上能不能”。以下信息只用于这份报告,估算即可。</p>
+    <form id="pensionForm" class="mt-8 grid md:grid-cols-2 gap-x-6 gap-y-6"></form>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <button class="btn" onclick="App.generate()">生成我的报告 →</button>
+      <button class="btn-ghost" onclick="App.go('identity')">← 返回</button>
+    </div>
+    <div id="pensionErr" class="mt-4 text-sm text-amber-300"></div>
+  </section>
+
+  <!-- ⑤ 生成中 -->
+  <section id="s-loading" class="screen py-28 text-center">
+    <div class="spinner mx-auto"></div>
+    <div id="loadMsg" class="mt-6 text-lg text-slate-200">正在生成报告…</div>
+    <div class="mt-2 text-sm text-slate-500">通常需要 30–90 秒,请不要关闭页面</div>
+  </section>
+
+  <!-- ⑥ 报告 -->
+  <section id="s-report" class="screen py-8">
+    <div class="flex flex-wrap items-center gap-3 mb-5">
+      <button class="btn" onclick="App.downloadPDF()">⬇ 下载 PDF 报告</button>
+      <button class="btn-ghost" onclick="window.print()">打印 / 另存为PDF</button>
+      <button class="btn-ghost" onclick="App.go('pension')">← 修改信息重新生成</button>
+      <span id="reportMode" class="text-xs text-slate-400"></span>
+    </div>
+    <div class="overflow-x-auto rounded-xl"><div id="report"></div></div>
+  </section>
+</main>
+
+<footer class="max-w-5xl mx-auto px-5 py-10 text-xs text-slate-500 border-t border-white/[.06] mt-10">
+  犀鸟财富伴侣 · W-MBTI 研究演示 · 报告内容不构成投资建议,产品信息请以销售机构与国家社会保险公共服务平台的最新公示为准。<br>© 2026 · Yue Zhao · PHBS
+</footer>
+
+<!-- AI 设置 -->
+<div id="settings" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+  <div class="w-full max-w-lg rounded-2xl bg-[#111827] border border-white/10 p-6">
+    <div class="flex justify-between items-center"><h3 class="text-lg font-semibold">AI 设置 · Kimi</h3><button onclick="Settings.close()" class="text-slate-400 hover:text-white">✕</button></div>
+    <p class="mt-2 text-sm text-slate-400">报告由 Kimi 大模型撰写。Key 只保存在你本机浏览器中,不会上传到本网站。未填写时将使用规则引擎生成简版报告。</p>
+    <label class="block mt-5 text-sm text-slate-300">Kimi API Key <a class="text-emerald-300 underline" href="https://platform.moonshot.cn/console/api-keys" target="_blank" rel="noopener">获取</a></label>
+    <input id="setKey" type="password" class="field mt-1" placeholder="sk-...">
+    <label class="block mt-4 text-sm text-slate-300">模型</label>
+    <div class="flex gap-2 mt-1"><select id="setModel" class="field"></select><button class="btn-ghost !py-2 text-xs whitespace-nowrap" onclick="Settings.loadModels()">刷新列表</button></div>
+    <label class="block mt-4 text-sm text-slate-300">代理地址(可选) <span class="text-slate-500">— 若部署了后端代理,填写后无需 Key</span></label>
+    <input id="setProxy" type="text" class="field mt-1" placeholder="https://your-worker.workers.dev">
+    <div id="setMsg" class="mt-3 text-xs text-slate-400"></div>
+    <div class="mt-6 flex justify-end gap-3"><button class="btn-ghost" onclick="Settings.test()">测试连接</button><button class="btn" onclick="Settings.save()">保存</button></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="catalog.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
