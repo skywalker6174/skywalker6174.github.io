@@ -342,11 +342,11 @@ function renderReport(R) {
 /* ---------------- 八爪图 ---------------- */
 let radarChart;
 function radarConfig(fn, light) {
-  const ink = light ? "#374151" : "#CBD5E1", grid = light ? "#d1d5db" : "rgba(255,255,255,.12)";
+  const ink = light ? "#4a3a22" : "#d8c9a6", grid = light ? "#d9ccb0" : "rgba(201,162,75,.2)";
   return { type: "radar",
     data: { labels: FUNCTION_ORDER.map((f) => FUNCTION_LABELS[f].split(" ")), datasets: [{ data: FUNCTION_ORDER.map((f) => fn[f]),
-      borderColor: light ? "#059669" : "#34D399", backgroundColor: light ? "rgba(16,185,129,.18)" : "rgba(52,211,153,.18)", borderWidth: 2, pointRadius: 4,
-      pointBackgroundColor: light ? "#059669" : "#34D399" }] },
+      borderColor: light ? "#9a6b1f" : "#ecd089", backgroundColor: light ? "rgba(184,137,47,.22)" : "rgba(236,208,137,.2)", borderWidth: 2, pointRadius: 4,
+      pointBackgroundColor: light ? "#9a6b1f" : "#ecd089" }] },
     options: { animation: !light, responsive: !light, plugins: { legend: { display: false }, tooltip: { callbacks: { title: (i) => i[0].label.replace(",", " "), label: (i) => "强度 " + i.raw } } },
       scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, display: false }, grid: { color: grid }, angleLines: { color: grid }, pointLabels: { color: ink, font: { size: light ? 15 : 11 } } } } } };
 }
@@ -378,7 +378,7 @@ const App = {
     $("qCounter").textContent = `第 ${S.qi + 1} / ${QUESTIONS.length} 题`;
     $("qAspect").textContent = q.aspect; $("qPrompt").textContent = q.prompt; $("qA").textContent = q.a; $("qB").textContent = q.b;
     $("progress").style.width = 10 + (45 * S.qi) / QUESTIONS.length + "%";
-    $("qScale").innerHTML = SCALE.map(([lab, v]) => `<button class="opt rounded-xl py-3 ${S.answers[q.qid] === v ? "on" : ""}" onclick="App.answer(${v})">${lab}</button>`).join("");
+    $("qScale").innerHTML = SCALE.map(([lab, v]) => `<button class="opt py-3 ${S.answers[q.qid] === v ? "on" : ""}" onclick="App.answer(${v})">${lab}</button>`).join("");
   },
   answer(v) {
     S.answers[QUESTIONS[S.qi].qid] = v; save();
@@ -391,10 +391,10 @@ const App = {
     $("idCode").textContent = t.code; $("idName").textContent = t.name;
     $("idSub").textContent = `${m.name}矩阵(${t.matrix}) · 船长 ${t.stack[0]} / 副手 ${t.stack[1]}`;
     $("idMotto").textContent = `“${t.motto}”`;
-    const row = (k, v) => `<div><div class="text-white font-semibold">${k}</div><div>${esc(v)}</div></div>`;
+    const row = (k, v) => `<div><div class="font-semibold" style="color:#ecd089">${k}</div><div>${esc(v)}</div></div>`;
     $("idBody").innerHTML = row("你的决策机制", t.logic) + row("偏好的资产岗位", t.assets.map((r) => `${r}(${ROLES[r]})`).join("、") + " —— " + t.asset_note) +
       row("核心认知优势", m.strength) +
-      `<div class="rounded-xl p-4 bg-amber-400/10 border border-amber-400/25 text-amber-100"><b>阴影状态 · 压力下要留意</b><br>${esc(t.shadow)}</div>` + row("行为护栏", t.behavior.guardrail);
+      `<div class="p-4" style="background:rgba(140,59,31,.22);border:1px solid rgba(201,122,74,.45);color:#f3dcc4"><b>阴影状态 · 压力下要留意</b><br>${esc(t.shadow)}</div>` + row("行为护栏", t.behavior.guardrail);
     $("idClarity").textContent = "偏好清晰度:" + DIMS.map((d) => `${d} ${Math.round(a.clarity[d] * 100)}%`).join(" · ") + (a.borderline.length ? ` · 边界维度:${a.borderline.join("、")}` : "");
     drawRadar(a.functions);
   },
@@ -402,13 +402,13 @@ const App = {
   showPension() {
     const f = $("pensionForm"); if (f.dataset.built) return; f.dataset.built = 1;
     f.innerHTML = PENSION_Q.map((q) => {
-      const v = S.pension[q.k] ?? q.def, hint = q.hint ? `<div class="text-xs text-slate-500 mt-1">${q.hint}</div>` : "";
+      const v = S.pension[q.k] ?? q.def, hint = q.hint ? `<div class="text-xs muted mt-1">${q.hint}</div>` : "";
       let input;
       if (q.type === "select") input = `<select class="field" name="${q.k}">${q.opts.map((o) => `<option ${o === v ? "selected" : ""}>${o}</option>`).join("")}</select>`;
-      else if (q.type === "multi") input = `<div class="flex flex-wrap gap-2">${q.opts.map((o) => `<button type="button" data-multi="${q.k}" data-v="${o}" class="opt rounded-full px-4 py-1.5 text-sm ${v.includes(o) ? "on" : ""}">${o}</button>`).join("")}</div>`;
+      else if (q.type === "multi") input = `<div class="flex flex-wrap gap-2">${q.opts.map((o) => `<button type="button" data-multi="${q.k}" data-v="${o}" class="opt px-4 py-1.5 text-sm ${v.includes(o) ? "on" : ""}">${o}</button>`).join("")}</div>`;
       else if (q.type === "text") input = `<textarea class="field" name="${q.k}" rows="2" maxlength="300" placeholder="例如:每年12000到底要不要交满?交了买什么?">${esc(v)}</textarea>`;
       else input = `<input class="field" type="number" name="${q.k}" min="${q.min}" max="${q.max}" step="${q.step || 1}" value="${v}">`;
-      return `<div class="${q.wide ? "md:col-span-2" : ""}"><label class="block text-sm text-slate-300 mb-1.5">${q.label}</label>${input}${hint}</div>`;
+      return `<div class="${q.wide ? "md:col-span-2" : ""}"><label class="block text-sm mb-1.5" style="color:#d8c9a6">${q.label}</label>${input}${hint}</div>`;
     }).join("");
     f.addEventListener("click", (e) => {
       const b = e.target.closest("[data-multi]"); if (!b) return;
@@ -459,7 +459,7 @@ const App = {
         margin: [10, 0, 12, 0], filename: `W-MBTI养老财富报告_${t.code}_${new Date().toISOString().slice(0, 10)}.pdf`,
         image: { type: "jpeg", quality: 0.95 },
         // 手机浏览器的画布面积有上限,降低倍率避免长报告导出空白
-        html2canvas: { scale: mobile ? 1.5 : 2, backgroundColor: "#ffffff", useCORS: true, windowWidth: 800, scrollX: 0, scrollY: 0 },
+        html2canvas: { scale: mobile ? 1.5 : 2, backgroundColor: "#fffdf7", useCORS: true, windowWidth: 800, scrollX: 0, scrollY: 0 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }, pagebreak: { mode: ["css", "legacy"], avoid: [".avoid", ".prod", "table", ".kpis", ".motto", ".warn", "h2", "h3", "img"] },
       }).from(el).save();
     } finally { el.classList.remove("pdf"); btn.disabled = false; btn.textContent = "⬇ 下载 PDF 报告"; }

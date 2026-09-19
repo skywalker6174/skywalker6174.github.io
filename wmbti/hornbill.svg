@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><radialGradient id="g" cx="35%" cy="25%" r="80%"><stop offset="0" stop-color="#4a3319"/><stop offset="1" stop-color="#120c07"/></radialGradient></defs>
+  <clipPath id="c"><circle cx="32" cy="32" r="30"/></clipPath>
+  <circle cx="32" cy="32" r="30.5" fill="url(#g)" stroke="#c9a24b" stroke-width="2"/>
+  <g clip-path="url(#c)">
+  <path d="M15 59c-2-13 0-24 8-31l12 6c-4 7-6 15-6 25z" fill="#ead9a4"/>
+  <!-- 头部(黑) -->
+  <path d="M21 30c-1-8 5-13 12-12 6 1 9 6 7 12-2 5-8 7-13 5-3-1-5-3-6-5z" fill="#0b0705"/>
+  <!-- 盔突 -->
+  <path d="M25 19c3-8 17-10 25-1-6-2-11-1-14 4z" fill="#e27a2b"/>
+  <!-- 大喙:上喙下弯 -->
+  <path d="M37 21c10-3 20 3 24 17-6-6-13-8-22-7z" fill="#f4bd3a"/>
+  <path d="M39 31c8-1 15 1 21 7-7-2-14-2-21-1z" fill="#d99a22"/>
+  </g>
+  <!-- 眼 -->
+  <circle cx="31" cy="25.500" r="3" fill="#f6efe0"/><circle cx="31.300" cy="25.500" r="1.700" fill="#8c1d12"/>
+</svg>
