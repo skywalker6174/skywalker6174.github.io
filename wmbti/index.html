@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <meta name="theme-color" content="#0d0906">
+  <title>犀鸟财富伴侣 · W-MBTI V3.2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="report.css">
+  <link rel="icon" type="image/svg+xml" href="hornbill.svg">
+  <style>
+    /* 伦勃朗式明暗法:暖黑底、单侧金色光源、赭石与金、衬线字体、镀金画框 */
+    :root { --bg:#0d0906; --panel:rgba(201,162,75,.055); --line:rgba(201,162,75,.22); --gold:#c9a24b; --gold2:#ecd089;
+            --ink:#efe6d2; --muted:#a8977a; --umber:#8c3b1f; }
+    html { scroll-behavior:smooth; }
+    body { background:
+        radial-gradient(ellipse 70% 55% at 18% -5%, rgba(214,164,74,.20), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 100% 100%, rgba(140,59,31,.10), transparent 60%), var(--bg);
+      background-attachment: fixed; color:var(--ink);
+      font-family: "Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","SimSun",Georgia,serif;
+      padding-bottom: env(safe-area-inset-bottom); overflow-x:hidden; }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.07; mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    nav, main, footer { position:relative; z-index:2; }
+    .sans { font-family: -apple-system,"PingFang SC","Microsoft YaHei",sans-serif; }
+    h1,h2,h3 { letter-spacing:.02em; }
+    .gold-text { background:linear-gradient(100deg,#f3dc9c 0%,#c9a24b 45%,#8a6424 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .muted { color:var(--muted); }
+    .hb { width:30px; height:30px; flex:none; }
+    .card { background:var(--panel); border:1px solid var(--line); }
+    .tag { display:inline-flex; align-items:center; gap:6px; background:rgba(201,162,75,.10); border:1px solid rgba(201,162,75,.35);
+           border-radius:2px; padding:4px 14px; color:var(--gold2); font-size:.8rem; letter-spacing:.12em; }
+    .metric-card { background:linear-gradient(135deg,rgba(201,162,75,.16),rgba(201,162,75,.02)); border:1px solid var(--line); }
+    .metric-card .n { color:var(--gold2); }
+    .opt { border:1px solid rgba(201,162,75,.22); background:rgba(201,162,75,.04); transition:.15s; min-height:48px; -webkit-tap-highlight-color:transparent; color:var(--ink); }
+    .opt:hover { border-color:rgba(236,208,137,.6); background:rgba(201,162,75,.10); }
+    .opt.on { border-color:var(--gold2); background:rgba(201,162,75,.24); color:#fff3d0; }
+    .btn { background:linear-gradient(180deg,#e9cc82,#b88a34); color:#1b1208; font-weight:700; border-radius:3px; padding:.7rem 1.5rem; transition:.15s;
+           box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 8px 24px rgba(0,0,0,.45); letter-spacing:.05em; }
+    .btn:hover { filter:brightness(1.08); } .btn:disabled { opacity:.45; cursor:not-allowed; }
+    .btn-ghost { border:1px solid rgba(201,162,75,.35); border-radius:3px; padding:.7rem 1.4rem; color:#d8c9a6; }
+    .btn-ghost:hover { border-color:var(--gold2); color:#fff; }
+    input.field, select.field, textarea.field { width:100%; background:rgba(0,0,0,.35); border:1px solid rgba(201,162,75,.28);
+      border-radius:3px; padding:.6rem .8rem; color:var(--ink); outline:none; font-size:16px; font-family:inherit; }
+    input.field:focus, select.field:focus, textarea.field:focus { border-color:var(--gold2); box-shadow:0 0 0 3px rgba(201,162,75,.15); }
+    select.field option { color:#111; }
+    /* 镀金画框 */
+    .frame { position:relative; border:1px solid #6d5220; padding:7px; background:linear-gradient(145deg,#a9822f,#4a3512 40%,#c9a24b 60%,#3a290d);
+             box-shadow:0 30px 70px rgba(0,0,0,.7), 0 0 0 1px #000; }
+    .frame img { display:block; width:100%; height:auto; box-shadow:0 0 0 1px #000 inset; }
+    .caption { font-size:.78rem; color:var(--muted); margin-top:.7rem; line-height:1.6; }
+    .caption b { color:#d8c9a6; font-weight:600; }
+    .hero { position:relative; margin:0 -1.25rem; padding:0 1.25rem; }
+    .hero-art { position:absolute; inset:0 -6vw; background:url(art/nightwatch.jpg) 70% 28%/cover no-repeat; opacity:.95;
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%); }
+    .hero-art::after { content:""; position:absolute; inset:0;
+      background:linear-gradient(90deg,rgba(13,9,6,.96) 0%,rgba(13,9,6,.82) 34%,rgba(13,9,6,.12) 68%,rgba(13,9,6,.4) 100%),
+                 linear-gradient(180deg,rgba(13,9,6,.5) 0%,transparent 25%,transparent 70%,var(--bg) 100%); }
+    @media (max-width:640px) { .hero-art { opacity:.5; background-position:64% 20%; } }
+    .banner { position:relative; overflow:hidden; border:1px solid var(--line); }
+    .banner img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; opacity:.55; }
+    .banner::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(13,9,6,.92),rgba(13,9,6,.55) 55%,rgba(13,9,6,.2)); }
+    .banner > div { position:relative; z-index:1; }
+    hr.dim { border-color:var(--line); }
+    .screen { display:none; } .screen.active { display:block; }
+    .spinner { width:34px;height:34px;border:2px solid rgba(201,162,75,.2);border-top-color:var(--gold2);border-radius:50%;animation:spin 1.1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <style>
+    .likert { display:grid; grid-template-columns:repeat(6,1fr); gap:.5rem; }
+    @media (max-width:640px) { .likert { grid-template-columns:repeat(2,1fr); } }
+    .choice { display:block; width:100%; text-align:left; padding:.8rem 1rem; }
+    .entry { cursor:pointer; transition:.15s; } .entry:hover { border-color:var(--gold2); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+<nav class="sticky top-0 z-40 bg-[#0d0906]/90 backdrop-blur border-b border-[rgba(201,162,75,.18)]">
+  <div class="max-w-5xl mx-auto px-5 py-3.5 flex items-center justify-between">
+    <a href="#" onclick="App.home();return false" class="flex items-center gap-3"><svg class="hb" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><radialGradient id="hbg" cx="35%" cy="25%" r="80%"><stop offset="0" stop-color="#4a3319"/><stop offset="1" stop-color="#120c07"/></radialGradient></defs>
+  <clipPath id="hbc"><circle cx="32" cy="32" r="30"/></clipPath>
+  <circle cx="32" cy="32" r="30.5" fill="url(#hbg)" stroke="#c9a24b" stroke-width="2"/>
+  <g clip-path="url(#hbc)">
+  <path d="M15 59c-2-13 0-24 8-31l12 6c-4 7-6 15-6 25z" fill="#ead9a4"/>
+  
+  <path d="M21 30c-1-8 5-13 12-12 6 1 9 6 7 12-2 5-8 7-13 5-3-1-5-3-6-5z" fill="#0b0705"/>
+  
+  <path d="M25 19c3-8 17-10 25-1-6-2-11-1-14 4z" fill="#e27a2b"/>
+  
+  <path d="M37 21c10-3 20 3 24 17-6-6-13-8-22-7z" fill="#f4bd3a"/>
+  <path d="M39 31c8-1 15 1 21 7-7-2-14-2-21-1z" fill="#d99a22"/>
+  </g>
+  
+  <circle cx="31" cy="25.500" r="3" fill="#f6efe0"/><circle cx="31.300" cy="25.500" r="1.700" fill="#8c1d12"/>
+</svg><span class="font-semibold tracking-wider">犀鸟财富伴侣 <span class="muted font-normal">· W-MBTI V3.2</span></span></a>
+    <span id="stepLabel" class="text-sm muted"></span>
+  </div>
+  <div class="h-px bg-[rgba(201,162,75,.12)]"><div id="progress" class="h-px bg-[#ecd089] transition-all" style="width:0%"></div></div>
+</nav>
+
+<div id="backend" class="hidden sans text-sm px-5 py-2.5" style="position:relative;z-index:2;background:rgba(140,59,31,.35);border-bottom:1px solid rgba(201,162,75,.3);color:#f1e4c3"></div>
+<main class="max-w-5xl mx-auto px-5">
+
+  <section id="s-home" class="screen active pb-10">
+    <div class="hero py-14 md:py-24">
+      <div class="hero-art"></div>
+      <div class="relative max-w-2xl">
+        <span class="tag">退休决策操作系统 · 研究原型</span>
+        <h1 class="mt-7 text-4xl md:text-6xl font-bold leading-tight">先看清光里的自己,<br><span class="gold-text">再安排你的养老金</span></h1>
+        <p class="mt-6 text-lg leading-relaxed" style="color:#d9ccb0">这不是一场考试,也没有更优秀的类型。我们从一些日常选择出发,看看你通常怎样理解未来、做决定和开始行动;
+          之后如果你愿意,再一起把未来的工资单落到现实里。不需要登录,随时可以暂停。</p>
+        <div class="caption mt-8">背景:伦勃朗《夜巡》,1642,阿姆斯特丹国立博物馆</div>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="card entry p-6" onclick="App.startExplorer()"><div class="tag">第一步 · 可选</div><h3 class="mt-4 text-xl font-bold gold-text">探索版</h3>
+        <p class="mt-2 text-sm muted">20 屏,约 4—6 分钟。初步身份家族、两项偏好线索、一条值得被看见的线索。</p><div class="mt-5 btn inline-block">开始探索 →</div></div>
+      <div class="card entry p-6" onclick="App.startIdentity()"><div class="tag">第二步</div><h3 class="mt-4 text-xl font-bold gold-text">身份完整版</h3>
+        <p class="mt-2 text-sm muted">46—52 题,约 12—16 分钟。四轴连续分、主要与相邻候选、置信度。探索版答过的题不会重问。</p><div class="mt-5 btn inline-block">开始完整版 →</div></div>
+      <div class="card p-6"><div class="tag">第三步</div><h3 class="mt-4 text-xl font-bold gold-text">养老规划与投资建议</h3>
+        <p class="mt-2 text-sm muted">完成身份段后进入:三类账户、三张工资单、风险五维、养老缺口,以及基于量化策略、行业与产品池的投资建议报告。</p>
+        <button id="btnResumePlan" class="mt-5 btn-ghost hidden" onclick="App.startPlanning()">继续规划 →</button></div>
+    </div>
+    <div class="mt-10 card p-5 text-sm muted leading-relaxed sans">
+      <b style="color:#d8c9a6">隐私与边界:</b>不需要登录;你的作答保存在本机浏览器,并以匿名会话保存在服务器上用于生成报告,每次访问都有留痕。
+      计分规则、量化策略和大模型密钥只在服务器端。W-MBTI V3.2 目前是研究原型,结果不是诊断,也不决定你的风险等级或可以购买的产品;报告内容不构成投资建议。
+      <a href="#" class="underline" onclick="App.reset();return false">清除本机作答</a></div>
+  </section>
+
+  <section id="s-quiz" class="screen py-10 md:py-14">
+    <div class="flex items-center justify-between text-sm muted"><span id="qCounter"></span><span id="qStage" class="tag !py-0.5 !px-3 !text-xs"></span></div>
+    <div id="qTitle" class="mt-5 text-sm" style="color:#ecd089"></div>
+    <h2 id="qText" class="mt-2 text-2xl md:text-3xl font-semibold leading-snug"></h2>
+    <div id="qHint" class="mt-3 text-sm muted"></div>
+    <div id="qOptions" class="mt-7"></div>
+    <div class="mt-8 flex justify-between"><button class="btn-ghost" onclick="Quiz.prev()">← 上一题</button>
+      <span class="text-xs muted self-center">没有对错;请按最近 12 个月里通常的你作答</span></div>
+  </section>
+
+  <section id="s-card" class="screen py-10 md:py-14">
+    <div class="flex items-center justify-between text-sm muted"><span id="cCounter"></span><span class="tag !py-0.5 !px-3 !text-xs">规划卡</span></div>
+    <div class="banner p-6 md:p-8 mt-5"><img src="art/syndics.jpg" alt=""><div><h2 id="cTitle" class="text-2xl md:text-3xl font-bold"></h2>
+      <p id="cLead" class="mt-2" style="color:#d9ccb0"></p></div></div>
+    <form id="cForm" class="mt-7 grid md:grid-cols-2 gap-x-6 gap-y-5" onsubmit="return false"></form>
+    <div id="cWhy" class="mt-5 text-sm muted"></div>
+    <div id="cErr" class="mt-3 text-sm" style="color:#e9a27a"></div>
+    <div class="mt-8 flex justify-between"><button class="btn-ghost" onclick="Cards.prev()">← 上一张</button><button class="btn" onclick="Cards.next()">下一步 →</button></div>
+  </section>
+
+  <section id="s-loading" class="screen py-10 md:py-14 text-center">
+    <figure class="max-w-sm mx-auto"><div class="frame"><img src="art/storm.jpg" alt="伦勃朗《加利利海上的风暴》1633"></div>
+      <figcaption class="caption"><b>《加利利海上的风暴》</b>,1633 —— 伦勃朗唯一的海景画。</figcaption></figure>
+    <div class="spinner mx-auto mt-8"></div><div id="loadMsg" class="mt-5 text-lg" style="color:#f1e4c3"></div>
+  </section>
+
+  <section id="s-report" class="screen py-8">
+    <div id="actions" class="flex flex-wrap items-center gap-3 mb-5"></div>
+    <div id="extra" class="mb-5"></div>
+    <div class="overflow-x-auto -mx-2 sm:mx-0" style="box-shadow:0 30px 80px rgba(0,0,0,.6)"><div id="report"></div></div>
+  </section>
+</main>
+
+<footer class="max-w-5xl mx-auto px-5 py-10 text-xs muted sans border-t border-[rgba(201,162,75,.15)] mt-10">
+  犀鸟财富伴侣 · 研究演示 · W-MBTI V3.2 为公开技术规范草案下的工程原型 · 报告内容不构成投资建议。<br>© 2026 · Yue Zhao · PHBS</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
