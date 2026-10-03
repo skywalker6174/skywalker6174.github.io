@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <meta name="theme-color" content="#0d0906">
+  <title>养老工具箱 · 犀鸟财富伴侣</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="report.css">
+  <link rel="icon" type="image/svg+xml" href="hornbill.svg">
+  <style>
+    /* 伦勃朗式明暗法:暖黑底、单侧金色光源、赭石与金、衬线字体、镀金画框 */
+    :root { --bg:#0d0906; --panel:rgba(201,162,75,.055); --line:rgba(201,162,75,.22); --gold:#c9a24b; --gold2:#ecd089;
+            --ink:#efe6d2; --muted:#a8977a; --umber:#8c3b1f; }
+    html { scroll-behavior:smooth; }
+    body { background:
+        radial-gradient(ellipse 70% 55% at 18% -5%, rgba(214,164,74,.20), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 100% 100%, rgba(140,59,31,.10), transparent 60%), var(--bg);
+      background-attachment: fixed; color:var(--ink);
+      font-family: "Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC","SimSun",Georgia,serif;
+      padding-bottom: env(safe-area-inset-bottom); overflow-x:hidden; }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.07; mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    nav, main, footer { position:relative; z-index:2; }
+    .sans { font-family: -apple-system,"PingFang SC","Microsoft YaHei",sans-serif; }
+    h1,h2,h3 { letter-spacing:.02em; }
+    .gold-text { background:linear-gradient(100deg,#f3dc9c 0%,#c9a24b 45%,#8a6424 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .muted { color:var(--muted); }
+    .hb { width:30px; height:30px; flex:none; }
+    .card { background:var(--panel); border:1px solid var(--line); }
+    .tag { display:inline-flex; align-items:center; gap:6px; background:rgba(201,162,75,.10); border:1px solid rgba(201,162,75,.35);
+           border-radius:2px; padding:4px 14px; color:var(--gold2); font-size:.8rem; letter-spacing:.12em; }
+    .metric-card { background:linear-gradient(135deg,rgba(201,162,75,.16),rgba(201,162,75,.02)); border:1px solid var(--line); }
+    .metric-card .n { color:var(--gold2); }
+    .opt { border:1px solid rgba(201,162,75,.22); background:rgba(201,162,75,.04); transition:.15s; min-height:48px; -webkit-tap-highlight-color:transparent; color:var(--ink); }
+    .opt:hover { border-color:rgba(236,208,137,.6); background:rgba(201,162,75,.10); }
+    .opt.on { border-color:var(--gold2); background:rgba(201,162,75,.24); color:#fff3d0; }
+    .btn { background:linear-gradient(180deg,#e9cc82,#b88a34); color:#1b1208; font-weight:700; border-radius:3px; padding:.7rem 1.5rem; transition:.15s;
+           box-shadow:0 1px 0 rgba(255,255,255,.35) inset, 0 8px 24px rgba(0,0,0,.45); letter-spacing:.05em; }
+    .btn:hover { filter:brightness(1.08); } .btn:disabled { opacity:.45; cursor:not-allowed; }
+    .btn-ghost { border:1px solid rgba(201,162,75,.35); border-radius:3px; padding:.7rem 1.4rem; color:#d8c9a6; }
+    .btn-ghost:hover { border-color:var(--gold2); color:#fff; }
+    input.field, select.field, textarea.field { width:100%; background:rgba(0,0,0,.35); border:1px solid rgba(201,162,75,.28);
+      border-radius:3px; padding:.6rem .8rem; color:var(--ink); outline:none; font-size:16px; font-family:inherit; }
+    input.field:focus, select.field:focus, textarea.field:focus { border-color:var(--gold2); box-shadow:0 0 0 3px rgba(201,162,75,.15); }
+    select.field option { color:#111; }
+    /* 镀金画框 */
+    .frame { position:relative; border:1px solid #6d5220; padding:7px; background:linear-gradient(145deg,#a9822f,#4a3512 40%,#c9a24b 60%,#3a290d);
+             box-shadow:0 30px 70px rgba(0,0,0,.7), 0 0 0 1px #000; }
+    .frame img { display:block; width:100%; height:auto; box-shadow:0 0 0 1px #000 inset; }
+    .caption { font-size:.78rem; color:var(--muted); margin-top:.7rem; line-height:1.6; }
+    .caption b { color:#d8c9a6; font-weight:600; }
+    .hero { position:relative; margin:0 -1.25rem; padding:0 1.25rem; }
+    .hero-art { position:absolute; inset:0 -6vw; background:url(art/nightwatch.jpg) 70% 28%/cover no-repeat; opacity:.95;
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%); }
+    .hero-art::after { content:""; position:absolute; inset:0;
+      background:linear-gradient(90deg,rgba(13,9,6,.96) 0%,rgba(13,9,6,.82) 34%,rgba(13,9,6,.12) 68%,rgba(13,9,6,.4) 100%),
+                 linear-gradient(180deg,rgba(13,9,6,.5) 0%,transparent 25%,transparent 70%,var(--bg) 100%); }
+    @media (max-width:640px) { .hero-art { opacity:.5; background-position:64% 20%; } }
+    .banner { position:relative; overflow:hidden; border:1px solid var(--line); }
+    .banner img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; opacity:.55; }
+    .banner::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(13,9,6,.92),rgba(13,9,6,.55) 55%,rgba(13,9,6,.2)); }
+    .banner > div { position:relative; z-index:1; }
+    hr.dim { border-color:var(--line); }
+    .screen { display:none; } .screen.active { display:block; }
+    .spinner { width:34px;height:34px;border:2px solid rgba(201,162,75,.2);border-top-color:var(--gold2);border-radius:50%;animation:spin 1.1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <style>
+    .likert { display:grid; grid-template-columns:repeat(6,1fr); gap:.5rem; }
+    @media (max-width:640px) { .likert { grid-template-columns:repeat(2,1fr); } }
+    .choice { display:block; width:100%; text-align:left; padding:.8rem 1rem; }
+    .entry { cursor:pointer; transition:.15s; } .entry:hover { border-color:var(--gold2); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+<nav class="sticky top-0 z-40 bg-[#0d0906]/90 backdrop-blur border-b border-[rgba(201,162,75,.18)]">
+  <div class="max-w-5xl mx-auto px-5 py-3.5 flex items-center justify-between gap-3">
+    <a href="./" class="flex items-center gap-3"><svg class="hb" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><radialGradient id="hbg" cx="35%" cy="25%" r="80%"><stop offset="0" stop-color="#4a3319"/><stop offset="1" stop-color="#120c07"/></radialGradient></defs>
+  <clipPath id="hbc"><circle cx="32" cy="32" r="30"/></clipPath>
+  <circle cx="32" cy="32" r="30.5" fill="url(#hbg)" stroke="#c9a24b" stroke-width="2"/>
+  <g clip-path="url(#hbc)">
+  <path d="M15 59c-2-13 0-24 8-31l12 6c-4 7-6 15-6 25z" fill="#ead9a4"/>
+  
+  <path d="M21 30c-1-8 5-13 12-12 6 1 9 6 7 12-2 5-8 7-13 5-3-1-5-3-6-5z" fill="#0b0705"/>
+  
+  <path d="M25 19c3-8 17-10 25-1-6-2-11-1-14 4z" fill="#e27a2b"/>
+  
+  <path d="M37 21c10-3 20 3 24 17-6-6-13-8-22-7z" fill="#f4bd3a"/>
+  <path d="M39 31c8-1 15 1 21 7-7-2-14-2-21-1z" fill="#d99a22"/>
+  </g>
+  
+  <circle cx="31" cy="25.500" r="3" fill="#f6efe0"/><circle cx="31.300" cy="25.500" r="1.700" fill="#8c1d12"/>
+</svg><span class="font-semibold tracking-wider">犀鸟财富伴侣</span></a>
+    <div class="flex items-center gap-5 text-sm"><a href="./" class="" style="color:#a8977a">测评</a><a href="tools.html" class="font-semibold" style="color:#ecd089">工具</a><a href="about.html" class="" style="color:#a8977a">关于我们</a></div>
+  </div>
+  <div class="h-px bg-[rgba(201,162,75,.12)]"><div id="progress" class="h-px bg-[#ecd089] transition-all" style="width:0%"></div></div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-5">
+
+  <section class="py-10 md:py-14">
+    <div class="banner p-6 md:p-10">
+      <img src="art/richfool.jpg" alt="">
+      <div><span class="tag">养老工具箱 · 完全在你的浏览器里计算</span>
+      <h1 class="mt-5 text-3xl md:text-5xl font-bold leading-tight">算一算:<span class="gold-text">退休金、税优与养老缺口</span></h1>
+      <p class="mt-4 max-w-2xl" style="color:#d9ccb0">先了解个人养老金的规则,再填几项信息,估算你的法定退休时间、预计养老金、税优金额和养老缺口。
+        这个页面不连接服务器,也不保存你填写的内容。</p></div>
+    </div>
+
+    <h2 class="mt-12 text-2xl font-bold gold-text">先了解:个人养老金的规则</h2>
+    <div class="mt-5 grid md:grid-cols-3 gap-4 text-sm leading-relaxed" style="color:#d9ccb0">
+      <div class="card p-5"><div class="font-semibold mb-2" style="color:#ecd089">谁可以参加</div>
+        自 2024 年 12 月 15 日起在全国实施。在中国境内参加城镇职工或城乡居民基本养老保险的劳动者,都可以自愿开户参加。</div>
+      <div class="card p-5"><div class="font-semibold mb-2" style="color:#ecd089">税收优惠(递延纳税)</div>
+        <b>缴费时</b>:每年最多 12000 元,限额内据实在税前扣除。<br><b>投资时</b>:账户内的投资收益暂不征收个人所得税。<br><b>领取时</b>:不并入综合所得,单独按 3% 计税。</div>
+      <div class="card p-5"><div class="font-semibold mb-2" style="color:#ecd089">可以买什么</div>
+        储蓄存款、理财产品、商业养老保险、公募基金(养老目标基金与指数基金),以及储蓄国债(电子式)。买什么、买多少由你自己决定。</div>
+      <div class="card p-5 md:col-span-2"><div class="font-semibold mb-2" style="color:#ecd089">什么时候能取</div>
+        账户封闭运行。达到领取基本养老金的年龄、完全丧失劳动能力、出国(境)定居时可以领取;另外,患重大疾病(医保目录内自付费用超过本省上一年度居民人均可支配收入)、
+        两年内领取失业保险金累计满 12 个月、正在领取最低生活保障金的,也可以申请提前领取。可以按月、分次或一次性领取。</div>
+      <div class="card p-5"><div class="font-semibold mb-2" style="color:#ecd089">需要留意</div>
+        税优的多少取决于你的税率:税率不高于 3% 时基本没有节税效果。缴进去的钱在达到领取条件前不能取出,所以要先留足应急金。</div>
+    </div>
+    <p class="mt-3 text-xs muted sans">依据:人社部等五部门《关于全面实施个人养老金制度的通知》(人社部发〔2024〕87号)、财政部 税务总局公告 2024 年第 21 号及后续领取规定。政策可能调整,以主管部门最新发布为准。</p>
+
+    <h2 class="mt-12 text-2xl font-bold gold-text">填写你的情况</h2>
+    <form class="mt-6 grid md:grid-cols-2 gap-x-6 gap-y-5" onsubmit="return false">
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">出生年月 *</label><div class="grid grid-cols-2 gap-2"><select id="by" class="field"><option>1960</option><option>1961</option><option>1962</option><option>1963</option><option>1964</option><option>1965</option><option>1966</option><option>1967</option><option>1968</option><option>1969</option><option>1970</option><option>1971</option><option>1972</option><option>1973</option><option>1974</option><option>1975</option><option>1976</option><option>1977</option><option>1978</option><option>1979</option><option>1980</option><option>1981</option><option>1982</option><option>1983</option><option>1984</option><option>1985</option><option>1986</option><option>1987</option><option>1988</option><option>1989</option><option>1990</option><option>1991</option><option>1992</option><option>1993</option><option>1994</option><option>1995</option><option>1996</option><option>1997</option><option>1998</option><option>1999</option><option>2000</option><option>2001</option><option>2002</option><option>2003</option><option>2004</option><option>2005</option><option>2006</option><option>2007</option></select><select id="bm" class="field"><option value=1>1 月</option><option value=2>2 月</option><option value=3>3 月</option><option value=4>4 月</option><option value=5>5 月</option><option value=6>6 月</option><option value=7>7 月</option><option value=8>8 月</option><option value=9>9 月</option><option value=10>10 月</option><option value=11>11 月</option><option value=12>12 月</option></select></div></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">参保人员类别 *</label><select id="kind" class="field"><option value="male">男职工</option><option value="female55">女职工(原法定退休年龄 55 岁)</option><option value="female50">女职工(原法定退休年龄 50 岁)</option></select><div class="text-xs muted mt-1" >用于计算延迟退休后的法定退休年龄</div></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">计划退休年龄(选填)</label><input id="retireAge" class="field" type="number" min="45" max="70" step="0.5"><div class="text-xs muted mt-1" >不填则按法定退休年龄计算</div></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">所在城市 *</label><select id="city" class="field"></select></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">当地月平均工资 / 养老金计发基数(元) *</label><input id="base" class="field" type="number" min="1000" step="1"><div class="text-xs muted mt-1" id="baseHint"></div></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">你当前的月缴费工资(元) *</label><input id="salary" class="field" type="number" min="0" step="100" placeholder="例如 15000"><div class="text-xs muted mt-1" >社保缴费基数;不清楚可填税前月工资</div></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">已经缴纳养老保险多少年</label><input id="yearsPast" class="field" type="number" min="0" max="50" step="1" placeholder="例如 10"></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">个人账户目前余额(元,选填)</label><input id="balance" class="field" type="number" min="0" step="1000"><div class="text-xs muted mt-1" >不填则按已缴年限粗估</div></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">退休后目标每月花销(元,按今天的物价) *</label><input id="target" class="field" type="number" min="0" step="500" placeholder="例如 10000"></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">按活到多少岁来准备</label><select id="longevity" class="field"><option>85</option><option selected>90</option><option>95</option><option>100</option></select></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">已经为养老准备的储蓄和投资(万元)</label><input id="savings" class="field" type="number" min="0" step="1" placeholder="例如 30"><div class="text-xs muted mt-1" >只算明确留给养老的钱,不含自住房和应急金</div></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">每月能为养老存下多少(元)</label><input id="monthly" class="field" type="number" min="0" step="100" placeholder="例如 2000"></div>
+      <div class=""><label class="block text-sm mb-1.5" style="color:#d8c9a6">全年税前收入(万元,选填)</label><input id="income" class="field" type="number" min="0" step="1" placeholder="例如 30"><div class="text-xs muted mt-1" >用于估算个人养老金的税优档位</div></div>
+    </form>
+    <div id="err" class="mt-4 text-sm" style="color:#e9a27a"></div>
+    <div class="mt-6"><button class="btn" onclick="calc()">开始计算 →</button></div>
+
+    <div id="results" hidden class="mt-10">
+      <div style="box-shadow:0 30px 80px rgba(0,0,0,.6)"><div id="report">
+        <div class="cover"><div class="kicker">犀鸟财富伴侣 · 养老工具箱</div><h1>你的养老测算</h1><div class="muted">所有金额按今天的购买力;结果为粗略估算</div></div>
+        <h2>一、退休年限</h2><div id="o-retire"></div>
+        <h2>二、预计退休金</h2><div id="o-pension"></div>
+        <h2>三、个人养老金税优</h2><div id="o-tax"></div>
+        <h2>四、养老缺口</h2><div id="o-gap"></div>
+        <div class="disclaimer"><b>说明</b><br>本页是公开规则下的简化测算工具,用于帮助理解,不构成投资、税务或社保方面的专业意见。养老金待遇以社保部门核定为准,个税以年度汇算为准。
+          想把家庭责任、风险和具体配置一起考虑,可以到“测评”页完成深度版。</div>
+      </div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="max-w-5xl mx-auto px-5 py-10 text-xs muted sans border-t border-[rgba(201,162,75,.15)] mt-10">
+  犀鸟财富伴侣 · 研究演示 · 页面内容不构成投资建议。<br>© 2026 · 犀鸟智投科技</footer>
+<script src="tools-data.js"></script>
+<script src="tools.js"></script>
+</body>
+</html>
