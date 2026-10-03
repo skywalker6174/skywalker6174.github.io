@@ -14,12 +14,31 @@ const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } cat
 const API_BASE = location.port === "8600" || ["127.0.0.1", "localhost"].includes(location.hostname) ? "" : "http://127.0.0.1:8600";
 if (!S.sid) { S.sid = Array.from(crypto.getRandomValues(new Uint8Array(18)), (b) => b.toString(16).padStart(2, "0")).join(""); save(); }
 
+const LOCAL_URL = "http://127.0.0.1:8600/";
+
+async function rawFetch(url, opts) {
+  // Chrome 的“本地网络访问”:声明目标是本机地址,浏览器才会弹出授权询问;不认识这个选项的浏览器退回普通请求。
+  try { return await fetch(url, { ...opts, targetAddressSpace: "loopback" }); }
+  catch (e) { if (e instanceof TypeError && /targetAddressSpace|enum/i.test(e.message)) return fetch(url, opts); throw e; }
+}
+
+async function whyBlocked() {
+  const ua = navigator.userAgent, safari = /Safari/.test(ua) && !/Chrome|Chromium|Edg/.test(ua);
+  if (/Mobile|Android|iPhone|iPad/.test(ua)) return "这个页面需要连接你电脑上运行的服务,手机上无法使用。请在运行服务的那台电脑上打开。";
+  if (safari) return "Safari 不允许网页访问本机服务。请点右侧按钮直接打开本机版本,或改用 Chrome / Edge。";
+  let state = "";
+  try { state = (await navigator.permissions.query({ name: "local-network-access" })).state; } catch (e) {}
+  if (state === "denied") return "浏览器已拒绝本网站访问本机服务。请点地址栏左侧的图标 → 网站设置 → 把“本地网络访问”改为“允许”,然后刷新;或点右侧按钮直接打开本机版本。";
+  if (state === "prompt") return "浏览器需要你的许可才能连接本机服务。请点右侧“重试”,在弹出的询问中选择“允许”。";
+  return "连不上本机服务。请确认这台电脑上已经运行 sh scripts/serve.sh;如果已经运行,请点右侧按钮直接打开本机版本。";
+}
+
 async function api(path, body) {
   const headers = { "X-Session-Id": S.sid };
   if (body) headers["Content-Type"] = "application/json";
   let r;
-  try { r = await fetch(API_BASE + path, { method: body ? "POST" : "GET", headers, body: body ? JSON.stringify(body) : undefined }); }
-  catch (e) { throw new Error(API_BASE ? "连不上本机服务。请确认:① 这台电脑上已经运行 sh scripts/serve.sh;② 用 Chrome 或 Edge 打开本页;③ 浏览器询问是否允许本网站访问“本地网络”时选择“允许”(也可以点地址栏左侧的图标,在网站设置里把“本地网络访问”改为允许),然后刷新。" : "连不上服务器。"); }
+  try { r = await rawFetch(API_BASE + path, { method: body ? "POST" : "GET", headers, body: body ? JSON.stringify(body) : undefined }); }
+  catch (e) { throw new Error(API_BASE ? await whyBlocked() : "连不上服务器。"); }
   if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 200));
   return r.json();
 }
@@ -131,10 +150,18 @@ function showReport(html, label, buttons, extra = "") {
 const App = {
   home() {
     $("btnResumePlan").classList.toggle("hidden", !S.identityDone); show("home", "", 0);
-    if (API_BASE) api("/api/health").then(() => $("backend").classList.add("hidden")).catch((e) => { $("backend").textContent = e.message; $("backend").classList.remove("hidden"); });
+    if (API_BASE) this.checkBackend();
+  },
+  checkBackend() {
+    api("/api/health").then(() => $("backend").classList.add("hidden")).catch((e) => {
+      $("backend").innerHTML = `<div class="flex flex-wrap items-center gap-3 justify-between"><span>${esc(e.message)}</span>
+        <span class="flex gap-2"><button class="btn-ghost !py-1.5 !px-3 text-xs" onclick="App.checkBackend()">重试</button>
+        <a class="btn !py-1.5 !px-3 text-xs" href="${LOCAL_URL}">直接打开本机版本 →</a></span></div>`;
+      $("backend").classList.remove("hidden");
+    });
   },
   reset() { if (confirm("清除本机保存的全部作答?")) { localStorage.removeItem(STORE); location.reload(); } },
-  fail(e) { console.error(e); alert("出错了:" + e.message); this.home(); },
+  fail(e) { console.error(e); if (!API_BASE) alert("出错了:" + e.message); this.home(); },
 
   async startExplorer() {
     try {
