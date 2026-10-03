@@ -19,7 +19,7 @@ async function api(path, body) {
   if (body) headers["Content-Type"] = "application/json";
   let r;
   try { r = await fetch(API_BASE + path, { method: body ? "POST" : "GET", headers, body: body ? JSON.stringify(body) : undefined }); }
-  catch (e) { throw new Error(API_BASE ? "连不上本机服务。请确认这台电脑上已经运行 sh scripts/serve.sh,并使用 Chrome 或 Edge 打开本页。" : "连不上服务器。"); }
+  catch (e) { throw new Error(API_BASE ? "连不上本机服务。请确认:① 这台电脑上已经运行 sh scripts/serve.sh;② 用 Chrome 或 Edge 打开本页;③ 浏览器询问是否允许本网站访问“本地网络”时选择“允许”(也可以点地址栏左侧的图标,在网站设置里把“本地网络访问”改为允许),然后刷新。" : "连不上服务器。"); }
   if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 200));
   return r.json();
 }
