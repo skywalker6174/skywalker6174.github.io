@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
   <meta name="theme-color" content="#0d0906">
-  <title>关于 · 犀鸟财富伴侣</title>
+  <title>对话 · 犀鸟财富伴侣</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="report.css">
   <link rel="stylesheet" href="fx.css">
@@ -73,6 +73,13 @@
     .choice { display:block; width:100%; text-align:left; padding:.8rem 1rem; }
     .entry { cursor:pointer; transition:.15s; } .entry:hover { border-color:var(--gold2); }
   </style>
+  <style>
+    .msg-ai { background: rgba(201,162,75,.07); border: 1px solid rgba(201,162,75,.22); color: #efe6d2; }
+    .msg-me { background: linear-gradient(180deg,#e9cc82,#b88a34); color: #1b1208; }
+    .chip-ai { font-size: .7rem; padding: 1px 8px; border: 1px solid rgba(201,162,75,.35); color: #c9b98a; font-family: -apple-system,"PingFang SC",sans-serif; }
+    #messages { height: min(58vh, 560px); overflow-y: auto; scroll-behavior: smooth; }
+    #messages::-webkit-scrollbar { width: 6px; } #messages::-webkit-scrollbar-thumb { background: rgba(201,162,75,.3); }
+  </style>
 </head>
 <body class="min-h-screen">
 
@@ -95,43 +102,57 @@
   
   <circle cx="31" cy="25.500" r="3" fill="#f6efe0"/><circle cx="31.300" cy="25.500" r="1.700" fill="#8c1d12"/>
 </svg><span class="font-semibold tracking-wider">犀鸟财富伴侣</span></a>
-    <div class="flex items-center gap-5 text-sm"><a href="./" class="" style="color:#a8977a">测评</a><a href="chat.html" class="" style="color:#a8977a">对话</a><a href="tools.html" class="" style="color:#a8977a">工具</a><a href="about.html" class="font-semibold" style="color:#ecd089">关于</a></div>
+    <div class="flex items-center gap-5 text-sm"><a href="./" class="" style="color:#a8977a">测评</a><a href="chat.html" class="font-semibold" style="color:#ecd089">对话</a><a href="tools.html" class="" style="color:#a8977a">工具</a><a href="about.html" class="" style="color:#a8977a">关于</a></div>
   </div>
   <div class="h-px bg-[rgba(201,162,75,.12)]"><div id="progress" class="h-px bg-[#ecd089] transition-all" style="width:0%"></div></div>
 </nav>
 
 <main class="max-w-5xl mx-auto px-5">
-
-  <section class="pb-10">
-    <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-center py-10 md:py-16">
+  <section class="py-8 md:py-12">
+    <div class="grid md:grid-cols-5 gap-8 md:gap-10 items-start">
       <div class="md:col-span-3">
-        <span class="tag">关于 · 犀鸟智投科技</span>
-        <h1 class="mt-6 text-4xl md:text-5xl font-bold leading-tight">让每个人,<br><span class="gold-text">成为自己人生的 CFO</span></h1>
-        <p class="mt-5 text-lg leading-relaxed" style="color:#d9ccb0">我们负责让你的未来无后顾之忧,你负责让这个世界变得更美好。</p>
-        <p class="mt-6 text-2xl tracking-[.3em] font-bold fx-letters" style="color:#ecd089">知命不惧</p>
+        <span class="tag">想清楚 · 对话</span>
+        <h1 class="mt-5 text-3xl md:text-4xl font-bold leading-tight">和犀鸟<span class="gold-text">聊一聊</span></h1>
+
+        <div id="auth" hidden class="card p-6 mt-6 sans">
+          <p class="text-sm leading-relaxed" style="color:#d9ccb0">对话需要登录,这样犀鸟才能记住你、并读取你的测评结果。第一次登录会自动注册。</p>
+          <label class="block text-sm mt-5 mb-1.5" style="color:#d8c9a6">手机号或邮箱</label>
+          <input id="contact" class="field" type="text" autocomplete="username" placeholder="例如 13800000000 或 name@example.com">
+          <label class="block text-sm mt-4 mb-1.5" style="color:#d8c9a6">验证码</label>
+          <input id="vcode" class="field" type="password" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')signIn()">
+          <div class="text-xs muted mt-1">测试阶段尚未接入短信与邮件:验证码就是你拿到的访问口令。</div>
+          <div id="authErr" class="mt-3 text-sm" style="color:#e9a27a"></div>
+          <button id="btnSignIn" class="btn mt-4" onclick="signIn()">登录 / 注册</button>
+          <p class="text-xs muted mt-4 leading-relaxed">手机号或邮箱只用于识别账号,不会发给大模型。对话内容会保存在服务器上,用于让犀鸟接着上次继续。</p>
+        </div>
+
+        <div id="chat" hidden class="mt-5">
+          <div class="flex items-center justify-between text-xs muted sans"><span id="status"></span>
+            <span><span id="who"></span> · <a href="#" class="underline" onclick="signOut();return false">退出</a></span></div>
+          <div id="messages" class="card mt-3 p-4 space-y-3 sans"></div>
+          <div id="tips" class="mt-3 flex flex-wrap gap-2 sans"></div>
+          <div class="mt-3 flex gap-2 sans">
+            <textarea id="input" class="field" rows="2" maxlength="2000" placeholder="想问什么都可以;按回车发送,Shift+回车换行"></textarea>
+            <button id="btnSend" class="btn whitespace-nowrap" onclick="send()">发送</button>
+          </div>
+          <p class="text-xs muted mt-3 sans leading-relaxed">犀鸟的回答由 AI 生成,所有数字都来自测算工具;它只做解释与建议,不代客交易,内容不构成投资建议。每次回答通常需要十几秒到一分钟。</p>
+        </div>
       </div>
-      <figure class="md:col-span-2 w-full max-w-md mx-auto">
-        <div class="frame"><img src="art/nightwatch.jpg" alt="伦勃朗《夜巡》1642"></div>
-        <figcaption class="caption"><b>伦勃朗《夜巡》,1642,阿姆斯特丹国立博物馆</b><br>这其实是一幅白天的群像:一支民兵队正要出发,每个人都在自己的位置上。伦勃朗没有让他们排排站,而是画下一支队伍行动起来的瞬间。我们也是这样一支队伍——各守其位,朝同一个方向走。</figcaption>
+
+      <figure class="md:col-span-2 w-full max-w-[300px] md:max-w-none mx-auto">
+        <div class="frame"><img src="art/aristotle.jpg" alt="伦勃朗《亚里士多德与荷马半身像》1653"></div>
+        <figcaption class="caption"><b>伦勃朗《亚里士多德与荷马半身像》,1653,纽约大都会艺术博物馆</b><br>
+          哲学家一只手搭在盲诗人荷马的头像上,另一只手抚着象征财富与荣誉的金链,若有所思。他像在问自己:哪一样更值得?好的对话也是这样——不急着给答案,先把真正要紧的事想清楚。</figcaption>
       </figure>
     </div>
-
-    <div class="grid md:grid-cols-3 gap-4">
-      <div class="card p-6"><span class="tag">使命</span><p class="mt-4 text-lg leading-relaxed" style="color:#f1e4c3">让每个人,成为自己人生的 CFO。</p></div>
-      <div class="card p-6"><span class="tag">愿景</span><p class="mt-4 text-lg leading-relaxed" style="color:#f1e4c3">从个人养老金出发,成为陪伴一生的 AI 人生 CFO。</p></div>
-      <div class="card p-6"><span class="tag">原则</span><p class="mt-4 text-lg leading-relaxed" style="color:#f1e4c3">只站在用户这一边;决定权始终在你。</p></div>
-    </div>
-
-    <div class="card p-6 mt-4"><span class="tag">团队</span>
-      <p class="mt-4 leading-loose" style="color:#d9ccb0">创始团队来自公募基金、证券、资产管理与科技研究机构,曾任职于华宝基金、摩根士丹利基金、工银瑞信(国际)、微软中国研究院、渤海证券、申万宏源资管、华融证券、泰阳证券、融泰创投、岩石资产、清华大学教育基金会与育泉资产。</p></div>
-
-    <p class="mt-6 text-xs muted sans">本网站是研究演示,不构成投资建议,也不代表已取得相关金融业务资质。</p>
   </section>
 </main>
 
 <footer class="max-w-5xl mx-auto px-5 py-10 text-xs muted sans border-t border-[rgba(201,162,75,.15)] mt-10">
   犀鸟财富伴侣 · 研究演示 · 页面内容不构成投资建议。<br>© 2026 · 犀鸟智投科技</footer>
 
+<script src="core.js"></script>
+<script src="chat.js"></script>
 <script src="fx.js"></script>
 </body>
 </html>
