@@ -190,7 +190,7 @@ const App = {
       Quiz.start(f.screens, f.likert, "探索版", async () => {
         loading("正在整理你的初步线索…");
         const r = await api("/api/wmbti/explorer", payload());
-        showReport(r.html, "探索结果", [["继续身份完整版 →", "App.startIdentity()"], ["先到这里", "App.home()", true]]);
+        showReport(r.html, "探索结果", [["继续完整版 →", "App.startIdentity()"], ["先到这里", "App.home()", true]]);
       });
     } catch (e) { this.fail(e); }
   },
@@ -199,11 +199,11 @@ const App = {
     try {
       const f = await api("/api/forms/identity");
       S.planningEntry = false; save();
-      Quiz.start(f.screens, f.likert, "身份完整版 · 第一段", async () => {
+      Quiz.start(f.screens, f.likert, "完整版 · 第一段", async () => {
         loading("主要轮廓已经出现,正在选择需要补充的几块拼图…");
         const route = await api("/api/wmbti/identity/route", payload());
         const extra = route.screens.concat(S.responses["CN-CTL-01"] == null ? [(await api("/api/forms/explorer")).screens.find((q) => q.id === "CN-CTL-01")] : []);
-        Quiz.start(extra, f.likert, "身份完整版 · 第二段", () => this.identityReport());
+        Quiz.start(extra, f.likert, "完整版 · 第二段", () => this.identityReport());
       });
     } catch (e) { this.fail(e); }
   },
@@ -212,7 +212,7 @@ const App = {
     try {
       const f = await api("/api/forms/identity");
       S.planningEntry = true; save();
-      Quiz.start(f.screens, f.likert, "规划完整版 · 第一段", () => this.identityReport());
+      Quiz.start(f.screens, f.likert, "深度版 · 第一段", () => this.identityReport());
     } catch (e) { this.fail(e); }
   },
   async identityReport() {
@@ -233,7 +233,7 @@ const App = {
       loading("正在准备规划部分…");
       const meta = await api("/api/planning/route", payload());
       const likert = (await api("/api/forms/identity")).likert;
-      Quiz.start(meta.screens, likert, "规划完整版 · 第二段", () => Cards.start(meta, () => this.planningReport()));
+      Quiz.start(meta.screens, likert, "深度版 · 第二段", () => Cards.start(meta, () => this.planningReport()));
     } catch (e) { this.fail(e); }
   },
   async planningReport() {
