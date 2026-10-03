@@ -11,12 +11,23 @@ try { S = { ...S, ...(JSON.parse(localStorage.getItem(STORE)) || {}) }; } catch 
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} };
 
 // 页面放在静态站点(如 GitHub Pages)上时,接口指向本机运行的服务;由本机服务直接打开时用同源地址。
-const API_BASE = location.port === "8600" || ["127.0.0.1", "localhost"].includes(location.hostname) ? "" : "http://127.0.0.1:8600";
+// 优先用 backend.json 里登记的公网隧道地址(任何浏览器和手机都能用);没有或连不上时退回本机地址。
+const LOCAL = location.port === "8600" || ["127.0.0.1", "localhost"].includes(location.hostname);
+let API_BASE = LOCAL ? "" : "http://127.0.0.1:8600", TUNNEL = false;
+const backendReady = LOCAL ? Promise.resolve() : (async () => {
+  try {
+    const cfg = await (await fetch("backend.json?t=" + Date.now(), { cache: "no-store" })).json();
+    if (cfg.url && (await fetch(cfg.url + "/api/health", { cache: "no-store" })).ok) { API_BASE = cfg.url; TUNNEL = true; }
+  } catch (e) {}
+})();
+const codeFromHash = location.hash.match(/[#&]code=([^&]+)/);
+if (codeFromHash) { S.code = decodeURIComponent(codeFromHash[1]); history.replaceState(null, "", location.pathname); }
 if (!S.sid) { S.sid = Array.from(crypto.getRandomValues(new Uint8Array(18)), (b) => b.toString(16).padStart(2, "0")).join(""); save(); }
 
 const LOCAL_URL = "http://127.0.0.1:8600/";
 
 async function rawFetch(url, opts) {
+  if (TUNNEL) return fetch(url, opts);
   // Chrome 的“本地网络访问”:声明目标是本机地址,浏览器才会弹出授权询问;不认识这个选项的浏览器退回普通请求。
   try { return await fetch(url, { ...opts, targetAddressSpace: "loopback" }); }
   catch (e) { if (e instanceof TypeError && /targetAddressSpace|enum/i.test(e.message)) return fetch(url, opts); throw e; }
@@ -24,7 +35,7 @@ async function rawFetch(url, opts) {
 
 async function whyBlocked() {
   const ua = navigator.userAgent, safari = /Safari/.test(ua) && !/Chrome|Chromium|Edg/.test(ua);
-  if (/Mobile|Android|iPhone|iPad/.test(ua)) return "这个页面需要连接你电脑上运行的服务,手机上无法使用。请在运行服务的那台电脑上打开。";
+  if (!TUNNEL && /Mobile|Android|iPhone|iPad/.test(ua)) return "服务暂时没有开启(需要运行服务的那台电脑在线并打开隧道)。请稍后再试。";
   if (safari) return "Safari 不允许网页访问本机服务。请点右侧按钮直接打开本机版本,或改用 Chrome / Edge。";
   let state = "";
   try { state = (await navigator.permissions.query({ name: "local-network-access" })).state; } catch (e) {}
@@ -33,15 +44,25 @@ async function whyBlocked() {
   return "连不上本机服务。请确认这台电脑上已经运行 sh scripts/serve.sh;如果已经运行,请点右侧按钮直接打开本机版本。";
 }
 
-async function api(path, body) {
+async function api(path, body, retried) {
+  await backendReady;
   const headers = { "X-Session-Id": S.sid };
+  if (S.code) headers["X-Access-Code"] = S.code;
   if (body) headers["Content-Type"] = "application/json";
   let r;
   try { r = await rawFetch(API_BASE + path, { method: body ? "POST" : "GET", headers, body: body ? JSON.stringify(body) : undefined }); }
   catch (e) { throw new Error(API_BASE ? await whyBlocked() : "连不上服务器。"); }
+  if (r.status === 401 && !retried) {
+    const code = prompt("请输入访问口令");
+    if (!code) throw new Error("需要访问口令才能使用。");
+    S.code = code.trim(); save();
+    return api(path, body, true);
+  }
+  if (r.status === 401) { delete S.code; save(); throw new Error("访问口令不正确。"); }
   if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 200));
   return r.json();
 }
+const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
 const payload = () => ({ responses: S.responses, timing: S.timing, best_fit: S.best_fit, cards: S.cards });
 
 function show(name, label = "", pct = null) {
@@ -150,7 +171,7 @@ function showReport(html, label, buttons, extra = "") {
 const App = {
   home() {
     $("btnResumePlan").classList.toggle("hidden", !S.identityDone); show("home", "", 0);
-    if (API_BASE) this.checkBackend();
+    if (!LOCAL) this.checkBackend();
   },
   checkBackend() {
     api("/api/health").then(() => $("backend").classList.add("hidden")).catch((e) => {
@@ -161,7 +182,7 @@ const App = {
     });
   },
   reset() { if (confirm("清除本机保存的全部作答?")) { localStorage.removeItem(STORE); location.reload(); } },
-  fail(e) { console.error(e); if (!API_BASE) alert("出错了:" + e.message); this.home(); },
+  fail(e) { console.error(e); if (LOCAL || TUNNEL) alert("出错了:" + e.message); this.home(); },
 
   async startExplorer() {
     try {
@@ -218,7 +239,16 @@ const App = {
   async recommend(withNarrative) {
     try {
       loading(withNarrative ? "正在请大模型撰写文字解读,通常需要 1—3 分钟,请不要关闭页面…" : "正在调用量化策略库并从产品池选品…");
-      const r = await api("/api/recommendation?with_narrative=" + withNarrative, payload());
+      let r = await api("/api/recommendation?with_narrative=" + withNarrative, payload());
+      if (r.job) {  // 文字解读是后台任务:轮询直到完成
+        const job = r.job, t0 = Date.now();
+        for (r = { done: false }; !r.done;) {
+          await sleep(5000);
+          $("loadMsg").textContent = `正在请大模型撰写文字解读… 已用时 ${Math.round((Date.now() - t0) / 1000)} 秒`;
+          r = await api("/api/jobs/" + job);
+        }
+        if (r.error) throw new Error(r.error);
+      }
       const btn = [];
       if (r.available && r.llm_ready && !withNarrative) btn.push(["加入 AI 文字解读(约 1—3 分钟)", "App.recommend(true)"]);
       btn.push(["返回规划报告", "App.planningReport()", true]);
