@@ -104,15 +104,16 @@
 <main class="max-w-5xl mx-auto px-5">
 
   <section id="s-home" class="screen active pb-10">
-    <div class="hero py-14 md:py-24">
-      <div class="hero-art"></div>
-      <div class="relative max-w-2xl">
-        <span class="tag">退休决策操作系统 · 研究原型</span>
-        <h1 class="mt-7 text-4xl md:text-6xl font-bold leading-tight">先看清光里的自己,<br><span class="gold-text">再安排你的养老金</span></h1>
-        <p class="mt-6 text-lg leading-relaxed" style="color:#d9ccb0">这不是一场考试,也没有更优秀的类型。我们从一些日常选择出发,看看你通常怎样理解未来、做决定和开始行动;
-          之后如果你愿意,再一起把未来的工资单落到现实里。不需要登录,随时可以暂停。</p>
-        <div class="caption mt-8">背景:伦勃朗《夜巡》,1642,阿姆斯特丹国立博物馆</div>
+    <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-center py-10 md:py-16">
+      <div class="md:col-span-3">
+        <span class="tag">认识自己 · 测评</span>
+        <h1 class="mt-6 text-4xl md:text-5xl font-bold leading-tight">先看清光里的自己,<br><span class="gold-text">再安排你的养老金</span></h1>
+        <p class="mt-5 text-lg leading-relaxed" style="color:#d9ccb0">这不是一场考试,也没有更优秀的类型。我们从一些日常选择出发,看看你通常怎样理解未来、做决定和开始行动。不需要登录,随时可以暂停。</p>
       </div>
+      <figure class="md:col-span-2 w-full max-w-[260px] md:max-w-[320px] mx-auto">
+        <div class="frame"><img src="art/selfportrait.jpg" alt="伦勃朗《自画像》1659"></div>
+        <figcaption class="caption"><b>伦勃朗《自画像》,1659,华盛顿国家美术馆</b><br>伦勃朗一生留下约八十幅自画像,从意气风发画到破产之后。这一幅画于他破产三年后:没有修饰,只是诚实地看着自己。测评想做的是同一件事——先如实看见自己怎样做决定。</figcaption>
+      </figure>
     </div>
     <div class="grid md:grid-cols-3 gap-4">
       <div class="card entry p-6 flex flex-col" onclick="App.startExplorer()"><div><span class="tag">约 4—6 分钟</span></div><h3 class="mt-4 text-2xl font-bold gold-text">探索版</h3>
@@ -143,6 +144,7 @@
     <div class="flex items-center justify-between text-sm muted"><span id="cCounter"></span><span class="tag !py-0.5 !px-3 !text-xs">规划卡</span></div>
     <div class="banner p-6 md:p-8 mt-5"><img src="art/syndics.jpg" alt=""><div><h2 id="cTitle" class="text-2xl md:text-3xl font-bold"></h2>
       <p id="cLead" class="mt-2" style="color:#d9ccb0"></p></div></div>
+    <div class="caption"><b>伦勃朗《布商行会的理事们》,1662,阿姆斯特丹国立博物馆</b> —— 五位理事的职责是替买布的人检验质量、核对账目。建档也是一次对账:把每一笔钱放回它该在的位置。</div>
     <form id="cForm" class="mt-7 grid md:grid-cols-2 gap-x-6 gap-y-5" onsubmit="return false"></form>
     <div id="cWhy" class="mt-5 text-sm muted"></div>
     <div id="cErr" class="mt-3 text-sm" style="color:#e9a27a"></div>
@@ -151,7 +153,7 @@
 
   <section id="s-loading" class="screen py-10 md:py-14 text-center">
     <figure class="max-w-sm mx-auto"><div class="frame"><img src="art/storm.jpg" alt="伦勃朗《加利利海上的风暴》1633"></div>
-      <figcaption class="caption"><b>《加利利海上的风暴》</b>,1633 —— 伦勃朗唯一的海景画。</figcaption></figure>
+      <figcaption class="caption"><b>伦勃朗《加利利海上的风暴》,1633</b><br>他唯一的一幅海景画,1990 年在波士顿失窃,至今下落不明。风浪里,船上的人各有各的反应——有人拉帆,有人慌乱,有人稳住舵。市场波动时也是如此,所以方案要先考虑你拿不拿得住。</figcaption></figure>
     <div class="spinner mx-auto mt-8"></div><div id="loadMsg" class="mt-5 text-lg" style="color:#f1e4c3"></div>
   </section>
 
