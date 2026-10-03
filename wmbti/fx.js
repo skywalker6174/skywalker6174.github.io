@@ -2,7 +2,7 @@
 (() => {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-  window.FX = { reveal() {}, countUp() {}, replay() {} };
+  window.FX = { reveal() {}, countUp() {}, replay() {}, stagger() {} };
   if (reduce) return;
 
   /* ---- 金色微粒与连线 ---- */
@@ -87,5 +87,11 @@
       })(t0);
     });
   };
+  // 逐字浮现
+  document.querySelectorAll(".fx-letters").forEach((el) => {
+    el.innerHTML = [...el.textContent.trim()].map((ch, i) => `<span style="--i:${i}">${ch}</span>`).join("");
+  });
+  // 结果逐段浮现(工具页)
+  FX.stagger = (root) => [...root.children].forEach((el, i) => { el.style.setProperty("--i", i); FX.replay(el, "res-in"); });
   FX.replay = (el, cls) => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
 })();

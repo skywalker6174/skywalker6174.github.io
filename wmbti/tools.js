@@ -128,7 +128,7 @@ function calc() {
     <p class="muted">口径:所有金额都是今天的购买力,回报率是扣除通胀后的实际回报率;三种情景只是假设,不是预测。“按现在的节奏能攒到”= 已有养老储蓄和每月养老储蓄按情景回报率滚存到退休。没有计入医疗与照护的额外开支、房产和其他收入。</p>`;
 
   $("results").hidden = false;
-  if (window.FX) FX.countUp($("report"));
+  if (window.FX) { FX.stagger($("report")); FX.countUp($("report")); }
   $("results").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 

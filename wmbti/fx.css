@@ -32,11 +32,33 @@ figure.fx-fig .frame::after { content: ""; position: absolute; inset: -20%; poin
 
 /* 卡片与按钮 */
 .card { transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s, background .35s; }
-.card.entry:hover, .card.lift:hover { transform: translateY(-4px); border-color: rgba(236,208,137,.6); box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(236,208,137,.12), 0 0 40px rgba(201,162,75,.10); }
-.card.entry { position: relative; overflow: hidden; }
-.card.entry::before { content: ""; position: absolute; left: 0; top: 0; height: 1px; width: 100%;
+main .card { position: relative; overflow: hidden; }
+main .card:hover { transform: translateY(-4px); border-color: rgba(236,208,137,.6); box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(236,208,137,.12), 0 0 40px rgba(201,162,75,.10); }
+main .card::before { content: ""; position: absolute; left: 0; top: 0; height: 1px; width: 100%;
   background: linear-gradient(90deg, transparent, #ecd089, transparent); transform: translateX(-100%); transition: transform .9s cubic-bezier(.2,.7,.2,1); }
-.card.entry:hover::before { transform: translateX(100%); }
+main .card:hover::before { transform: translateX(100%); }
+/* 进入视野时,卡片顶部先掠过一道金线 */
+main .card.rv.in::before { animation: cardline 1.6s cubic-bezier(.2,.7,.2,1) var(--d, 0ms) 1 both; }
+@keyframes cardline { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* 逐字浮现(关于页的“知命不惧”等) */
+.fx-letters span { display: inline-block; opacity: 0; transform: translateY(.5em); animation: letterIn .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--i) * 180ms + 500ms); }
+@keyframes letterIn { to { opacity: 1; transform: none; } }
+
+/* 工具页:结果逐段浮现;输入框聚焦时的金色描边 */
+#report .res-in { animation: resIn .7s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * 110ms); }
+@keyframes resIn { from { opacity: 0; transform: translateY(14px); } }
+input.field, select.field, textarea.field { transition: border-color .25s, box-shadow .25s, background .25s; }
+input.field:focus, select.field:focus, textarea.field:focus { background: rgba(201,162,75,.06); }
+form label { transition: color .25s; }
+form > div:focus-within label { color: #ecd089 !important; }
+
+/* 标题下方的金线:进入视野时从左向右画出 */
+main h2.rv { position: relative; }
+main h2.rv::after { content: ""; display: block; height: 1px; margin-top: .5rem; width: 100%; max-width: 12rem;
+  background: linear-gradient(90deg, #ecd089, transparent); transform: scaleX(0); transform-origin: left; transition: transform 1.1s cubic-bezier(.2,.7,.2,1) .25s; }
+main h2.rv.in::after { transform: scaleX(1); }
+
 .btn { position: relative; overflow: hidden; }
 .btn::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%;
   background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent); transform: skewX(-20deg); transition: left .7s ease; }
