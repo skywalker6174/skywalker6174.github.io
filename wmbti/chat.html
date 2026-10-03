@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="report.css">
   <link rel="stylesheet" href="fx.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link rel="icon" type="image/svg+xml" href="hornbill.svg">
   <style>
     /* 伦勃朗式明暗法:暖黑底、单侧金色光源、赭石与金、衬线字体、镀金画框 */
@@ -135,6 +136,11 @@
             <textarea id="input" class="field" rows="2" maxlength="2000" placeholder="想问什么都可以;按回车发送,Shift+回车换行"></textarea>
             <button id="btnSend" class="btn whitespace-nowrap" onclick="send()">发送</button>
           </div>
+          <div class="mt-4 flex flex-wrap gap-2 sans text-sm">
+            <button class="btn-ghost !py-1.5 !px-3" onclick="showProfile()">犀鸟对我的了解</button>
+            <button class="btn-ghost !py-1.5 !px-3" onclick="showBrief()">对话纪要</button>
+          </div>
+          <div id="panel" hidden class="mt-4"></div>
           <p class="text-xs muted mt-3 sans leading-relaxed">犀鸟的回答由 AI 生成,所有数字都来自测算工具;它只做解释与建议,不代客交易,内容不构成投资建议。每次回答通常需要十几秒到一分钟。</p>
         </div>
       </div>

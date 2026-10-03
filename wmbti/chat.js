@@ -81,5 +81,56 @@ async function send(preset) {
   } finally { clearInterval(tick); busy = false; $("btnSend").disabled = false; $("input").focus(); }
 }
 
+/* ---------- 犀鸟对我的了解:确认过的事实、对话小结,以及(测试阶段可见的)心理状态推断 ---------- */
+async function showProfile() {
+  const el = $("panel");
+  if (!el.hidden && el.dataset.kind === "profile") { el.hidden = true; return; }
+  el.dataset.kind = "profile"; el.hidden = false; el.innerHTML = '<div class="card p-4 text-sm muted sans">读取中…</div>';
+  try {
+    const d = await api("/api/profile"), p = d.portrait, li = (xs) => xs.map((x) => `<li>${x}</li>`).join("");
+    const facts = Object.entries(d.facts || {}).map(([k, v]) => `${esc(k)}:${esc(v.value)} <span class="muted">(${esc(v.status)})</span>`);
+    const items = (store) => Object.values(store || {}).sort((a, b) => b.count - a.count).map((v) => `${esc(v.text)} <span class="muted">· ${esc(v.status)}${v.evidence ? " · “" + esc(v.evidence) + "”" : ""}</span>`);
+    let html = `<div class="card p-5 text-sm sans leading-relaxed" style="color:#d9ccb0">
+      <div class="font-semibold mb-1" style="color:#ecd089">你告诉过我的(事实)</div>${facts.length ? `<ul class="list-disc pl-5">${li(facts)}</ul>` : '<div class="muted">还没有记录。</div>'}
+      <div class="font-semibold mt-4 mb-1" style="color:#ecd089">对话小结</div><div>${d.summary ? esc(d.summary.text) : '<span class="muted">聊过几轮之后会自动生成。</span>'}</div>`;
+    if (p) {
+      const emo = (p.emotion.recent || []).map(([e, i]) => `${e}(${i})`).join(" → ");
+      html += `<div class="font-semibold mt-4 mb-1" style="color:#ecd089">我的推断(测试阶段可见)</div>
+        <div class="muted text-xs mb-2">${esc(p.notice)}</div>
+        ${p.narrative ? `<div class="mb-2">${esc(p.narrative)}</div>` : ""}
+        <ul class="list-disc pl-5">
+          <li>已观察 ${p.turns} 轮;最近的情绪:${esc(emo) || "—"}</li>
+          <li>行动准备度:${esc(p.readiness)};信任状态:${esc(p.trust.current)}</li>
+          ${Object.keys(p.intents || {}).length ? `<li>意图分布:${Object.entries(p.intents).map(([k, v]) => `${esc(k)} ${v}`).join("、")}</li>` : ""}
+        </ul>
+        ${items(p.beliefs).length ? `<div class="mt-2">信念:</div><ul class="list-disc pl-5">${li(items(p.beliefs))}</ul>` : ""}
+        ${items(p.desires).length ? `<div class="mt-2">愿望:</div><ul class="list-disc pl-5">${li(items(p.desires))}</ul>` : ""}
+        ${items(p.biases).length ? `<div class="mt-2">行为线索:</div><ul class="list-disc pl-5">${li(items(p.biases))}</ul>` : ""}
+        <button class="btn-ghost !py-1 !px-3 text-xs mt-3" onclick="clearPortrait()">这些推断不像我,清除</button>`;
+    } else html += '<div class="font-semibold mt-4 mb-1" style="color:#ecd089">我的推断</div><div class="muted">还没有足够的观察。</div>';
+    el.innerHTML = html + "</div>";
+  } catch (e) { el.innerHTML = `<div class="card p-4 text-sm sans">${esc(e.message)}</div>`; }
+}
+async function clearPortrait() {
+  if (!confirm("清除犀鸟对你的全部推断?你确认过的事实和对话记录不受影响。")) return;
+  await api("/api/profile/portrait/clear", {}); $("panel").hidden = true; showProfile();
+}
+async function showBrief() {
+  const el = $("panel");
+  if (!el.hidden && el.dataset.kind === "brief") { el.hidden = true; return; }
+  el.dataset.kind = "brief"; el.hidden = false; el.innerHTML = '<div class="card p-4 text-sm muted sans">整理中…</div>';
+  try {
+    const d = await api("/api/chat/brief");
+    el.innerHTML = `<div class="mb-2"><button class="btn-ghost !py-1 !px-3 text-xs sans" onclick="briefPdf()">⬇ 下载 PDF</button></div><div style="box-shadow:0 20px 60px rgba(0,0,0,.5)"><div id="report">${d.html}</div></div>`;
+  } catch (e) { el.innerHTML = `<div class="card p-4 text-sm sans">${esc(e.message)}</div>`; }
+}
+async function briefPdf() {
+  const el = $("report"); el.classList.add("pdf");
+  try {
+    await html2pdf().set({ margin: [10, 0, 12, 0], filename: `犀鸟_对话纪要_${new Date().toISOString().slice(0, 10)}.pdf`, image: { type: "jpeg", quality: 0.95 },
+      html2canvas: { scale: innerWidth < 700 ? 1.5 : 2, backgroundColor: "#fffdf7", windowWidth: 800 }, jsPDF: { unit: "mm", format: "a4" } }).from(el).save();
+  } finally { el.classList.remove("pdf"); }
+}
+
 $("input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
 enter();
