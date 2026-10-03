@@ -95,6 +95,7 @@ const Quiz = {
       ? `<div class="likert">${this.likert.map((t, k) => `<button class="opt py-3 px-2 text-sm ${cur === k + 1 ? "on" : ""}" onclick="Quiz.answer(${k + 1})">${k + 1}<br><span class="text-xs">${t}</span></button>`).join("")}</div>`
       : `<div class="grid gap-3">${q.options.map((o) => `<button class="opt choice ${cur === o.code ? "on" : ""}" onclick="Quiz.answer('${o.code}')">${o.code}. ${esc(o.text)}</button>`).join("")}</div>`;
     show("quiz", this.stage, 5 + (90 * this.i) / this.screens.length);
+    if (window.FX) ["qText", "qOptions"].forEach((id) => FX.replay($(id), "q-in"));
     this.t0 = Date.now();
   },
   answer(v) {
@@ -135,6 +136,7 @@ const Cards = {
     $("cForm").innerHTML = c.fields.map((f) => this.field(f)).join("");
     $("cForm").onclick = (e) => { const b = e.target.closest("[data-multi]"); if (b) b.classList.toggle("on"); };
     show("card", "养老规划建档", 5 + (90 * this.i) / this.cards.length);
+    if (window.FX) { FX.replay($("cForm"), "q-in"); FX.replay($("cTitle"), "q-in"); }
   },
   collect() {
     const c = this.cards[this.i], form = $("cForm"), missing = [];
@@ -166,6 +168,7 @@ function showReport(html, label, buttons, extra = "") {
     + `<button class="btn-ghost" id="btnPdf" onclick="App.pdf('${label}')">⬇ 下载 PDF</button>`;
   $("extra").innerHTML = extra;
   show("report", label, 100);
+  if (window.FX) FX.countUp($("report"));
 }
 
 const App = {

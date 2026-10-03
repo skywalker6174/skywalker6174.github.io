@@ -1,0 +1,75 @@
+/* 动效层:老钱 + 科技。金色微粒、缓慢的轨道线、烛光般的光标光晕、金箔流光、入场与悬停动画。
+   只做装饰,不改变版式与配色;系统设置“减少动态效果”时全部关闭。 */
+
+#fx-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+#fx-glow { position: fixed; left: 0; top: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px; z-index: 1; pointer-events: none;
+  background: radial-gradient(circle, rgba(236,208,137,.10), rgba(201,162,75,.04) 40%, transparent 70%); opacity: 0; transition: opacity .6s; will-change: transform; }
+
+/* 金箔流光:标题上的金色缓慢流动 */
+.gold-text { background-size: 220% 100%; animation: goldflow 9s ease-in-out infinite alternate; }
+@keyframes goldflow { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+
+/* 入场:自下而上淡入,带一点延迟 */
+.rv { opacity: 0; transform: translateY(18px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0ms); }
+.rv.in { opacity: 1; transform: none; }
+.screen.active { animation: screenIn .55s cubic-bezier(.2,.7,.2,1); }
+@keyframes screenIn { from { opacity: 0; transform: translateY(10px); } }
+.q-in { animation: qIn .45s cubic-bezier(.2,.7,.2,1); }
+@keyframes qIn { from { opacity: 0; transform: translateX(14px); } }
+
+/* 画框:金边掠光 + 鼠标视差;背后是缓慢转动的轨道线 */
+figure.fx-fig { position: relative; perspective: 900px; }
+figure.fx-fig .frame { overflow: hidden; transition: transform .25s ease-out, box-shadow .4s; transform-style: preserve-3d; will-change: transform; }
+figure.fx-fig .frame::after { content: ""; position: absolute; inset: -20%; pointer-events: none;
+  background: linear-gradient(115deg, transparent 42%, rgba(255,244,214,.20) 50%, transparent 58%);
+  transform: translateX(-70%); animation: glint 8s ease-in-out infinite; }
+@keyframes glint { 0%, 62% { transform: translateX(-70%); } 86%, 100% { transform: translateX(70%); } }
+.fx-orbit { position: absolute; left: 50%; top: 46%; width: 150%; aspect-ratio: 1; transform: translate(-50%, -50%); z-index: -1; pointer-events: none; opacity: .75; }
+.fx-orbit g { transform-origin: 50% 50%; animation: orbit 70s linear infinite; }
+.fx-orbit g.r2 { animation-duration: 110s; animation-direction: reverse; }
+.fx-orbit g.r3 { animation-duration: 46s; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+
+/* 卡片与按钮 */
+.card { transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s, background .35s; }
+.card.entry:hover, .card.lift:hover { transform: translateY(-4px); border-color: rgba(236,208,137,.6); box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(236,208,137,.12), 0 0 40px rgba(201,162,75,.10); }
+.card.entry { position: relative; overflow: hidden; }
+.card.entry::before { content: ""; position: absolute; left: 0; top: 0; height: 1px; width: 100%;
+  background: linear-gradient(90deg, transparent, #ecd089, transparent); transform: translateX(-100%); transition: transform .9s cubic-bezier(.2,.7,.2,1); }
+.card.entry:hover::before { transform: translateX(100%); }
+.btn { position: relative; overflow: hidden; }
+.btn::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent); transform: skewX(-20deg); transition: left .7s ease; }
+.btn:hover::after { left: 120%; }
+.opt { transition: transform .12s, border-color .15s, background .15s; }
+.opt:active { transform: scale(.97); }
+.tag { position: relative; overflow: hidden; }
+.tag::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 35%, rgba(255,244,214,.22) 50%, transparent 65%);
+  transform: translateX(-120%); animation: tagscan 7s ease-in-out infinite; }
+@keyframes tagscan { 0%, 70% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+
+/* 分隔线与进度线 */
+hr.dim { border: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,162,75,.45), transparent); }
+#progress { box-shadow: 0 0 10px rgba(236,208,137,.8); }
+
+/* 等待:星盘式的双环 */
+.spinner { position: relative; width: 54px; height: 54px; border: 1px solid rgba(201,162,75,.25); border-top-color: #ecd089; border-radius: 50%; animation: spin 1.6s linear infinite; }
+.spinner::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(201,162,75,.2); border-bottom-color: #c9a24b; border-radius: 50%; animation: spin 2.4s linear infinite reverse; }
+.spinner::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px; background: #ecd089; transform: rotate(45deg); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+
+/* 报告里的图形:进入时从中点展开 */
+#report:not(.pdf) .axis-dot { animation: dotIn 1.1s cubic-bezier(.2,.7,.2,1); }
+#report:not(.pdf) .axis-ci { animation: ciIn 1.1s cubic-bezier(.2,.7,.2,1); transform-origin: center; }
+#report:not(.pdf) .bar > i { animation: barIn 1.1s cubic-bezier(.2,.7,.2,1); transform-origin: left; }
+@keyframes dotIn { from { left: 50%; } }
+@keyframes ciIn { from { transform: scaleX(0); opacity: 0; } }
+@keyframes barIn { from { transform: scaleX(0); } }
+#report.pdf, #report.pdf * { animation: none !important; transition: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .rv { opacity: 1; transform: none; }
+  #fx-canvas, #fx-glow, .fx-orbit { display: none; }
+}
+@media print { #fx-canvas, #fx-glow, .fx-orbit { display: none !important; } }
