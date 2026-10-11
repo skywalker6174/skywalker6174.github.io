@@ -1,0 +1,105 @@
+/* 清风 · 小清新文艺风(亮色)。参考有知有行的素材页:大面积留白、暖白底、深灰正文、
+   柔和的青绿与雾蓝做点缀、16px 圆角卡片、细线分隔、不用金色与暗底。
+   只覆盖外观;所有内容、结构与交互与老钱风完全相同。 */
+
+html[data-theme="light"] {
+  --bg: #fafaf7; --panel: #ffffff; --line: #e8e6e0; --gold: #6f9f8a; --gold2: #4f8a74;
+  --ink: #262626; --muted: #7a7a76; --umber: #a65c57;
+  --sage: #82b19b; --sage-d: #4f8a74; --mist: #5f9cd1; --clay: #a65c57; --sand: #f3efe6;
+  color-scheme: light;
+}
+html[data-theme="light"] body {
+  background: var(--bg); color: var(--ink);
+  font-family: "PingFang SC", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", -apple-system, sans-serif;
+}
+html[data-theme="light"] body::before { display: none; }                 /* 去掉画布颗粒 */
+html[data-theme="light"] h1, html[data-theme="light"] h2, html[data-theme="light"] h3 { letter-spacing: 0; font-weight: 600; }
+html[data-theme="light"] .sans { font-family: inherit; }
+
+/* 导航与页脚 */
+html[data-theme="light"] nav { background: rgba(250,250,247,.92) !important; border-bottom-color: var(--line) !important; }
+html[data-theme="light"] nav a[style] { color: #8a8a86 !important; }
+html[data-theme="light"] nav a.font-semibold[style] { color: var(--sage-d) !important; }
+html[data-theme="light"] nav span.font-semibold { color: var(--ink); }
+html[data-theme="light"] #progress { background: var(--sage) !important; box-shadow: none; }
+html[data-theme="light"] nav > .h-px { background: var(--line) !important; }
+html[data-theme="light"] footer { border-top-color: var(--line) !important; color: #9a9a95; }
+
+/* 标题、文字 */
+html[data-theme="light"] .gold-text { background: none; -webkit-text-fill-color: var(--sage-d); color: var(--sage-d); animation: none; }
+html[data-theme="light"] .muted { color: var(--muted); }
+html[data-theme="light"] [style*="color:#d9ccb0"], html[data-theme="light"] [style*="color:#f1e4c3"] { color: #4a4a47 !important; }
+html[data-theme="light"] [style*="color:#d8c9a6"], html[data-theme="light"] [style*="color:#a8977a"] { color: #6b6b67 !important; }
+html[data-theme="light"] [style*="color:#ecd089"] { color: var(--sage-d) !important; }
+html[data-theme="light"] [style*="color:#fff3d0"] { color: var(--ink) !important; }
+html[data-theme="light"] [style*="color:#e9a27a"] { color: var(--clay) !important; }
+html[data-theme="light"] [style*="color:#c97b4a"] { color: var(--clay) !important; }
+html[data-theme="light"] b[style*="color:#fff3d0"], html[data-theme="light"] b[style*="color:#d8c9a6"] { color: var(--ink) !important; }
+
+/* 标签、卡片、按钮、选项 */
+html[data-theme="light"] .tag { background: #eef5f1; border: 1px solid #d6e6dd; color: var(--sage-d); border-radius: 999px; letter-spacing: .04em; }
+html[data-theme="light"] .tag::after { display: none; }
+html[data-theme="light"] .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+html[data-theme="light"] main .card:hover { transform: translateY(-3px); border-color: #cfe0d7; box-shadow: 0 14px 34px rgba(60,90,80,.10); }
+html[data-theme="light"] main .card::before { background: linear-gradient(90deg, transparent, var(--sage), transparent); opacity: .7; }
+html[data-theme="light"] .metric-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; }
+html[data-theme="light"] .metric-card .n { color: var(--sage-d); }
+html[data-theme="light"] .btn { background: var(--sage-d); color: #fff; border-radius: 999px; box-shadow: 0 6px 18px rgba(79,138,116,.22); letter-spacing: .02em; }
+html[data-theme="light"] .btn:hover { filter: none; background: #437a66; }
+html[data-theme="light"] .btn::after { background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent); }
+html[data-theme="light"] .btn-ghost { border: 1px solid #d9d9d4; border-radius: 999px; color: #4a4a47; background: #fff; }
+html[data-theme="light"] .btn-ghost:hover { border-color: var(--sage); color: var(--sage-d); }
+html[data-theme="light"] .opt { background: #fff; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); }
+html[data-theme="light"] .opt:hover { border-color: var(--sage); background: #f4f9f6; }
+html[data-theme="light"] .opt.on { background: #e7f2ec; border-color: var(--sage-d); color: var(--sage-d); font-weight: 600; }
+html[data-theme="light"] input.field, html[data-theme="light"] select.field, html[data-theme="light"] textarea.field {
+  background: #fff; border: 1px solid #dcdcd6; border-radius: 10px; color: var(--ink); }
+html[data-theme="light"] input.field:focus, html[data-theme="light"] select.field:focus, html[data-theme="light"] textarea.field:focus {
+  border-color: var(--sage); box-shadow: 0 0 0 3px rgba(130,177,155,.18); background: #fff; }
+html[data-theme="light"] form > div:focus-within label { color: var(--sage-d) !important; }
+html[data-theme="light"] hr.dim { background: linear-gradient(90deg, transparent, #d9d9d4, transparent); }
+html[data-theme="light"] .caption { color: #8a8a86; }
+html[data-theme="light"] .caption b { color: #4a4a47; }
+html[data-theme="light"] .spinner { border-color: #e3e3dd; border-top-color: var(--sage-d); }
+html[data-theme="light"] .spinner::before { border-color: #e3e3dd; border-bottom-color: var(--mist); }
+html[data-theme="light"] .spinner::after { background: var(--sage-d); }
+
+/* 画作:去掉镀金框,改为白卡与细边;轨道线、金粉与光标光晕一并关闭 */
+html[data-theme="light"] .frame { background: #fff; border: 1px solid var(--line); padding: 10px; border-radius: 14px; box-shadow: 0 12px 36px rgba(60,70,65,.10); }
+html[data-theme="light"] .frame img { border-radius: 6px; box-shadow: none; }
+html[data-theme="light"] figure.fx-fig .frame::after { display: none; }
+html[data-theme="light"] .fx-orbit, html[data-theme="light"] #fx-canvas, html[data-theme="light"] #fx-glow { display: none !important; }
+html[data-theme="light"] .banner::after { background: linear-gradient(90deg, rgba(250,250,247,.96), rgba(250,250,247,.8) 55%, rgba(250,250,247,.5)); }
+html[data-theme="light"] .banner { border-radius: 16px; border-color: var(--line); }
+html[data-theme="light"] .banner img { opacity: .5; }
+html[data-theme="light"] [style*="background:rgba(140,59,31,.35)"] { background: #fbf1e9 !important; color: #8a4a3a !important; border-bottom-color: #efd9cc !important; }
+html[data-theme="light"] .hero-art { display: none; }
+
+/* 对话页 */
+html[data-theme="light"] .msg-ai { background: #fff; border: 1px solid var(--line); color: var(--ink); border-radius: 16px 16px 16px 4px; }
+html[data-theme="light"] .msg-me { background: var(--sage-d); color: #fff; border-radius: 16px 16px 4px 16px; }
+html[data-theme="light"] .chip-ai { border-color: #d6e6dd; color: var(--sage-d); background: #f4f9f6; border-radius: 999px; }
+html[data-theme="light"] #messages { background: var(--sand); border-color: var(--line); }
+html[data-theme="light"] #messages::-webkit-scrollbar-thumb { background: #d3d3cd; }
+html[data-theme="light"] #auth[style], html[data-theme="light"] #settings > div { background: #fff; }
+
+/* 报告:亮色主题下把赭金换成青绿 */
+html[data-theme="light"] #report { border-radius: 16px; }
+html[data-theme="light"] #report h2 { border-bottom-color: var(--sage); }
+html[data-theme="light"] #report .cover .kicker, html[data-theme="light"] #report .cover .type { color: var(--sage-d); }
+html[data-theme="light"] #report .motto { background: #f1f7f4; border-left-color: var(--sage); }
+html[data-theme="light"] #report .kpi { background: #f6f9f7; border-color: #dce9e2; }
+html[data-theme="light"] #report .kpi b, html[data-theme="light"] #report .prod .amt { color: var(--sage-d); }
+html[data-theme="light"] #report th { background: #f1f5f3; color: #3f5d52; }
+html[data-theme="light"] #report .bar > i, html[data-theme="light"] #report .step b, html[data-theme="light"] #report .axis-dot { background: var(--sage-d); }
+html[data-theme="light"] #report .axis-ci { background: rgba(130,177,155,.35); }
+html[data-theme="light"] #report .chip { background: #f1f7f4; color: #3f5d52; border-color: #cfe0d7; }
+html[data-theme="light"] [style*="background:#f8f0dc"] { background: #f1f7f4 !important; }
+
+/* 风格切换器 */
+.theme-switch { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; border: 1px solid rgba(201,162,75,.3); background: rgba(0,0,0,.25); }
+.theme-switch button { border: 0; background: transparent; color: #a8977a; font: inherit; font-size: .8rem; padding: .35rem .9rem; border-radius: 999px; cursor: pointer; transition: .2s; }
+.theme-switch button.on { background: linear-gradient(180deg,#e9cc82,#b88a34); color: #1b1208; font-weight: 600; }
+html[data-theme="light"] .theme-switch { border-color: var(--line); background: #fff; }
+html[data-theme="light"] .theme-switch button { color: #8a8a86; }
+html[data-theme="light"] .theme-switch button.on { background: var(--sage-d); color: #fff; }

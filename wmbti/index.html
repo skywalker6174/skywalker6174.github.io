@@ -7,8 +7,10 @@
   <title>犀鸟财富伴侣 · W-MBTI V3.2</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="theme.js"></script>
   <link rel="stylesheet" href="report.css">
   <link rel="stylesheet" href="fx.css">
+  <link rel="stylesheet" href="theme-light.css">
   <link rel="icon" type="image/svg+xml" href="hornbill.svg">
   <style>
     /* 伦勃朗式明暗法:暖黑底、单侧金色光源、赭石与金、衬线字体、镀金画框 */
@@ -96,7 +98,7 @@
   
   <circle cx="31" cy="25.500" r="3" fill="#f6efe0"/><circle cx="31.300" cy="25.500" r="1.700" fill="#8c1d12"/>
 </svg><span class="font-semibold tracking-wider">犀鸟财富伴侣</span></a>
-    <div class="flex items-center gap-5 text-sm"><span id="stepLabel" class="hidden sm:inline muted"></span><a href="./" class="font-semibold" style="color:#ecd089">测评</a><a href="chat.html" class="" style="color:#a8977a">对话</a><a href="tools.html" class="" style="color:#a8977a">工具</a><a href="about.html" class="" style="color:#a8977a">关于</a></div>
+    <div class="flex items-center gap-5 text-sm"><span id="stepLabel" class="hidden sm:inline muted"></span><a href="./" class="font-semibold" style="color:#ecd089">测评</a><a href="chat.html" class="" style="color:#a8977a">对话</a><a href="tools.html" class="" style="color:#a8977a">工具</a><span class="theme-switch hidden sm:inline-flex" title="切换风格"><button data-theme-pick="classic" onclick="Theme.set('classic')">老钱</button><button data-theme-pick="light" onclick="Theme.set('light')">清风</button></span><a href="about.html" class="" style="color:#a8977a">关于</a></div>
   </div>
   <div class="h-px bg-[rgba(201,162,75,.12)]"><div id="progress" class="h-px bg-[#ecd089] transition-all" style="width:0%"></div></div>
 </nav>
@@ -109,6 +111,8 @@
       <div class="md:col-span-3">
         <span class="tag">认识自己 · 测评</span>
         <h1 class="mt-6 text-4xl md:text-5xl font-bold leading-tight">先看清光里的自己,<br><span class="gold-text">再安排你的养老金</span></h1>
+        <div class="mt-5 flex items-center gap-3 text-sm muted sans"><span>页面风格</span>
+          <span class="theme-switch"><button data-theme-pick="classic" onclick="Theme.set('classic')">老钱风</button><button data-theme-pick="light" onclick="Theme.set('light')">清风 · 小清新</button></span></div>
         <p class="mt-5 text-lg leading-relaxed" style="color:#d9ccb0">这不是一场考试,也没有更优秀的类型。我们从一些日常选择出发,看看你通常怎样理解未来、做决定和开始行动。不需要登录,随时可以暂停。</p>
       </div>
       <figure class="md:col-span-2 w-full max-w-[260px] md:max-w-[320px] mx-auto">
