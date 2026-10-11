@@ -19,6 +19,8 @@
       try { localStorage.setItem(KEY, t); } catch (e) {}
       document.querySelectorAll("[data-theme-pick]").forEach((b) => b.classList.toggle("on", b.dataset.themePick === t));
       swapArt(t);
+      const icon = document.querySelector('link[rel="icon"]');
+      if (icon) icon.setAttribute("href", t === "light" ? "hornbill-light.svg" : "hornbill.svg");
       document.dispatchEvent(new CustomEvent("themechange", { detail: t }));
     },
     toggle() { this.set(this.get() === "light" ? "dark" : "light"); },

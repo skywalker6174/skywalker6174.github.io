@@ -108,3 +108,6 @@ html[data-theme="light"] .theme-switch button.on { background: var(--sage-d); co
 .cap-light { display: none; }
 html[data-theme="light"] .cap-light { display: inline; }
 html[data-theme="light"] .cap-dark { display: none; }
+
+/* 犀鸟徽标:图形不变,Light 下换成浅底青绿描边 */
+html[data-theme="light"] .hb > circle:first-of-type { fill: #eef5f1; stroke: var(--sage-d); }
