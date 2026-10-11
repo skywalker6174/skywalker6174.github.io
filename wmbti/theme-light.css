@@ -103,3 +103,8 @@ html[data-theme="light"] [style*="background:#f8f0dc"] { background: #f1f7f4 !im
 html[data-theme="light"] .theme-switch { border-color: var(--line); background: #fff; }
 html[data-theme="light"] .theme-switch button { color: #8a8a86; }
 html[data-theme="light"] .theme-switch button.on { background: var(--sage-d); color: #fff; }
+
+/* 两套配图各有各的说明文字 */
+.cap-light { display: none; }
+html[data-theme="light"] .cap-light { display: inline; }
+html[data-theme="light"] .cap-dark { display: none; }

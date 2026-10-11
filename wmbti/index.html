@@ -98,7 +98,7 @@
   
   <circle cx="31" cy="25.500" r="3" fill="#f6efe0"/><circle cx="31.300" cy="25.500" r="1.700" fill="#8c1d12"/>
 </svg><span class="font-semibold tracking-wider">犀鸟财富伴侣</span></a>
-    <div class="flex items-center gap-5 text-sm"><span id="stepLabel" class="hidden sm:inline muted"></span><a href="./" class="font-semibold" style="color:#ecd089">测评</a><a href="chat.html" class="" style="color:#a8977a">对话</a><a href="tools.html" class="" style="color:#a8977a">工具</a><span class="theme-switch hidden sm:inline-flex" title="切换风格"><button data-theme-pick="classic" onclick="Theme.set('classic')">老钱</button><button data-theme-pick="light" onclick="Theme.set('light')">清风</button></span><a href="about.html" class="" style="color:#a8977a">关于</a></div>
+    <div class="flex items-center gap-5 text-sm"><span id="stepLabel" class="hidden sm:inline muted"></span><a href="./" class="font-semibold" style="color:#ecd089">测评</a><a href="chat.html" class="" style="color:#a8977a">对话</a><a href="tools.html" class="" style="color:#a8977a">工具</a><span class="theme-switch hidden sm:inline-flex" title="切换风格"><button data-theme-pick="dark" onclick="Theme.set('dark')">Dark</button><button data-theme-pick="light" onclick="Theme.set('light')">Light</button></span><a href="about.html" class="" style="color:#a8977a">关于</a></div>
   </div>
   <div class="h-px bg-[rgba(201,162,75,.12)]"><div id="progress" class="h-px bg-[#ecd089] transition-all" style="width:0%"></div></div>
 </nav>
@@ -112,12 +112,12 @@
         <span class="tag">认识自己 · 测评</span>
         <h1 class="mt-6 text-4xl md:text-5xl font-bold leading-tight">先看清光里的自己,<br><span class="gold-text">再安排你的养老金</span></h1>
         <div class="mt-5 flex items-center gap-3 text-sm muted sans"><span>页面风格</span>
-          <span class="theme-switch"><button data-theme-pick="classic" onclick="Theme.set('classic')">老钱风</button><button data-theme-pick="light" onclick="Theme.set('light')">清风 · 小清新</button></span></div>
+          <span class="theme-switch"><button data-theme-pick="dark" onclick="Theme.set('dark')">Dark</button><button data-theme-pick="light" onclick="Theme.set('light')">Light</button></span></div>
         <p class="mt-5 text-lg leading-relaxed" style="color:#d9ccb0">这不是一场考试,也没有更优秀的类型。我们从一些日常选择出发,看看你通常怎样理解未来、做决定和开始行动。不需要登录,随时可以暂停。</p>
       </div>
       <figure class="md:col-span-2 w-full max-w-[260px] md:max-w-[320px] mx-auto">
-        <div class="frame"><img src="art/selfportrait.jpg" alt="伦勃朗《自画像》1659"></div>
-        <figcaption class="caption"><b>伦勃朗《自画像》,1659,华盛顿国家美术馆</b><br>伦勃朗一生留下约八十幅自画像,从意气风发画到破产之后。这一幅画于他破产三年后:没有修饰,只是诚实地看着自己。测评想做的是同一件事——先如实看见自己怎样做决定。</figcaption>
+        <div class="frame"><img src="art/selfportrait.jpg" data-dark-src="art/selfportrait.jpg" data-light-src="art/m_parasol.jpg" alt="伦勃朗《自画像》1659"></div>
+        <figcaption class="caption"><span class="cap-dark"><b>伦勃朗《自画像》,1659,华盛顿国家美术馆</b><br>伦勃朗一生留下约八十幅自画像,从意气风发画到破产之后。这一幅画于他破产三年后:没有修饰,只是诚实地看着自己。测评想做的是同一件事——先如实看见自己怎样做决定。</span><span class="cap-light"><b>莫奈《撑阳伞的女人——莫奈夫人和她的儿子》,1875,华盛顿国家美术馆</b><br>逆光里的人物,莫奈画的不是五官,而是光和风掠过她时的样子。测评也是如此:不急着给你贴标签,而是先看清在日常的光线里,你通常怎样做决定。</span></figcaption>
       </figure>
     </div>
     <div class="grid md:grid-cols-3 gap-4">
@@ -147,9 +147,9 @@
 
   <section id="s-card" class="screen py-10 md:py-14">
     <div class="flex items-center justify-between text-sm muted"><span id="cCounter"></span><span class="tag !py-0.5 !px-3 !text-xs">规划卡</span></div>
-    <div class="banner p-6 md:p-8 mt-5"><img src="art/syndics.jpg" alt=""><div><h2 id="cTitle" class="text-2xl md:text-3xl font-bold"></h2>
+    <div class="banner p-6 md:p-8 mt-5"><img src="art/syndics.jpg" data-dark-src="art/syndics.jpg" data-light-src="art/m_lilies.jpg" alt=""><div><h2 id="cTitle" class="text-2xl md:text-3xl font-bold"></h2>
       <p id="cLead" class="mt-2" style="color:#d9ccb0"></p></div></div>
-    <div class="caption"><b>伦勃朗《布商行会的理事们》,1662,阿姆斯特丹国立博物馆</b> —— 五位理事的职责是替买布的人检验质量、核对账目。建档也是一次对账:把每一笔钱放回它该在的位置。</div>
+    <div class="caption"><span class="cap-dark"><b>伦勃朗《布商行会的理事们》,1662,阿姆斯特丹国立博物馆</b> —— 五位理事的职责是替买布的人检验质量、核对账目。建档也是一次对账:把每一笔钱放回它该在的位置。</span><span class="cap-light"><b>莫奈《睡莲》,1906,芝加哥艺术博物馆</b> —— 水面之上开花,水面之下有根。建档就是把水面下的东西看清楚:每一笔钱在哪里、为哪件事工作。</span></div>
     <form id="cForm" class="mt-7 grid md:grid-cols-2 gap-x-6 gap-y-5" onsubmit="return false"></form>
     <div id="cWhy" class="mt-5 text-sm muted"></div>
     <div id="cErr" class="mt-3 text-sm" style="color:#e9a27a"></div>
@@ -157,8 +157,8 @@
   </section>
 
   <section id="s-loading" class="screen py-10 md:py-14 text-center">
-    <figure class="max-w-sm mx-auto"><div class="frame"><img src="art/storm.jpg" alt="伦勃朗《加利利海上的风暴》1633"></div>
-      <figcaption class="caption"><b>伦勃朗《加利利海上的风暴》,1633</b><br>他唯一的一幅海景画,1990 年在波士顿失窃,至今下落不明。风浪里,船上的人各有各的反应——有人拉帆,有人慌乱,有人稳住舵。市场波动时也是如此,所以方案要先考虑你拿不拿得住。</figcaption></figure>
+    <figure class="max-w-sm mx-auto"><div class="frame"><img src="art/storm.jpg" data-dark-src="art/storm.jpg" data-light-src="art/m_station.jpg" alt="伦勃朗《加利利海上的风暴》1633"></div>
+      <figcaption class="caption"><span class="cap-dark"><b>伦勃朗《加利利海上的风暴》,1633</b><br>他唯一的一幅海景画,1990 年在波士顿失窃,至今下落不明。风浪里,船上的人各有各的反应——有人拉帆,有人慌乱,有人稳住舵。市场波动时也是如此,所以方案要先考虑你拿不拿得住。</span><span class="cap-light"><b>莫奈《圣拉扎尔火车站》,1877,巴黎奥赛博物馆</b><br>蒸汽、光和等待中的站台。稍等一会儿,我们在为你把数字算清楚。</span></figcaption></figure>
     <div class="spinner mx-auto mt-8"></div><div id="loadMsg" class="mt-5 text-lg" style="color:#f1e4c3"></div>
   </section>
 
