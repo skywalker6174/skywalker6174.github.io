@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LawX · 律所办公系统</title>
     <style>
-      body { margin: 0; background: #f5f6f8; }
+      :root { --lx-bg: #f5f5f5; --lx-border: #e5e7eb; --lx-th: #f8fafc; --lx-quote-bar: #c7d2fe; --lx-quote-bg: #f8faff; --lx-quote-ink: #374151; --lx-code: #f3f4f6; color-scheme: light; }
+      :root[data-theme="dark"] { --lx-bg: #000000; --lx-border: #303030; --lx-th: #1d1d1d; --lx-quote-bar: #3b4fa8; --lx-quote-bg: #161a2b; --lx-quote-ink: #d1d5db; --lx-code: #262626; color-scheme: dark; }
+      body { margin: 0; background: var(--lx-bg); }
       .lx-md { line-height: 1.7; overflow-wrap: anywhere; }
       .lx-md > :first-child { margin-top: 0; }
       .lx-md > :last-child { margin-bottom: 0; }
       .lx-md h1, .lx-md h2, .lx-md h3 { font-size: 15px; margin: 16px 0 8px; }
       .lx-md table { border-collapse: collapse; margin: 8px 0; font-variant-numeric: tabular-nums; display: block; overflow-x: auto; }
-      .lx-md th, .lx-md td { border: 1px solid #e5e7eb; padding: 4px 10px; }
-      .lx-md th { background: #f8fafc; font-weight: 600; }
-      .lx-md blockquote { margin: 8px 0; padding: 4px 12px; border-left: 3px solid #c7d2fe; background: #f8faff; color: #374151; }
-      .lx-md code { background: #f3f4f6; padding: 1px 4px; border-radius: 4px; font-size: 12px; }
+      .lx-md th, .lx-md td { border: 1px solid var(--lx-border); padding: 4px 10px; }
+      .lx-md th { background: var(--lx-th); font-weight: 600; }
+      .lx-md blockquote { margin: 8px 0; padding: 4px 12px; border-left: 3px solid var(--lx-quote-bar); background: var(--lx-quote-bg); color: var(--lx-quote-ink); }
+      .lx-md code { background: var(--lx-code); padding: 1px 4px; border-radius: 4px; font-size: 12px; }
       .lx-md ul, .lx-md ol { padding-left: 20px; }
       @media print { .ant-layout-sider, .ant-layout-header, .no-print { display: none !important; } .ant-layout-content { padding: 0 !important; } }
     </style>
-    <script type="module" crossorigin src="./assets/index-DdtwguC7.js"></script>
+    <script type="module" crossorigin src="./assets/index-DrOB0QIU.js"></script>
   </head>
   <body>
     <div id="root"></div>
