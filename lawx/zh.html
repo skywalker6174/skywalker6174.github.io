@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>LawX · 律所办公系统与数据分析智能体</title>
+  <meta name="description" content="LawX：面向律师事务所的办公系统，内置按权限隔离的数据分析与智能助手，在每位律师的权限范围内回答数据与法律问题。在线演示使用虚构数据。">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background: #0B0F14; }
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); }
+    .tag { display:inline-flex; align-items:center; gap:6px; background:rgba(129,140,248,.10);
+           border:1px solid rgba(129,140,248,.28); border-radius:999px; padding:4px 14px; color:#C7D2FE; font-size:.8rem; }
+    .metric-card { background: linear-gradient(135deg,rgba(129,140,248,.16),rgba(129,140,248,.03)); border: 1px solid rgba(129,140,248,.24); }
+    hr.dim { border-color: rgba(255,255,255,0.06); }
+    .shot { border-radius: 12px; border: 1px solid rgba(255,255,255,.10); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+    .kbd { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem; background:rgba(255,255,255,.06);
+           border:1px solid rgba(255,255,255,.12); border-radius:.35rem; padding:1px 7px; color:#C7D2FE; }
+    .num { width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+           font-size:.8rem;font-weight:700;flex-shrink:0;background:rgba(129,140,248,.15);color:#C7D2FE;border:1px solid rgba(129,140,248,.3); }
+    table.t td, table.t th { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.06); text-align:left; vertical-align: top; }
+    table.t th { color:#94A3B8; font-weight:500; font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+
+<nav class="sticky top-0 z-50 bg-[#0B0F14]/90 backdrop-blur border-b border-white/[.06]">
+  <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3"><span class="text-xl">⚖️</span><span class="font-semibold">LawX</span></div>
+    <div class="hidden md:flex gap-6 text-sm text-slate-400">
+      <a href="#problem" class="hover:text-white transition">痛点</a>
+      <a href="#product" class="hover:text-white transition">产品</a>
+      <a href="#access" class="hover:text-white transition">权限体系</a>
+      <a href="#agent" class="hover:text-white transition">智能助手</a>
+      <a href="#deploy" class="hover:text-white transition">部署方式</a>
+      <a href="#status" class="hover:text-white transition">进展</a>
+    </div>
+    <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1 text-xs font-medium">
+      <a href="index.html" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">EN</a>
+      <span class="px-3 py-1.5 rounded-md bg-indigo-500 text-white">中文</span>
+    </div>
+  </div>
+</nav>
+
+<header class="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
+  <span class="tag">律所办公系统 · 数据分析智能体 · 在线演示</span>
+  <h1 class="mt-6 text-4xl md:text-6xl font-bold leading-tight">
+    向律所数据提任何问题——<br>
+    <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-violet-300 to-fuchsia-300">但只看到你有权看的。</span>
+  </h1>
+  <p class="mt-6 max-w-3xl mx-auto text-lg text-slate-300 leading-relaxed">
+    LawX 是面向中小型律所的办公系统：案件、客户、收费账务、工时与法律资料库，
+    配套标准经营报告和智能助手——它能分析律所数据库、生成带图表的报告、解答法律问题。
+    每一次查询都<em>以提问者本人的身份</em>执行：律师只看到自己的案件，合伙人看到团队，管理层看到全所——由数据库本身强制保证。
+  </p>
+  <div class="mt-8 flex flex-wrap justify-center gap-3">
+    <a href="app/" class="px-6 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-400 font-semibold transition">在线体验 →</a>
+    <a href="#agent" class="px-6 py-3 rounded-lg border border-white/15 hover:border-white/30 text-slate-200 transition">智能助手如何工作</a>
+  </div>
+  <p class="mt-3 text-xs text-slate-500">演示在浏览器中运行，数据均为虚构；登录时可选择管理员、合伙人或律师身份。</p>
+  <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">5</div><div class="text-sm text-slate-400 mt-1">级数据范围：本人 → 全所</div></div>
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">4</div><div class="text-sm text-slate-400 mt-1">套标准报告</div></div>
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">4</div><div class="text-sm text-slate-400 mt-1">层防护：AI 生成的 SQL</div></div>
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">2</div><div class="text-sm text-slate-400 mt-1">种部署：云端与私有化</div></div>
+  </div>
+</header>
+
+<hr class="dim">
+<section id="problem" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">痛点</h2>
+  <p class="text-center text-slate-400 mt-3 max-w-2xl mx-auto">中小律所靠表格和微信群运转：合伙人看不清经营状况，通用 AI 又无法放心交给客户数据。</p>
+  <div class="mt-10 grid md:grid-cols-3 gap-5">
+    <div class="card rounded-xl p-6"><div class="text-2xl">📂</div><h3 class="font-semibold mt-3">数据分散</h3><p class="text-slate-400 text-sm mt-2">案件、收费协议、发票、工时散落在不同文件里，没人说得清回款率，也不知道哪个获客渠道最有效。</p></div>
+    <div class="card rounded-xl p-6"><div class="text-2xl">🔐</div><h3 class="font-semibold mt-3">保密要求严格</h3><p class="text-slate-400 text-sm mt-2">律师只能看自己的客户，合伙人看团队，薪酬只有本人和管理员可见。任何工具都必须遵守——AI 也不例外。</p></div>
+    <div class="card rounded-xl p-6"><div class="text-2xl">🤖</div><h3 class="font-semibold mt-3">AI 缺少约束</h3><p class="text-slate-400 text-sm mt-2">把律所数据贴进聊天机器人既有泄露风险，结果也无从核实。律所需要基于自身数据库、可追溯的答案。</p></div>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="product" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">产品</h2>
+  <p class="text-center text-slate-400 mt-3">一个中英双语的 Web 应用，服务律师、合伙人与管理员。</p>
+  <div class="mt-10 grid md:grid-cols-3 gap-5">
+    <div class="card rounded-xl p-6"><h3 class="font-semibold">办公核心</h3><p class="text-slate-400 text-sm mt-2">案件（团队与进展）、客户（获客渠道）、收费协议（固定、计时、风险代理、混合）、发票、回款、工时、法律资料库。</p></div>
+    <div class="card rounded-xl p-6"><h3 class="font-semibold">标准报告</h3><p class="text-slate-400 text-sm mt-2">客户分析、收入与应收账龄、收结案与结案结果、工作量——任意期间、按查看者权限、可导出 PDF。</p></div>
+    <div class="card rounded-xl p-6"><h3 class="font-semibold">智能助手</h3><p class="text-slate-400 text-sm mt-2">用自然语言提问：它会查询数据库、生成带图表的自定义报告，或引用本所资料库解答法律问题。</p></div>
+  </div>
+  <div class="mt-12 grid md:grid-cols-2 gap-8 items-start">
+    <figure><img class="shot" src="img/reports.jpg" alt="Client analysis report"><figcaption class="text-sm text-slate-400 mt-3">客户分析：各获客渠道的回款与新增客户、每月新增、重点客户。</figcaption></figure>
+    <figure><img class="shot" src="img/agent-report.jpg" alt="Assistant building a report"><figcaption class="text-sm text-slate-400 mt-3">合伙人要一份团队收入报告：助手执行查询，返回已保存的图表报告。</figcaption></figure>
+    <figure><img class="shot" src="img/agent-legal.jpg" alt="Legal question"><figcaption class="text-sm text-slate-400 mt-3">法律问答：逐字引用本所资料库原文，并标注需核实的一般法律知识。</figcaption></figure>
+    <figure><img class="shot" src="img/roles.jpg" alt="Permission matrix"><figcaption class="text-sm text-slate-400 mt-3">管理员以权限矩阵定义角色，修改即时生效。</figcaption></figure>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="access" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">AI 也无法绕过的权限体系</h2>
+  <p class="text-center text-slate-400 mt-3 max-w-3xl mx-auto">权限 = <span class="kbd">模块 + 操作 + 数据范围</span>。数据范围依据律所组织架构；PostgreSQL 行级安全过滤每一次查询——无论来自网页还是智能助手。</p>
+  <div class="mt-10 card rounded-xl overflow-x-auto">
+    <table class="t w-full text-sm">
+      <tr><th>范围</th><th>含义</th><th>典型角色</th></tr>
+      <tr><td class="font-semibold">own</td><td class="text-slate-300">与我相关的记录（我的案件、客户、工时）</td><td class="text-slate-400">律师</td></tr>
+      <tr><td class="font-semibold">team</td><td class="text-slate-300">我 + 所有向我汇报的人</td><td class="text-slate-400">合伙人</td></tr>
+      <tr><td class="font-semibold">department</td><td class="text-slate-300">团队 + 我负责部门的所有人</td><td class="text-slate-400">部门负责人</td></tr>
+      <tr><td class="font-semibold">all</td><td class="text-slate-300">全所</td><td class="text-slate-400">管理层 / 管理员</td></tr>
+    </table>
+  </div>
+  <div class="mt-6 grid md:grid-cols-3 gap-5 text-sm">
+    <div class="card rounded-xl p-5"><b>角色可配置，无需改代码。</b><p class="text-slate-400 mt-2">在管理后台新建“律师助理”“财务”等角色；还可对个人单独提高或收回某项权限。</p></div>
+    <div class="card rounded-xl p-5"><b>敏感数据默认保护。</b><p class="text-slate-400 mt-2">薪酬仅本人与管理员可见；公开案例隐藏客户信息；应用本身也读不到密码哈希。</p></div>
+    <div class="card rounded-xl p-5"><b>全程审计。</b><p class="text-slate-400 mt-2">每次修改、登录、薪酬查看与智能助手查询都有记录，含修改前后的值。</p></div>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="agent" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">智能助手如何工作</h2>
+  <p class="text-center text-slate-400 mt-3">大模型 + 四个工具——全部以用户身份执行，全部留痕。</p>
+  <div class="mt-10 grid md:grid-cols-2 gap-8">
+    <div class="space-y-4">
+      <div class="flex gap-4"><span class="num">1</span><div><b>query_database</b><p class="text-slate-400 text-sm">在精选、去除敏感列的视图上编写单条 SELECT，结果已按用户权限过滤。</p></div></div>
+      <div class="flex gap-4"><span class="num">2</span><div><b>run_standard_report</b><p class="text-slate-400 text-sm">问题与标准报告相符时，直接使用经过校验的报告口径。</p></div></div>
+      <div class="flex gap-4"><span class="num">3</span><div><b>search_law_library</b><p class="text-slate-400 text-sm">法律解答以本所收录的法律、司法解释与案例为依据。</p></div></div>
+      <div class="flex gap-4"><span class="num">4</span><div><b>create_report</b><p class="text-slate-400 text-sm">生成含指标、图表、表格的报告；有错误的报告会被退回修正，绝不半成品保存。</p></div></div>
+    </div>
+    <div class="card rounded-xl p-6">
+      <h3 class="font-semibold">模型与数据之间的四道防线</h3>
+      <ol class="mt-3 space-y-2 text-sm text-slate-300 list-decimal list-inside">
+        <li>SQL 校验：仅允许单条 SELECT、仅限授权视图、函数白名单（无法切换身份）；执行的正是校验通过的语句。</li>
+        <li>受限数据库角色，只能读取精选视图。</li>
+        <li>只读事务，单条查询 10 秒超时。</li>
+        <li>用户本人的行级安全策略。</li>
+      </ol>
+      <p class="mt-4 text-sm text-slate-400">模型只会收到用户本人提问所检索到的数据。支持任意 OpenAI 兼容的大模型——DeepSeek、通义千问、智谱 GLM、Kimi，私有化部署也可使用本地模型。管理员可在“智能体监控”中查看每一段对话，被拦截的查询会被标红。</p>
+    </div>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="deploy" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">一套代码，两种部署</h2>
+  <p class="text-center text-slate-400 mt-3">两种方式下每家律所都有独立数据库——隔离彻底，导出简单。</p>
+  <div class="mt-10 card rounded-xl overflow-x-auto">
+    <table class="t w-full text-sm">
+      <tr><th></th><th>云端（SaaS）</th><th>私有化部署</th></tr>
+      <tr><td class="text-slate-400">托管</td><td>中心服务器，每家律所独立数据库</td><td>律所自有服务器，数据自持</td></tr>
+      <tr><td class="text-slate-400">开通</td><td>注册即用</td><td>一条命令安装，浏览器中完成初始化向导</td></tr>
+      <tr><td class="text-slate-400">更新</td><td>由我们持续更新</td><td>管理后台一键更新：自动备份数据库 → 构建 → 健康检查 → 失败自动回滚</td></tr>
+      <tr><td class="text-slate-400">AI 模型</td><td>托管大模型，按律所计量</td><td>律所自有 API 密钥，或本地模型</td></tr>
+    </table>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="status" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">进展</h2>
+  <div class="mt-10 grid md:grid-cols-2 gap-5">
+    <div class="card rounded-xl p-6"><h3 class="font-semibold text-emerald-300">已实现</h3>
+      <ul class="mt-3 space-y-1.5 text-sm text-slate-300 list-disc list-inside">
+        <li>行级安全权限体系、角色与个人调整</li>
+        <li>管理后台：用户、角色、组织架构、审计日志、智能体监控</li>
+        <li>Four 套标准报告 with charts and table views</li>
+        <li>智能助手：数据问答、自定义报告、法律咨询</li>
+        <li>初始化向导、版本发布、一键更新与自动回滚</li>
+      </ul></div>
+    <div class="card rounded-xl p-6"><h3 class="font-semibold text-indigo-300">下一步</h3>
+      <ul class="mt-3 space-y-1.5 text-sm text-slate-300 list-disc list-inside">
+        <li>智能助手的统计分析与预测</li>
+        <li>与同事分享报告（在对方权限范围内）</li>
+        <li>律师端案件详情与编辑</li>
+        <li>私有化本地大模型；微信小程序</li>
+        <li>多律所云端版本；销售智能体</li>
+      </ul></div>
+  </div>
+  <div class="mt-12 text-center">
+    <a href="app/" class="px-6 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-400 font-semibold transition">打开演示 →</a>
+  </div>
+</section>
+
+<footer class="border-t border-white/[.06] py-8 text-center text-sm text-slate-500">
+  LawX——带权限感知数据分析智能体的律所办公系统。演示数据均为虚构。<br>
+  © 2026 · Yue Zhao · PHBS
+</footer>
+</body>
+</html>

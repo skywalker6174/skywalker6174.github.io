@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>LawX · Law-firm OA with a data-science agent</title>
+  <meta name="description" content="LawX: an office system for law firms with permission-aware analytics and an AI assistant that answers data and legal questions within each lawyer's access rights. Interactive demo with fictional data.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background: #0B0F14; }
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); }
+    .tag { display:inline-flex; align-items:center; gap:6px; background:rgba(129,140,248,.10);
+           border:1px solid rgba(129,140,248,.28); border-radius:999px; padding:4px 14px; color:#C7D2FE; font-size:.8rem; }
+    .metric-card { background: linear-gradient(135deg,rgba(129,140,248,.16),rgba(129,140,248,.03)); border: 1px solid rgba(129,140,248,.24); }
+    hr.dim { border-color: rgba(255,255,255,0.06); }
+    .shot { border-radius: 12px; border: 1px solid rgba(255,255,255,.10); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+    .kbd { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem; background:rgba(255,255,255,.06);
+           border:1px solid rgba(255,255,255,.12); border-radius:.35rem; padding:1px 7px; color:#C7D2FE; }
+    .num { width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+           font-size:.8rem;font-weight:700;flex-shrink:0;background:rgba(129,140,248,.15);color:#C7D2FE;border:1px solid rgba(129,140,248,.3); }
+    table.t td, table.t th { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.06); text-align:left; vertical-align: top; }
+    table.t th { color:#94A3B8; font-weight:500; font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+
+<nav class="sticky top-0 z-50 bg-[#0B0F14]/90 backdrop-blur border-b border-white/[.06]">
+  <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3"><span class="text-xl">⚖️</span><span class="font-semibold">LawX</span></div>
+    <div class="hidden md:flex gap-6 text-sm text-slate-400">
+      <a href="#problem" class="hover:text-white transition">Problem</a>
+      <a href="#product" class="hover:text-white transition">Product</a>
+      <a href="#access" class="hover:text-white transition">Access control</a>
+      <a href="#agent" class="hover:text-white transition">AI assistant</a>
+      <a href="#deploy" class="hover:text-white transition">Deployment</a>
+      <a href="#status" class="hover:text-white transition">Status</a>
+    </div>
+    <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1 text-xs font-medium">
+      <span class="px-3 py-1.5 rounded-md bg-indigo-500 text-white">EN</span>
+      <a href="zh.html" class="px-3 py-1.5 rounded-md text-slate-400 hover:text-white transition">中文</a>
+    </div>
+  </div>
+</nav>
+
+<header class="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
+  <span class="tag">Law-firm OA · Data-science agent · Interactive demo</span>
+  <h1 class="mt-6 text-4xl md:text-6xl font-bold leading-tight">
+    Ask your firm's data anything —<br>
+    <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-violet-300 to-fuchsia-300">and only see what you're allowed to.</span>
+  </h1>
+  <p class="mt-6 max-w-3xl mx-auto text-lg text-slate-300 leading-relaxed">
+    LawX is an office system for small and mid-size law firms: cases, clients, billing, time and a law library,
+    with standard business reports and an AI assistant that analyses the firm's database, builds reports with charts
+    and answers legal questions. Every query runs <em>as the person asking</em>: a lawyer sees their own matters,
+    a partner their team, management the whole firm — enforced in the database itself.
+  </p>
+  <div class="mt-8 flex flex-wrap justify-center gap-3">
+    <a href="app/" class="px-6 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-400 font-semibold transition">Try the live demo →</a>
+    <a href="#agent" class="px-6 py-3 rounded-lg border border-white/15 hover:border-white/30 text-slate-200 transition">How the assistant works</a>
+  </div>
+  <p class="mt-3 text-xs text-slate-500">Demo runs in your browser on fictional data; pick admin, partner or lawyer at login.</p>
+  <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">5</div><div class="text-sm text-slate-400 mt-1">data scopes, own → firm-wide</div></div>
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">4</div><div class="text-sm text-slate-400 mt-1">standard reports</div></div>
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">4</div><div class="text-sm text-slate-400 mt-1">safety layers on AI-written SQL</div></div>
+    <div class="metric-card rounded-xl p-5"><div class="text-3xl font-bold">2</div><div class="text-sm text-slate-400 mt-1">editions: cloud & on-premise</div></div>
+  </div>
+</header>
+
+<hr class="dim">
+<section id="problem" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">The problem</h2>
+  <p class="text-center text-slate-400 mt-3 max-w-2xl mx-auto">Small firms run on spreadsheets and chat groups. Partners can't see the business; generic AI can't be trusted with client data.</p>
+  <div class="mt-10 grid md:grid-cols-3 gap-5">
+    <div class="card rounded-xl p-6"><div class="text-2xl">📂</div><h3 class="font-semibold mt-3">Scattered records</h3><p class="text-slate-400 text-sm mt-2">Matters, fee agreements, invoices and time live in different files; nobody knows collection rates or which client channels pay off.</p></div>
+    <div class="card rounded-xl p-6"><div class="text-2xl">🔐</div><h3 class="font-semibold mt-3">Strict confidentiality</h3><p class="text-slate-400 text-sm mt-2">A lawyer may only see their own clients; partners their team; salaries only HR and the person. Any tool must respect that — including AI.</p></div>
+    <div class="card rounded-xl p-6"><div class="text-2xl">🤖</div><h3 class="font-semibold mt-3">AI without guardrails</h3><p class="text-slate-400 text-sm mt-2">Pasting firm data into a chatbot leaks it and returns unverifiable numbers. Firms need answers grounded in their own database, with an audit trail.</p></div>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="product" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">The product</h2>
+  <p class="text-center text-slate-400 mt-3">One web app, Chinese and English, for lawyers, partners and administrators.</p>
+  <div class="mt-10 grid md:grid-cols-3 gap-5">
+    <div class="card rounded-xl p-6"><h3 class="font-semibold">Office core</h3><p class="text-slate-400 text-sm mt-2">Cases with teams and events, clients with acquisition channel, fee agreements (fixed, hourly, contingency, mixed), invoices, payments, time entries, law library.</p></div>
+    <div class="card rounded-xl p-6"><h3 class="font-semibold">Standard reports</h3><p class="text-slate-400 text-sm mt-2">Client analysis, revenue & receivables aging, case pipeline & outcomes, workload — any period, scoped to the viewer, printable to PDF.</p></div>
+    <div class="card rounded-xl p-6"><h3 class="font-semibold">AI assistant</h3><p class="text-slate-400 text-sm mt-2">Ask in plain language; it queries the database, builds custom reports with charts, or answers legal questions citing the firm's library.</p></div>
+  </div>
+  <div class="mt-12 grid md:grid-cols-2 gap-8 items-start">
+    <figure><img class="shot" src="img/reports.jpg" alt="Client analysis report"><figcaption class="text-sm text-slate-400 mt-3">Client analysis: revenue and new clients by acquisition channel, monthly intake, top clients.</figcaption></figure>
+    <figure><img class="shot" src="img/agent-report.jpg" alt="Assistant building a report"><figcaption class="text-sm text-slate-400 mt-3">A partner asks for a team revenue report; the assistant runs the queries and returns a saved report with charts.</figcaption></figure>
+    <figure><img class="shot" src="img/agent-legal.jpg" alt="Legal question"><figcaption class="text-sm text-slate-400 mt-3">Legal Q&A: cites the firm's law library verbatim and flags general knowledge to verify.</figcaption></figure>
+    <figure><img class="shot" src="img/roles.jpg" alt="Permission matrix"><figcaption class="text-sm text-slate-400 mt-3">Administrators define roles as a permission matrix; changes apply immediately.</figcaption></figure>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="access" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">Access control that the AI can't bypass</h2>
+  <p class="text-center text-slate-400 mt-3 max-w-3xl mx-auto">A permission is <span class="kbd">resource + action + scope</span>. Scopes follow the firm's structure; PostgreSQL row-level security filters every query, from the web UI or the assistant.</p>
+  <div class="mt-10 card rounded-xl overflow-x-auto">
+    <table class="t w-full text-sm">
+      <tr><th>Scope</th><th>Meaning</th><th>Typical holder</th></tr>
+      <tr><td class="font-semibold">own</td><td class="text-slate-300">records linked to me (my cases, my clients, my time)</td><td class="text-slate-400">lawyer</td></tr>
+      <tr><td class="font-semibold">team</td><td class="text-slate-300">me + everyone reporting to me</td><td class="text-slate-400">partner</td></tr>
+      <tr><td class="font-semibold">department</td><td class="text-slate-300">team + everyone in departments I head</td><td class="text-slate-400">department head</td></tr>
+      <tr><td class="font-semibold">all</td><td class="text-slate-300">firm-wide</td><td class="text-slate-400">management / admin</td></tr>
+    </table>
+  </div>
+  <div class="mt-6 grid md:grid-cols-3 gap-5 text-sm">
+    <div class="card rounded-xl p-5"><b>Roles are data, not code.</b><p class="text-slate-400 mt-2">Create a “paralegal” or “finance” role in the admin console; per-user overrides raise or revoke single rights.</p></div>
+    <div class="card rounded-xl p-5"><b>Sensitive by design.</b><p class="text-slate-400 mt-2">Salaries visible only to the person and admins; public reference cases hide the client; password hashes unreadable by the app.</p></div>
+    <div class="card rounded-xl p-5"><b>Everything audited.</b><p class="text-slate-400 mt-2">Every change, sign-in, salary view and assistant query is logged with before/after values.</p></div>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="agent" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">How the assistant works</h2>
+  <p class="text-center text-slate-400 mt-3">An LLM with four tools — all executed as the user, all logged.</p>
+  <div class="mt-10 grid md:grid-cols-2 gap-8">
+    <div class="space-y-4">
+      <div class="flex gap-4"><span class="num">1</span><div><b>query_database</b><p class="text-slate-400 text-sm">Writes one SELECT over curated, column-trimmed views. Results are already filtered to the user's scope.</p></div></div>
+      <div class="flex gap-4"><span class="num">2</span><div><b>run_standard_report</b><p class="text-slate-400 text-sm">Uses the firm's vetted report definitions when the question matches one.</p></div></div>
+      <div class="flex gap-4"><span class="num">3</span><div><b>search_law_library</b><p class="text-slate-400 text-sm">Grounds legal answers in the firm's statutes, interpretations and precedents.</p></div></div>
+      <div class="flex gap-4"><span class="num">4</span><div><b>create_report</b><p class="text-slate-400 text-sm">Builds a report with KPIs, charts and tables; incomplete reports are rejected and fixed, never half-saved.</p></div></div>
+    </div>
+    <div class="card rounded-xl p-6">
+      <h3 class="font-semibold">Four layers between the model and the data</h3>
+      <ol class="mt-3 space-y-2 text-sm text-slate-300 list-decimal list-inside">
+        <li>SQL validator: a single SELECT, approved views only, function allowlist (no identity switching); the validated tree is what runs.</li>
+        <li>Restricted database role with read access to the curated views only.</li>
+        <li>Read-only transaction with a 10-second statement timeout.</li>
+        <li>The user's own row-level security.</li>
+      </ol>
+      <p class="mt-4 text-sm text-slate-400">The model only receives what the user's own questions retrieve. Any OpenAI-compatible LLM works — DeepSeek, Qwen, GLM, Kimi, or a local model for on-premise sites. Administrators review every conversation in the agent monitor, with blocked attempts flagged.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="deploy" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">Two editions, one codebase</h2>
+  <p class="text-center text-slate-400 mt-3">Each firm gets its own database in both — hard isolation and trivial export.</p>
+  <div class="mt-10 card rounded-xl overflow-x-auto">
+    <table class="t w-full text-sm">
+      <tr><th></th><th>Cloud (SaaS)</th><th>On-premise</th></tr>
+      <tr><td class="text-slate-400">Hosting</td><td>central server, one database per firm</td><td>the firm's own server, its own data</td></tr>
+      <tr><td class="text-slate-400">Setup</td><td>sign-up</td><td>one-command install, then a setup wizard in the browser</td></tr>
+      <tr><td class="text-slate-400">Updates</td><td>continuous, by us</td><td>one click in the admin UI: database backup → build → health check → automatic rollback</td></tr>
+      <tr><td class="text-slate-400">AI model</td><td>hosted LLM, metered per firm</td><td>firm's own API key, or a local model</td></tr>
+    </table>
+  </div>
+</section>
+
+<hr class="dim">
+<section id="status" class="max-w-6xl mx-auto px-6 py-20">
+  <h2 class="text-3xl font-bold text-center">Status</h2>
+  <div class="mt-10 grid md:grid-cols-2 gap-5">
+    <div class="card rounded-xl p-6"><h3 class="font-semibold text-emerald-300">Working today</h3>
+      <ul class="mt-3 space-y-1.5 text-sm text-slate-300 list-disc list-inside">
+        <li>Permission system with row-level security, roles & overrides</li>
+        <li>Admin console: users, roles, organization, audit log, agent monitor</li>
+        <li>Four standard reports with charts and table views</li>
+        <li>AI assistant: data questions, custom reports, legal Q&A</li>
+        <li>Setup wizard, releases and one-click updates with rollback</li>
+      </ul></div>
+    <div class="card rounded-xl p-6"><h3 class="font-semibold text-indigo-300">Next</h3>
+      <ul class="mt-3 space-y-1.5 text-sm text-slate-300 list-disc list-inside">
+        <li>Statistical analysis and forecasts in the assistant</li>
+        <li>Sharing reports with colleagues (within their access)</li>
+        <li>Case detail and editing pages for lawyers</li>
+        <li>Local LLM for on-premise; WeChat mini-program</li>
+        <li>Multi-firm cloud edition; sales agent</li>
+      </ul></div>
+  </div>
+  <div class="mt-12 text-center">
+    <a href="app/" class="px-6 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-400 font-semibold transition">Open the demo →</a>
+  </div>
+</section>
+
+<footer class="border-t border-white/[.06] py-8 text-center text-sm text-slate-500">
+  LawX — law-firm OA with a permission-aware data-science agent. All demo data is fictional.<br>
+  © 2026 · Yue Zhao · PHBS
+</footer>
+</body>
+</html>
